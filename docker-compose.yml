@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "70:70"
+    depends_on:
+      - datastore
+    environment:
+      - DB_HOST=datastore
+      - DB_DATABASE=sys
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:90"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+
