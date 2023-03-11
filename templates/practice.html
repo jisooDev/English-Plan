@@ -1,0 +1,143 @@
+
+
+{% include 'script-t.html' %}
+
+<style>
+    
+#main-practice{
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 5;
+    background-position: bottom;
+}
+
+.card-practice{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background: #000;
+    margin-top: 0 -30px;
+    border-radius: 25px;
+    position: relative;
+}
+
+.card-practice .card-practice-header{
+    display: flex;
+    align-items: flex-end;
+    height: 40px;
+    margin: 0 25px;
+    color: #fff;
+}
+.card-practice .card-practice-body{
+    background: #fff;
+    margin: 15px;
+    padding: 15px 25px 50px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.card-practice .card-practice-body .card-exam-content{ 
+    height: 400px;
+}
+
+.flex-items-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.circular-counter {
+    height: 90px;
+    width: 90px;
+    left: calc(50% - 50px);
+    display: flex!important;
+    position: absolute!important;
+    top: -40px;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+}
+.progress{
+    overflow:inherit;
+    background: none;
+    width: 80px;
+    height: 80px;
+}
+.circle-progress-value {
+    stroke-width: 15px;
+    stroke: #ED548F;
+    }
+.circle-progress-circle {
+    stroke-width: 15px;
+}
+.circle-progress{
+    width: 80px;
+    height: 80px;
+}
+.circle-progress-text{
+    font-size: 20px;
+    fill: hsl(0, 0%, 0%);
+}
+.circle-progress-text-separator{
+    margin-left: 2px;
+    margin-right: 2px;
+}
+</style>
+<body >
+    {% include 'header.html' %}
+
+    <div id="main-practice" style="background-image: url('{{ url_for('static', filename='image/background-wave-top.svg') }}');">
+        <div class="container">
+            <div style="height: 80vh;">
+
+                <div class="card-practice">
+                    <div class="card-practice-header">
+                        <div class="d-none d-lg-block header-name w-100">
+                            Welcome Develops!
+                        </div>
+                        <div class="header-selection w-100 d-flex justify-content-between justify-content-lg-end">
+                            <select class="from-control" name="" id="">
+                                <option value="">selected</option>
+                            </select>
+                            <select class="from-control" name="" id="">
+                                <option value="">selected</option>
+                            </select>
+                        </div>
+
+                        <div class="circular-counter">
+                            
+                            <div class="progress"></div>
+                        </div>
+                    </div>
+                    <div class="card-practice-body">
+
+
+                        <div class="card-exam-content">
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    {% include 'script-b.html' %}
+    <script>
+        jQuery(function($) {
+          $('.progress').circleProgress(
+                        {
+                max: 8,
+                value: 2,
+            }
+          );
+        });
+      </script>
+</body>
+</html>
+
+

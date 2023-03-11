@@ -23,8 +23,12 @@ pool_db = PooledDB(
 )
 
 @app.route("/")
-def empty_path():
-    return 'hello English Plan'
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route("/practice")
+def practice():
+    return render_template('practice.html')
 
 
 app.register_blueprint(admin_bp, url_prefix='/admin')

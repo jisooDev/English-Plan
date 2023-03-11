@@ -1,0 +1,29 @@
+/* START NAV */
+
+.header-area-static{
+    padding: 20px 0;
+    background: var(--primary);
+}
+.navbar-btn .main-btn{
+    height: 45px;
+    width: 100px;
+    background: #ED548F;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+#navbarSupportedContent li {
+    margin-right: 45px;
+}
+#navbarSupportedContent li a {
+    all: unset;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* END NAV */
+
+/* START practice */
+
+
+/* END practice */
