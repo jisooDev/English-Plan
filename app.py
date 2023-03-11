@@ -23,11 +23,11 @@ pool_db = PooledDB(
 )
 
 @app.route("/")
-def dashboard():
-    return render_template('dashboard.html')
+def main_page():
+    return render_template('main.html')
 
 @app.route("/practice")
-def practice():
+def practice_page():
     return render_template('practice.html')
 
 
