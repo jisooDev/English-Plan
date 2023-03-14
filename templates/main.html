@@ -3,11 +3,235 @@
 {% include 'script-t.html' %}
 
 <style>
- 
+    #home{
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: relative;
+    }
+    .card-button{
+        all: unset;
+        height: 48px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: #fff;
+    }
+    .card-package{
+        background-color: #fff;
+        box-shadow: 0 5px 30px 0 hsl(0deg 0% 66% / 16%);
+        transition: all .3s ease-out 0s;
+        padding: 50px 30px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        margin-top: 30px;
+        overflow: hidden;
+    }
+    .card-package:hover{
+        border-color: #fe7a7b;
+    }
+    .card-package .services-icon{
+        height: 200px;
+        background: #004AAD;
+        color: #fff;
+        margin-top: -50px;
+        margin-left: -30px;
+        margin-right: -30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-package .services-content{
+        margin-top: 30px;
+        text-align: center;
+    }
+    .card-package .services-content a{
+        all: unset;
+        color: #2e2e2e;
+        font-weight: bolder;
+        font-size: 20px;
+        transition: all .3s ease-out 0s;
+    }
+    .card-package .services-content .more{
+        padding: 10px 40px;
+        border-radius: 40px;
+        background: #D1605E;
+        border: none;
+        color: #fff;
+     }
+
+     #facts .video-wrapper{
+        margin-right: 15px;
+        position: relative;
+        box-shadow: 0 13px 46px 0 hsl(0deg 0% 44% / 33%);
+        border-radius: 20px;
+        overflow: hidden;
+     }
 </style>
-<body >
+<body style="font-family: 'Mitr', sans-serif; font-weight: 300;">
     {% include 'header.html' %}
 
+    <section id="home" style="background-image: url('{{ url_for('static', filename='image/background-wave-top.svg') }}');" >
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center" style="padding-top: 100px;">
+                        <img class="img-fluid" src="{{ url_for('static', filename='image/logo-name-nobackground.png') }}" alt="">
+                        <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, temporibus.</h3>
+                        <h4>Lorem ipsum dolor sit amet.</h4>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit quia, laudantium reprehenderit quam reiciendis corrupti cumque architecto quod illum dolor.</p>
+                        <a class="card-button" style="background: #5ECED1; margin-top: 40px;" href="#">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+
+    </section>
+
+    <section id="pricing" style="padding-top: 120px;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center" style="margin-bottom: 40px;">
+                        <div class="title">
+                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor, provident nostrum inventore ratione blanditiis molestiae, quidem, debitis ipsa ducimus enim dolorem optio sapiente est adipisci sunt quibusdam repellat ab tempora.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-3 col-md-7 col-sm-8">
+                    <div class="card-package">
+                        <div class="services-icon" >
+                            <h1>FREE</h1>
+                        </div>
+                        <div class="services-content">
+                            <h4 class="services-title">
+                                <strong>
+                                    <a href="#">
+                                        15 Practice Questions
+                                    </a>
+                                </strong>
+                            </h4>
+                            <!-- <div>&nbsp;</div> -->
+                            <h4 class="services-title">
+                                <a href="#">
+                                    FREE
+                                </a>
+                            </h4>
+
+                            <button class="more mt-5" style="background: #5ECED1;">
+                                Started
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-7 col-sm-8">
+                    <div class="card-package">
+                        <div class="services-icon" >
+                            <h1>$12.97$</h1>
+                        </div>
+                        <div class="services-content">
+                            <h4 class="services-title">
+                                <a href="#">
+                                    Unlimited <br>
+                                    Access <br>
+                                    7 Days
+                                </a>
+                            </h4>
+                            <button class="more mt-5">
+                                CHOOSE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-7 col-sm-8">
+                    <div class="card-package">
+                        <div class="services-icon" >
+                            <h1>30 Days</h1>
+                        </div>
+                        <div class="services-content">
+                            <h4 class="services-title">
+                                <a href="#">
+                                    Unlimited <br>
+                                    Access <br>
+                                    30 Days
+                                </a>
+                            </h4>
+                            <button class="more mt-5">
+                                CHOOSE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-7 col-sm-8">
+                    <div class="card-package">
+                        <div class="services-icon" >
+                            <h1>90 Days</h1>
+                        </div>
+                        <div class="services-content">
+                            <h4 class="services-title">
+                                <a href="#">
+                                    Unlimited <br>
+                                    Access <br>
+                                    90 Days
+                                </a>
+                            </h4>
+                            <button class="more mt-5">
+                                CHOOSE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <img style="width: 430px;margin-top: 50px;" src="{{ url_for('static', filename='image/payment.png') }}" alt="">
+
+            </div>
+        </div>
+    </section>
+
+    <section id="facts" style="padding-top: 70px;">
+        <div class="container">
+            <div class="row" style="margin-top: 50px;">
+                <div class="col-lg-6">
+                    <div class="video-wrapper">
+                        <img style="width: 100%;" src="{{ url_for('static', filename='image/facts.png') }}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="" style="padding-left: 70px;">
+                        <div class="counter-content">
+                            <div class="section-title">
+                                <h3 class="title">
+                                    TEACHER LUKE <br>
+                                    <span>
+                                        Duolingo English Test Expert!
+                                    </span>
+                                </h3>
+                                <p>Preparing for the Duolingo English Test doesn’t have to be stressful.</p>
+                                <p>My practice app and courses will help you to get the best score you can get!</p>
+                                <p>
+                                    With over 10 years of teaching experience and an MA in English Education, I have helped over 150,000 students worldwide with my Duolingo English Test lessons and courses.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     {% include 'script-b.html' %}
