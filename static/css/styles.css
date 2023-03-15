@@ -7,7 +7,8 @@
 }
 .navbar-btn .main-btn{
     height: 45px;
-    width: 100px;
+    padding: 0 10px;
+    /* width: 100px; */
     background: #ED548F;
     color: #fff;
     border: none;
@@ -20,6 +21,43 @@
     all: unset;
     color: #fff;
     cursor: pointer;
+}
+.navbar-toggler{
+    cursor: pointer;
+    color: #fff;
+}
+.navbar-toggler .toggler-icon{
+    background: #fff;
+    width: 10px;
+    height: 5px;
+}
+.font-30-24{
+    font-size: 30px ;
+}
+@media screen and (max-width: 992px) {
+
+    .font-30-24{
+        font-size: 24px ;
+    }
+
+    .navbar-brand{
+        display: none;
+    }
+
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 9;
+        box-shadow: 0 15px 20px 0 rgb(0 0 0 / 10%);
+        padding: 5px 12px;
+    }
+    .navbar-collapse li a {
+        color: #333333 !important;
+    }
+
 }
 
 
