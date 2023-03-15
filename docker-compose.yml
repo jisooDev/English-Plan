@@ -7,15 +7,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "70:70"
-    depends_on:
-      - datastore
     environment:
       - DB_HOST=datastore
       - DB_DATABASE=sys
       - DB_USERNAME=root
       - DB_PASSWORD=root
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:90"]
+      test: ["CMD", "curl", "-f", "http://localhost:70"]
       interval: 30s
       timeout: 10s
       retries: 3
