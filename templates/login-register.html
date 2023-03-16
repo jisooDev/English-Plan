@@ -1,0 +1,73 @@
+<div class="modal fade" id="login-register" tabindex="-1" role="dialog" aria-labelledby="login-register" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="border-radius: 15px;margin: auto;">
+        <div class="modal-body">
+          <div class="position-relative" style="padding: 30px 10px 10px 10px;">
+            <button 
+            style="
+            border: none;
+            background: #fff;
+            top: -10px;
+            right: -10px;"
+            type="button" 
+            class="close position-absolute" 
+            data-bs-dismiss="modal" 
+            aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+
+
+
+            <div class="header">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button 
+                  class="nav-link" 
+                  id="register-tab" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#register" 
+                  type="button" 
+                  role="tab" 
+                  aria-controls="register" 
+                  aria-selected="true">Sign up</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button 
+                  class="nav-link active" 
+                  id="login-tab" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#login" 
+                  type="button" 
+                  role="tab" 
+                  aria-controls="login" 
+                  aria-selected="false"
+                  >Log in</button>
+                </li>
+              </ul>
+            </div>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="home-tab">
+                <form class="my-4" action="">
+                  <input class="form-control mb-2" type="text" placeholder="Enter your name" required>
+                  <input class="form-control mb-2" type="text" placeholder="Email" required>
+                  <input class="form-control mb-2" type="text" placeholder="Password" required>
+
+                  <input class="btn-auth" type="submit" value="Sign up">
+                </form>
+              </div>
+              <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="profile-tab">
+                <form class="my-4" action="">
+                  <input class="form-control mb-2" type="text" placeholder="Email" required>
+                  <input class="form-control mb-2" type="text" placeholder="Password" required>
+
+                  <input class="btn-auth" type="submit" value="Log in">
+                </form>
+              </div>
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
