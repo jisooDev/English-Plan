@@ -1,0 +1,161 @@
+<div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
+    <div class="mdk-drawer__content">
+        <div class="sidebar sidebar-dark sidebar-left simplebar" data-simplebar>
+            <div class="d-flex flex-column justify-content-center align-items-center py-2">       
+               <img style="width: 70px;" class="img-fluid" src="{{ url_for('static', filename='image/logo-nobackground.png') }}" alt="">
+               <h3 class="text-white">English Plan</h3>
+            </div>
+            <div class="sidebar-stats row no-gutters align-items-center text-center border-bottom flex-shrink-0">
+                <div class="sidebar-stats__col col">
+                    <div class="sidebar-stats__title">Traffic</div>
+                    <div class="sidebar-stats__value">49,401</div>
+                </div>
+                <div class="sidebar-stats__col col border-left">
+                    <div class="sidebar-stats__title">Earnings</div>
+                    <div class="sidebar-stats__value">$1,402</div>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div id="sm-menu" class="tab-pane show active" role="tabpanel" aria-labelledby="sm-menu-tab">
+                    <ul class="sidebar-menu flex">
+                        <li class="sidebar-menu-item active">
+                            <a class="sidebar-menu-button" href="index.html">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
+                                <span class="sidebar-menu-text">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_reading">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Reading</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="pages_reading">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Reading</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Matching information</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Select Real Word </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_read_write">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Read and write</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="pages_read_write">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Fill in The Blank</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Short answer</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Describe a photo </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_listening">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">listening</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="pages_listening">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Write down what you hear </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Interactive Conversation </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Select Real Word </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_taking">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Talking</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">1</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sidebar-submenu collapse" id="pages_taking">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href=#">
+                                        <span class="sidebar-menu-text">Interactive Conversation </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="sm-account" class="tab-pane">
+                    <ul class="sidebar-menu">
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="edit-account.html">
+                                <span class="sidebar-menu-text">Edit Information</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="edit-account.html">
+                                <span class="sidebar-menu-text">Payments</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="edit-account.html">
+                                <span class="sidebar-menu-text">Billing</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="edit-account.html">
+                                <span class="sidebar-menu-text">Change Password</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-menu-item">
+                            <a class="sidebar-menu-button" href="login.html">
+                                <span class="sidebar-menu-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-auto sidebar-p-a sidebar-b-t d-flex flex-column flex-shrink-0">
+                <a class="sidebar-link" href="login.html">
+                    Logout
+                    <i class="sidebar-menu-icon ml-2 material-icons icon-16pt">exit_to_app</i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
