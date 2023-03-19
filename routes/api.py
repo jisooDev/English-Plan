@@ -29,7 +29,7 @@ def api_get_parctice_list():
         'practice_type': 'writing'
     },{
         'practice_id': 3,
-        'practice_type': 'fillblank'
+        'practice_type': 'fill_blank'
     },{
         'practice_id': 4,
         'practice_type': 'choose_word'
@@ -57,14 +57,54 @@ def api_get_parctice_detail():
         practiceId = request.args.get('practice_id')
         practiceType = request.args.get('practice_type')
         print(practiceId)
-        return  Response(response=json.dumps({'success': True, 'data': practice_1}), mimetype='application/json', status=200)
+        result = practice_2
+        if practiceId == "1":
+            result = practice_1
+
+        if practiceId == "2":
+            result = practice_2
+
+        if practiceId == "3":
+            result = practice_3
+
+        print(result)
+        return  Response(response=json.dumps({'success': True, 'data': result}), mimetype='application/json', status=200)
 
     except Exception as e:
         print(e)
         return  Response(response=json.dumps({'success': False, 'data': None, 'message': str(e)}), mimetype='application/json', status=400)
-    
 
 
+practice_3 = {
+    'practice_id': 3,
+    'practice_type': 'fill_blank',
+    'timer': 300,
+    'difficulty': 'medium',
+    'story': '''Although she was {{1}}, she decided to {{2}} up and {{3}} her work.''',
+    'data': [
+        {
+            'value': atob('a'),
+            'show': False,
+        }, {
+            'value': atob('b'),
+            'show': True,
+        }, {
+            'value': atob('c'),
+            'show': False,
+        }
+    ],
+}
+
+
+practice_2 = {
+    'practice_id': 2,
+    'practice_type': 'writing',
+    'timer': 300,
+    'difficulty': 'medium',
+    'sound_id': 'test_audio',
+    'story': 'Although she was tired, she decided to stay up and finish her work.',
+    'answer': atob('Although she was tired, she decided to stay up and finish her work.'),
+}
 
 
 practice_1 = {
@@ -143,3 +183,4 @@ practice_1 = {
         }]
     }]
 }
+
