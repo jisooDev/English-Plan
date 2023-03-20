@@ -1,3 +1,14 @@
+<style>
+    .sub-menu{
+        padding-left: 0;
+    }
+    .sub-menu .sidebar-menu-item .sidebar-menu-text{
+        border-left: 1px dotted rgba(147,159,173,.24);
+        padding-left: 1.125rem;
+        margin-left: 0.75rem;
+    }
+</style>
+
 <div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
     <div class="mdk-drawer__content">
         <div class="sidebar sidebar-dark sidebar-left simplebar" data-simplebar>
@@ -19,33 +30,33 @@
             <div class="tab-content">
                 <div id="sm-menu" class="tab-pane show active" role="tabpanel" aria-labelledby="sm-menu-tab">
                     <ul class="sidebar-menu flex">
-                        <li class="sidebar-menu-item active">
-                            <a class="sidebar-menu-button" href="index.html">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/dashboard') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="/admin/dashboard">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
                                 <span class="sidebar-menu-text">Dashboard</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_reading">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="/admin/reading/reading">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
                                 <span class="sidebar-menu-text">Reading</span>
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
                                 <span class="sidebar-menu-toggle-icon"></span>
                             </a>
-                            <ul class="sidebar-submenu collapse" id="pages_reading">
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                            <ul class="sub-menu">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/reading') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/reading">
                                         <span class="sidebar-menu-text">Reading</span>
                                     </a>
                                 </li>
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/matching') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/matching">
                                         <span class="sidebar-menu-text">Matching information</span>
                                     </a>
                                 </li>
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/selectword') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/selectword">
                                         <span class="sidebar-menu-text">Select Real Word </span>
                                     </a>
                                 </li>
@@ -58,7 +69,7 @@
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
                                 <span class="sidebar-menu-toggle-icon"></span>
                             </a>
-                            <ul class="sidebar-submenu collapse" id="pages_read_write">
+                            <ul class="sub-menu">
                                 <li class="sidebar-menu-item">
                                     <a class="sidebar-menu-button" href=#">
                                         <span class="sidebar-menu-text">Fill in The Blank</span>
@@ -83,7 +94,7 @@
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
                                 <span class="sidebar-menu-toggle-icon"></span>
                             </a>
-                            <ul class="sidebar-submenu collapse" id="pages_listening">
+                            <ul class="sub-menu">
                                 <li class="sidebar-menu-item">
                                     <a class="sidebar-menu-button" href=#">
                                         <span class="sidebar-menu-text">Write down what you hear </span>
@@ -108,7 +119,7 @@
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">1</span>
                                 <span class="sidebar-menu-toggle-icon"></span>
                             </a>
-                            <ul class="sidebar-submenu collapse" id="pages_taking">
+                            <ul class="sub-menu">
                                 <li class="sidebar-menu-item">
                                     <a class="sidebar-menu-button" href=#">
                                         <span class="sidebar-menu-text">Interactive Conversation </span>
