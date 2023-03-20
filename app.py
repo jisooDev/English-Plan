@@ -8,6 +8,8 @@ load_dotenv()
 
 from routes.admin import blueprint as admin_bp
 
+import pyrebase
+
 app = Flask(__name__)
 
 pool_db = PooledDB(
@@ -21,6 +23,39 @@ pool_db = PooledDB(
     cursorclass=pymysql.cursors.DictCursor, 
     blocking=True
 )
+
+config = {
+    "apiKey": "AIzaSyDExn5Hbtc_w4IT2-hUe-VT7XE7OkIT5b8",
+    "authDomain": "english-plan-c76bf.firebaseapp.com",
+    "projectId": "english-plan-c76bf",
+    "storageBucket": "english-plan-c76bf.appspot.com",
+    "messagingSenderId": "806298914847",
+    "appId": "1:806298914847:web:7fe7508345e15b62a0452a",
+    "measurementId": "G-7PWV72Z2QX"
+}
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+
+@app.route('/register', methods=['POST'])
+def register():
+    email = request.form['email']
+    password = request.form['password']
+    try:
+        user = auth.create_user_with_email_and_password(email, password)
+        print(user)
+    except Exception as e:
+        print(e)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+    try:
+        user = auth.sign_in_with_email_and_password(email, password)
+        print(user)
+    except Exception as e:
+        print(e)
 
 @app.route("/")
 def main_page():
