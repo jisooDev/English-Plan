@@ -6,7 +6,9 @@ import os ;
 from dotenv import load_dotenv ;
 load_dotenv() 
 
-from routes.admin import blueprint as admin_bp
+from routes.admin import blueprintAdmin as admin_bp
+from routes.reading import blueprintReading as reading_bp
+from routes.api import blueprint as api_bp
 
 import pyrebase
 
@@ -67,6 +69,8 @@ def practice_page():
 
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(reading_bp, url_prefix='/admin')
+app.register_blueprint(api_bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.debug = True
