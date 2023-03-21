@@ -12,7 +12,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Matching Information' %}
+                {% set _header =  'Interactive Conversation' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -21,7 +21,19 @@
                 <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
 
                     <div class="container-fluid page__container">
-
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="">
+                                    <div class="form-grop">
+                                        <label for="">Choose a level of difficulty</label>
+                                        <select class="form-control" name="" id="">
+                                            <option value="" selected>select here!</option>
+                                            <option value="medium">medium</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     
                     </div>
 
@@ -39,7 +51,6 @@
         {% include 'admin/components/sidebar.html' %}
 
     </div>
-
-
+   
 
     {% include 'admin/script-b.html' %}
