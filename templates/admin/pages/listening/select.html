@@ -1,9 +1,11 @@
 {% include 'admin/script-t.html' %}
+
 <style>
     .card-li{
         all: unset;
     }
 </style>
+
 <body class="layout-default">
 
     
@@ -16,7 +18,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Reading' %}
+                {% set _header =  'Select Real Word' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -24,6 +26,7 @@
                 <!-- Header Layout Content -->
                 <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
 
+                    
                     <div class="container-fluid page__container">
                         <form action="">
                             <div class="row">
@@ -49,6 +52,14 @@
                                                 <label for="">word-sound mp3</label>
                                                 <input class="form-control" type="file">
                                             </div>
+                                            <div class="form-group w-50">
+                                                <label for="">word-answer</label>
+                                                <select class="form-control" name="">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
+                                            </div>
+                                            <!-- <button class="btn btn-danger w-100">Delete</button> -->
                                         </li>
                                     </ul>
 
@@ -73,8 +84,8 @@
 
     </div>
 
-
     {% include 'admin/script-b.html' %}
+
 
 
     <script>
@@ -90,6 +101,13 @@
                             <div class="form-group w-50">
                                 <label for="">word-sound mp3</label>
                                 <input class="form-control" type="file">
+                            </div>
+                            <div class="form-group w-50">
+                                <label for="">word-answer</label>
+                                <select class="form-control" name="">
+                                    <option value="true">true</option>
+                                    <option value="false">false</option>
+                                </select>
                             </div>
                             <button class="btn btn-danger w-100 delete-btn">Delete</button>
                         </li>

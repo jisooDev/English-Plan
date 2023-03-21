@@ -4,6 +4,7 @@
         all: unset;
     }
 </style>
+
 <body class="layout-default">
 
     
@@ -16,7 +17,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Reading' %}
+                {% set _header =  'Write down what you hear' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -49,6 +50,7 @@
                                                 <label for="">word-sound mp3</label>
                                                 <input class="form-control" type="file">
                                             </div>
+                                            <!-- <button class="btn btn-danger w-100">Delete</button> -->
                                         </li>
                                     </ul>
 
@@ -74,8 +76,8 @@
     </div>
 
 
-    {% include 'admin/script-b.html' %}
 
+    {% include 'admin/script-b.html' %}
 
     <script>
 

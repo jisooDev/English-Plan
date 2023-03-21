@@ -87,33 +87,33 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_listening">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening') %}active{% endif %}">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="/admin/listening/selectword">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
                                 <span class="sidebar-menu-text">listening</span>
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
                                 <span class="sidebar-menu-toggle-icon"></span>
                             </a>
                             <ul class="sub-menu">
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/selectword') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/listening/selectword">
+                                        <span class="sidebar-menu-text">Select Real Word </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/writedown') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/listening/writedown">
                                         <span class="sidebar-menu-text">Write down what you hear </span>
                                     </a>
                                 </li>
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/interactive') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href='/admin/listening/interactive'>
                                         <span class="sidebar-menu-text">Interactive Conversation </span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
-                                        <span class="sidebar-menu-text">Select Real Word </span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                         <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_taking">
+                            <a class="sidebar-menu-button" href="#pages_taking">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
                                 <span class="sidebar-menu-text">Talking</span>
                                 <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">1</span>
@@ -127,33 +127,10 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
-                </div>
-                <div id="sm-account" class="tab-pane">
-                    <ul class="sidebar-menu">
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="edit-account.html">
-                                <span class="sidebar-menu-text">Edit Information</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="edit-account.html">
-                                <span class="sidebar-menu-text">Payments</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="edit-account.html">
-                                <span class="sidebar-menu-text">Billing</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="edit-account.html">
-                                <span class="sidebar-menu-text">Change Password</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-menu-item">
-                            <a class="sidebar-menu-button" href="login.html">
-                                <span class="sidebar-menu-text">Logout</span>
+                        <li class="sidebar-menu-item" style="background: #333333;">
+                            <a class="sidebar-menu-button" href="/">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">keyboard_return</i>
+                                <span class="sidebar-menu-text">Return LandingPage</span>
                             </a>
                         </li>
                     </ul>
