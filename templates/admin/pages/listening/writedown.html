@@ -1,4 +1,9 @@
 {% include 'admin/script-t.html' %}
+<style>
+    .card-li{
+        all: unset;
+    }
+</style>
 
 <body class="layout-default">
 
@@ -21,8 +26,38 @@
                 <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
 
                     <div class="container-fluid page__container">
+                        <form action="">
+                            <div class="row">
+                                <div class="col-12 border-bottom">
+                                    <div class="form-group">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label for="">Choose a level of difficulty</label> <div onclick="onclickAddrow()" class="btn btn-info" style="cursor: pointer;">&plus; Add</div>
+                                        </div>
+                                        <select class="form-control" name="" id="">
+                                            <option value="" selected>select here!</option>
+                                            <option value="medium">medium</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <ul id="select-real-word" class="p-0">
+                                        <li class="my-2 card-li">
+                                            <div class="form-group w-50">
+                                                <label for="">word-character</label>
+                                                <input class="form-control" type="text">
+                                            </div>
+                                            <div class="form-group w-50">
+                                                <label for="">word-sound mp3</label>
+                                                <input class="form-control" type="file">
+                                            </div>
+                                            <!-- <button class="btn btn-danger w-100">Delete</button> -->
+                                        </li>
+                                    </ul>
 
-                    
+                                    <input type="submit" class="btn btn-primary w-100" value="Save">
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
 
@@ -43,3 +78,38 @@
 
 
     {% include 'admin/script-b.html' %}
+
+    <script>
+
+        function onclickAddrow(){
+
+            let _html = `
+                        <li class="my-2 card-li">
+                            <div class="form-group w-50">
+                                <label for="">word-character</label>
+                                <input class="form-control" type="text">
+                            </div>
+                            <div class="form-group w-50">
+                                <label for="">word-sound mp3</label>
+                                <input class="form-control" type="file">
+                            </div>
+                            <button class="btn btn-danger w-100 delete-btn">Delete</button>
+                        </li>
+                        
+                        `
+
+
+                        $('#select-real-word').append(_html)
+        }
+
+        $(document).ready(function() { 
+
+
+            $(document).on('click', '.delete-btn', function() {
+                $(this).parent().remove();
+            });
+
+
+        } )
+
+    </script>
