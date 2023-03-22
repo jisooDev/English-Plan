@@ -62,7 +62,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="sidebar-menu-item">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/readandwrite') %}active{% endif %}" >
                             <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_read_write">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
                                 <span class="sidebar-menu-text">Read and write</span>
@@ -71,18 +71,18 @@
                             </a>
                             <ul class="sub-menu">
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/fillblank">
                                         <span class="sidebar-menu-text">Fill in The Blank</span>
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/shortanswer">
                                         <span class="sidebar-menu-text">Short answer</span>
                                     </a>
                                 </li>
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
-                                        <span class="sidebar-menu-text">Describe a photo </span>
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/photo">
+                                        <span class="sidebar-menu-text">Describe a photo</span>
                                     </a>
                                 </li>
                             </ul>
@@ -112,7 +112,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="sidebar-menu-item">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/talking') %}active{% endif %}">
                             <a class="sidebar-menu-button" href="#pages_taking">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
                                 <span class="sidebar-menu-text">Talking</span>
@@ -121,7 +121,7 @@
                             </a>
                             <ul class="sub-menu">
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href=#">
+                                    <a class="sidebar-menu-button" href="/admin/talking/interactive">
                                         <span class="sidebar-menu-text">Interactive Conversation </span>
                                     </a>
                                 </li>
