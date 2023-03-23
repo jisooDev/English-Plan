@@ -45,27 +45,30 @@ auth = firebase.auth()
 
 @app.route('/register', methods=['POST'])
 def register():
-    email = request.form['email']
-    password = request.form['password']
+    data = request.json
+    name = data["name"]
+    email = data["email"]
+    password = data["password"]
     try:
         user = auth.create_user_with_email_and_password(email, password)
+        session["email"] = user["email"]
         return json.dumps({"status" : 200,"data":user})
     except Exception as e:
         print(e)
-        print(e["error"]["message"])
-        return json.dumps({"status" : 400 , "msg": e["error"]["message"]})
+        return json.dumps({"status" : 400 , "error": e})
 
 
 @app.route('/login', methods=['POST'])
 def login():
-    email = request.form['email']
-    password = request.form['password']
+    data = request.json
+    email = data["email"]
+    password = data["password"]
     try:
         user = auth.sign_in_with_email_and_password(email, password)
-        print(user)
+        return json.dumps({"status" : 200,"data":user})
     except Exception as e:
         print(e)
-    return "GG"
+        return json.dumps({"status" : 400})
 
 @app.route("/")
 def main_page():
@@ -85,4 +88,4 @@ app.register_blueprint(api_bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0', port=70)
+    app.run(host='0.0.0.0', port=8585)

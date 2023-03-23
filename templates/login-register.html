@@ -44,16 +44,19 @@
             </div>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="home-tab">
-                  <input class="form-control mb-2" type="text" placeholder="Enter your name" name="name" required>
-                  <input class="form-control mb-2" type="text" placeholder="Email" name="email" required>
-                  <input class="form-control mb-2" type="password" placeholder="Password" name="password" required>
-                  <input class="btn-auth" type="submit" value="Sign up" id="submit-signup">
+                  <input class="form-control mb-2" type="text" placeholder="Enter your name" id="signup-name">
+                  <input class="form-control mb-2" type="text" placeholder="Email" id="signup-email">
+                  <input class="form-control mb-2" type="password" placeholder="Password" id="signup-password">
+                  <button class="btn-auth" id="submit-signup">
+                    Sign up
+                  </button>
               </div>
               <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="profile-tab">
-                  <input class="form-control mb-2" type="text" placeholder="Email" name="email" required>
-                  <input class="form-control mb-2" type="password" placeholder="Password" name="password" required>
-
-                  <input class="btn-auth" type="submit" value="Log in" id="submit-login">
+                  <input class="form-control mb-2" type="text" placeholder="Email" id="signin-email">
+                  <input class="form-control mb-2" type="password" placeholder="Password" id="signin-password">
+                  <button class="btn-auth" id="submit-login">
+                    Log in
+                  </button>
               </div>
             </div>
           </div>
@@ -61,6 +64,7 @@
       </div>
     </div>
 </div>
+{% include 'script-b.html' %}
 <script>
   		$(function() {
 				$("#submit-signup").click(function () {
@@ -78,12 +82,39 @@
                     }
                 ),
                 success: function (res) {
-								console.log(res);
-                 if (res.status === 200) {
-                     console.log("success");
+                let data = JSON.parse(res);
+                if (data.status === 200) {
+                    alert("Register success!!!");
                  } else {
-                    console.log("error");
-                        }
+                    alert("Register failed!!!");
+                  }
+                  }
+             });
+         });
+
+         $("#submit-login").click(function () {
+
+            let email = $("#signin-email").val();
+            let password = $("#signin-password").val();
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/login",
+                data: JSON.stringify(
+                    { 
+                      email:email, 
+                      password: password
+                    }
+                ),
+                success: function (res) {
+                let data = JSON.parse(res);
+                 if (data.status === 200) {
+                    alert("Login success!!!");
+                    window.location.reload();
+                 } else {
+                    alert("Login failed!!!");
+                  }
                   }
              });
          });
