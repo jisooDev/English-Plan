@@ -14,13 +14,15 @@
                             <li class="nav-item"><a href="/" class="page-scroll">Home</a></li> 
                             <li class="nav-item"><a href="/practice" class="page-scroll">Exam</a></li> 
                             <li class="nav-item"><a href="/#pricing" class="page-scroll">Pricing</a></li>
+                            {% if session["role"] == 'admin' %}
                             <li class="nav-item"><a href="/admin" class="page-scroll">Admin</a></li>
+                            {% endif %}
                         </ul>
                     </div>
-                    {% if session["email"]%}
-                    <div class="navbar-btn d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#login-register">
+                    {% if session["user_id"]%}
+                    <div class="navbar-btn d-sm-inline-block">
                         <div style="color: white;">
-                            <button class="main-btn">
+                            <button class="main-btn" id="logout">
                             Logout
                             </button>
                         </div>
@@ -39,3 +41,18 @@
         </div>
     </div>
 </header>
+{% include 'script-b.html' %}
+<script>
+  		$(function() {
+		$("#logout").click(function () {
+            $.ajax({
+                type: "GET",
+                url: "/logout",
+                success: function (res) {
+                    window.location.reload();
+                }
+             });
+         });
+
+		});
+</script>

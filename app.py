@@ -6,6 +6,7 @@ import json
 import os ;
 # from dotenv import load_dotenv ;
 # load_dotenv() 
+import query_helper as query
 
 from routes.admin import blueprintAdmin as admin_bp
 from routes.reading import blueprintReading as reading_bp
@@ -17,6 +18,7 @@ from routes.api import blueprint as api_bp
 import pyrebase
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'english_plan'
 
 pool_db = PooledDB(
     creator=pymysql, 
@@ -51,11 +53,17 @@ def register():
     password = data["password"]
     try:
         user = auth.create_user_with_email_and_password(email, password)
-        session["email"] = user["email"]
-        return json.dumps({"status" : 200,"data":user})
+        user = auth.refresh(user['refreshToken'])
+        user_id = user['idToken']
+        try :
+            query.register_user(user_id,name,user["email"])
+            return json.dumps({"status" : 200})
+        except Exception as e:
+            print(e)
+            return json.dumps({"status" : 400})
     except Exception as e:
         print(e)
-        return json.dumps({"status" : 400 , "error": e})
+        return json.dumps({"status" : 400})
 
 
 @app.route('/login', methods=['POST'])
@@ -65,10 +73,22 @@ def login():
     password = data["password"]
     try:
         user = auth.sign_in_with_email_and_password(email, password)
-        return json.dumps({"status" : 200,"data":user})
+        result = query.get_user_by_email(user["email"])
+        if result:
+            session["user_id"] = result["id"]
+            session["role"] = result["role"]
+            return json.dumps({"status" : 200})
+        else :
+            return json.dumps({"status" : 400})
     except Exception as e:
         print(e)
         return json.dumps({"status" : 400})
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session["user_id"] = None
+    session["role"] = None
+    return render_template('main.html')
 
 @app.route("/")
 def main_page():
@@ -88,4 +108,5 @@ app.register_blueprint(api_bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.debug = True
+
     app.run(host='0.0.0.0', port=70)

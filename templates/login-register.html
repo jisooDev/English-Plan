@@ -71,7 +71,8 @@
             let name = $("#signup-name").val();
             let email = $("#signup-email").val();
             let password = $("#signup-password").val();
-            $.ajax({
+            if(password.length >= 6){
+              $.ajax({
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 url: "/register",
@@ -85,11 +86,18 @@
                 let data = JSON.parse(res);
                 if (data.status === 200) {
                     alert("Register success!!!");
+                    $("#signup-name").val('');
+                    $("#signup-email").val('');
+                    $("#signup-password").val('');
                  } else {
-                    alert("Register failed!!!");
+                    alert("Duplicate email in the system!!!");
                   }
                   }
              });
+            }
+            else{
+              alert("Password should be 6 characters or more!!!");
+            }
          });
 
          $("#submit-login").click(function () {
@@ -110,10 +118,9 @@
                 success: function (res) {
                 let data = JSON.parse(res);
                  if (data.status === 200) {
-                    alert("Login success!!!");
                     window.location.reload();
                  } else {
-                    alert("Login failed!!!");
+                    alert("Incorrect Password!");
                   }
                   }
              });
