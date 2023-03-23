@@ -18,17 +18,17 @@ import pyrebase
 
 app = Flask(__name__)
 
-# pool_db = PooledDB(
-#     creator=pymysql, 
-#     maxconnections=3, 
-#     host=os.getenv('DB_HOST'), 
-#     user=os.getenv('DB_USERNAME'), 
-#     passwd=os.getenv('DB_PASSWORD'),
-#     db=os.getenv('DB_DATABASE'), 
-#     charset="utf8", 
-#     cursorclass=pymysql.cursors.DictCursor, 
-#     blocking=True
-# )
+pool_db = PooledDB(
+    creator=pymysql, 
+    maxconnections=3, 
+    host="43.229.76.87", 
+    user="oknumber_english", 
+    passwd="hubqHD66f",
+    db="oknumber_english_plan", 
+    charset="utf8", 
+    cursorclass=pymysql.cursors.DictCursor, 
+    blocking=True
+)
 
 config = {
     "apiKey": "AIzaSyDExn5Hbtc_w4IT2-hUe-VT7XE7OkIT5b8",
