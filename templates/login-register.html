@@ -1,0 +1,122 @@
+<div class="modal fade" id="login-register" tabindex="-1" role="dialog" aria-labelledby="login-register" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="border-radius: 15px;margin: auto;">
+        <div class="modal-body">
+          <div class="position-relative" style="padding: 30px 10px 10px 10px;">
+            <button 
+            style="
+            border: none;
+            background: #fff;
+            top: -10px;
+            right: -10px;"
+            type="button" 
+            class="close position-absolute" 
+            data-bs-dismiss="modal" 
+            aria-label="Close">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="header">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button 
+                  class="nav-link" 
+                  id="register-tab" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#register" 
+                  type="button" 
+                  role="tab" 
+                  aria-controls="register" 
+                  aria-selected="true">Sign up</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button 
+                  class="nav-link active" 
+                  id="login-tab" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#login" 
+                  type="button" 
+                  role="tab" 
+                  aria-controls="login" 
+                  aria-selected="false"
+                  >Log in</button>
+                </li>
+              </ul>
+            </div>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="home-tab">
+                  <input class="form-control mb-2" type="text" placeholder="Enter your name" id="signup-name">
+                  <input class="form-control mb-2" type="text" placeholder="Email" id="signup-email">
+                  <input class="form-control mb-2" type="password" placeholder="Password" id="signup-password">
+                  <button class="btn-auth" id="submit-signup">
+                    Sign up
+                  </button>
+              </div>
+              <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="profile-tab">
+                  <input class="form-control mb-2" type="text" placeholder="Email" id="signin-email">
+                  <input class="form-control mb-2" type="password" placeholder="Password" id="signin-password">
+                  <button class="btn-auth" id="submit-login">
+                    Log in
+                  </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% include 'script-b.html' %}
+<script>
+  		$(function() {
+				$("#submit-signup").click(function () {
+            let name = $("#signup-name").val();
+            let email = $("#signup-email").val();
+            let password = $("#signup-password").val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/register",
+                data: JSON.stringify(
+                    { name: name,
+                      email:email, 
+                      password: password
+                    }
+                ),
+                success: function (res) {
+                let data = JSON.parse(res);
+                if (data.status === 200) {
+                    alert("Register success!!!");
+                 } else {
+                    alert("Register failed!!!");
+                  }
+                  }
+             });
+         });
+
+         $("#submit-login").click(function () {
+
+            let email = $("#signin-email").val();
+            let password = $("#signin-password").val();
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: "/login",
+                data: JSON.stringify(
+                    { 
+                      email:email, 
+                      password: password
+                    }
+                ),
+                success: function (res) {
+                let data = JSON.parse(res);
+                 if (data.status === 200) {
+                    alert("Login success!!!");
+                    window.location.reload();
+                 } else {
+                    alert("Login failed!!!");
+                  }
+                  }
+             });
+         });
+			});
+</script>

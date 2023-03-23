@@ -11,19 +11,29 @@
                     </a>  
                     <div id="navbarSupportedContent" class="navbar-collapse sub-menu-bar collapse">
                         <ul id="nav" class="navbar-nav ms-auto">
-                            <li class="nav-item active"><a href="/" class="page-scroll">Home</a></li> 
+                            <li class="nav-item"><a href="/" class="page-scroll">Home</a></li> 
                             <li class="nav-item"><a href="/practice" class="page-scroll">Exam</a></li> 
-                            <li class="nav-item"><a href="#" class="page-scroll">Pricing</a></li>
+                            <li class="nav-item"><a href="/#pricing" class="page-scroll">Pricing</a></li>
+                            <li class="nav-item"><a href="/admin" class="page-scroll">Admin</a></li>
                         </ul>
                     </div>
-                    <div class="navbar-btn d-sm-inline-block">
+                    {% if session["email"]%}
+                    <div class="navbar-btn d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#login-register">
+                        <div style="color: white;">
+                            <button class="main-btn">
+                            Logout
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="navbar-btn d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#login-register">
                         <div style="color: white;">
                             <button class="main-btn">
                             Sign Up/Login
                             </button>
                         </div>
-                    
                     </div>
+                    {% endif %}
                 </nav>
             </div>
         </div>

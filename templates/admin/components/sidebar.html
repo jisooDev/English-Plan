@@ -1,0 +1,149 @@
+<style>
+    .sub-menu{
+        padding-left: 0;
+    }
+    .sub-menu .sidebar-menu-item .sidebar-menu-text{
+        border-left: 1px dotted rgba(147,159,173,.24);
+        padding-left: 1.125rem;
+        margin-left: 0.75rem;
+    }
+</style>
+
+<div class="mdk-drawer  js-mdk-drawer" id="default-drawer" data-align="start">
+    <div class="mdk-drawer__content">
+        <div class="sidebar sidebar-dark sidebar-left simplebar" data-simplebar>
+            <div class="d-flex flex-column justify-content-center align-items-center py-2">       
+               <img style="width: 70px;" class="img-fluid" src="{{ url_for('static', filename='image/logo-nobackground.png') }}" alt="">
+               <h3 class="text-white">English Plan</h3>
+            </div>
+            <div class="sidebar-stats row no-gutters align-items-center text-center border-bottom flex-shrink-0">
+                <div class="sidebar-stats__col col">
+                    <div class="sidebar-stats__title">Traffic</div>
+                    <div class="sidebar-stats__value">49,401</div>
+                </div>
+                <div class="sidebar-stats__col col border-left">
+                    <div class="sidebar-stats__title">Earnings</div>
+                    <div class="sidebar-stats__value">$1,402</div>
+                </div>
+            </div>
+
+            <div class="tab-content">
+                <div id="sm-menu" class="tab-pane show active" role="tabpanel" aria-labelledby="sm-menu-tab">
+                    <ul class="sidebar-menu flex">
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/dashboard') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="/admin/dashboard">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dvr</i>
+                                <span class="sidebar-menu-text">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="/admin/reading/reading">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Reading</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/reading') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/reading">
+                                        <span class="sidebar-menu-text">Reading</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/matching') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/matching">
+                                        <span class="sidebar-menu-text">Matching information</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/reading/selectword') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/reading/selectword">
+                                        <span class="sidebar-menu-text">Select Real Word </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/readandwrite') %}active{% endif %}" >
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="#pages_read_write">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Read and write</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/fillblank">
+                                        <span class="sidebar-menu-text">Fill in The Blank</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/shortanswer">
+                                        <span class="sidebar-menu-text">Short answer</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="/admin/readandwrite/photo">
+                                        <span class="sidebar-menu-text">Describe a photo</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening') %}active{% endif %}">
+                            <a class="sidebar-menu-button" data-toggle="collapse" href="/admin/listening/selectword">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">listening</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">3</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/selectword') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/listening/selectword">
+                                        <span class="sidebar-menu-text">Select Real Word </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/writedown') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href="/admin/listening/writedown">
+                                        <span class="sidebar-menu-text">Write down what you hear </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-menu-item {% if request.path.startswith('/admin/listening/interactive') %}active{% endif %}">
+                                    <a class="sidebar-menu-button" href='/admin/listening/interactive'>
+                                        <span class="sidebar-menu-text">Interactive Conversation </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/talking') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="#pages_taking">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">description</i>
+                                <span class="sidebar-menu-text">Talking</span>
+                                <span class="badge badge-warning rounded-circle badge-notifications ml-auto" style="padding: .1875rem .375rem;">1</span>
+                                <span class="sidebar-menu-toggle-icon"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="/admin/talking/interactive">
+                                        <span class="sidebar-menu-text">Interactive Conversation </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item" style="background: #333333;">
+                            <a class="sidebar-menu-button" href="/">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">keyboard_return</i>
+                                <span class="sidebar-menu-text">Return LandingPage</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-auto sidebar-p-a sidebar-b-t d-flex flex-column flex-shrink-0">
+                <a class="sidebar-link" href="login.html">
+                    Logout
+                    <i class="sidebar-menu-icon ml-2 material-icons icon-16pt">exit_to_app</i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

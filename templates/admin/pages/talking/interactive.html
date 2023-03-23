@@ -1,0 +1,56 @@
+{% include 'admin/script-t.html' %}
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Interactive Conversation' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="">
+                                    <div class="form-grop">
+                                        <label for="">Choose a level of difficulty</label>
+                                        <select class="form-control" name="" id="">
+                                            <option value="" selected>select here!</option>
+                                            <option value="medium">medium</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+   
+
+    {% include 'admin/script-b.html' %}

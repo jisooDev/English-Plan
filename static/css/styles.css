@@ -34,7 +34,28 @@
 .font-30-24{
     font-size: 30px ;
 }
+.btn-auth{
+    width: 100%;
+    color: #fff;
+    height: 35px;
+    background: #2d3b41;
+    border: 2px solid rgb(14, 30, 37);
+    border-radius: 5px;
+}
+.nav-link{
+    color: var(--primary) !important;
+}
+.nav-link.active{
+    color: #495057 !important;
+}
+#login-register .modal-content{
+    width: 80% !important;
+}
 @media screen and (max-width: 992px) {
+
+    #login-register .modal-content{
+        width: 100% !important;
+    }
 
     .font-30-24{
         font-size: 24px ;

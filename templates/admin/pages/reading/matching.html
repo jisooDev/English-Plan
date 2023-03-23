@@ -1,0 +1,45 @@
+{% include 'admin/script-t.html' %}
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Matching Information' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+
+                    
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+
+
+
+    {% include 'admin/script-b.html' %}
