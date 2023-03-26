@@ -3,16 +3,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg">
-                    <div class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <div class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         English Plan
-                    </div>      
+                    </div>
                     <a class="navbar-brand text-white" href="/">
                         English Plan
-                    </a>  
+                    </a>
                     <div id="navbarSupportedContent" class="navbar-collapse sub-menu-bar collapse">
                         <ul id="nav" class="navbar-nav ms-auto">
-                            <li class="nav-item"><a href="/" class="page-scroll">Home</a></li> 
-                            <li class="nav-item"><a href="/practice" class="page-scroll">Exam</a></li> 
+                            <li class="nav-item"><a href="/" class="page-scroll">Home</a></li>
+                            <li class="nav-item"><a href="/exam" class="page-scroll">Exam</a></li>
                             <li class="nav-item"><a href="/#pricing" class="page-scroll">Pricing</a></li>
                             {% if session["role"] == 'admin' %}
                             <li class="nav-item"><a href="/admin" class="page-scroll">Admin</a></li>
@@ -22,8 +23,13 @@
                     {% if session["user_id"]%}
                     <div class="navbar-btn d-sm-inline-block">
                         <div style="color: white;">
+<<<<<<< HEAD
                             <button class="main-btn" id="logout">
                             Logout
+=======
+                            <button class="main-btn">
+                                Logout
+>>>>>>> 6e321ae7986e4f8808123e18caa3527e5676e268
                             </button>
                         </div>
                     </div>
@@ -31,7 +37,7 @@
                     <div class="navbar-btn d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#login-register">
                         <div style="color: white;">
                             <button class="main-btn">
-                            Sign Up/Login
+                                Sign Up/Login
                             </button>
                         </div>
                     </div>

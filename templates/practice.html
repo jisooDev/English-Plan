@@ -87,67 +87,6 @@
         margin-left: 2px;
         margin-right: 2px;
     }
-
-    .story {
-        text-align: start;
-        text-indent: 1.5em;
-    }
-
-    .option-content {
-        width: fit-content;
-    }
-
-    .option-content.selected {
-        font-weight: bold;
-    }
-
-    .option-content.correct {
-        font-weight: bold;
-        color: #1e9960;
-    }
-
-    .option-content.incorrect {
-        font-weight: bold;
-        color: red;
-    }
-
-    .matching-data {
-        padding: 10px;
-        display: flex;
-        position: relative;
-        margin: 10px;
-    }
-
-    .matching-data:hover {
-        background: #e5e5e5;
-    }
-
-    .matching-data .letters {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-    }
-
-    .matching-data select {
-        position: absolute;
-        top: 10px;
-        left: 39px;
-        width: 70px;
-        border-radius: 0.25rem;
-        border: 1px solid #ced4da;
-        outline: none;
-        padding: 0px 4px;
-    }
-
-    .matching-data .text {
-        text-indent: 115px;
-        text-align: left;
-        cursor: pointer;
-    }
-
-    .matching-data .la .matching-value {
-        padding: 0;
-    }
 </style>
 <body style="font-family: 'Mitr', sans-serif; font-weight: 300;">
     {% include 'header.html' %}
@@ -229,28 +168,30 @@
         function renderLandingReady() {
             const container = $('#practice-content');
             container.empty();
-            container.append($('<div>').addClass('ready-headline'));
-            container.append($('<h5>').addClass('ready-header').text('Are you ready?'));
-            container.append($('<p>').addClass('ready-content').html('With your current plan you only get access to <span>15 sample questions</span>,</br>so think carefully and use them wisely!'));
-            container.append($('<button>').addClass('btn btn-primary btn-start').text('Begin Practice').attr('type', 'button').click(function () {
+            container.append($('<h2>').addClass('ready-header mt-5 mb-5').text('Are you ready?'));
+            container.append($('<p>').addClass('ready-content mb-5').html('With your current plan you only get access to <span>15 sample questions</span>,</br>so think carefully and use them wisely!'));
+            let row = $('<div>').addClass('row justify-content-center').hide();
+            let colLeft = $('<div>').addClass('col-auto');
+            let colRight = $('<div>').addClass('col-auto');
+            let btnLeft = $('<button>').addClass('btn btn-primary').text('Time limit').click(function () {
+                window.location = '/exam?start=true&time_limit=true';
+            });
+            let btnRight = $('<button>').addClass('btn btn-primary').text('No time limit').click(function () {
+                window.location = '/exam?start=true&time_limit=false';
+            });
+            colLeft.append(btnLeft);
+            colRight.append(btnRight);
+            row.append(colLeft);
+            row.append(colRight);
+            container.append($('<button>').addClass('btn btn-primary btn-start').text('Begin Exam').attr('type', 'button').click(function () {
 
-                container.empty();
-                let row = $('<div>').addClass('row justify-content-between');
-                let colLeft = $('<div>').addClass('col-auto');
-                let colRight = $('<div>').addClass('col-auto');
-                let btnLeft = $('<button>').addClass('btn btn-info').text('Time limit').click(function () {
-                    window.location = '/practice?start=true&time_limit=true';
-                });
-                let btnRight = $('<button>').addClass('btn btn-info').text('No time limit').click(function () {
-                    window.location = '/practice?start=true&time_limit=false';
-                });
-                colLeft.append(btnLeft);
-                colRight.append(btnRight);
-                row.append(colLeft);
-                row.append(colRight);
-                container.append(row);
+                // container.empty();
+                $(this).hide();
+                row.show();
+
             }));
-            container.append($('<p>').addClass('ready-promote').html('If you need more practice,</br>upgrade for <span>5,000+</span> questions'));
+            container.append(row);
+            container.append($('<p>').addClass('ready-promote mt-5').html('If you need more exam,</br>upgrade for <span>5,000+</span> questions'));
 
         }
 
@@ -295,7 +236,7 @@
         }
 
         function getPracticeList(tasks, difficulty, premium) {
-            const url = 'api/practice/list';
+            const url = 'api/exam/list';
             const data = {
                 tasks: tasks,
                 difficulty: difficulty,
@@ -320,7 +261,7 @@
             const params = new URLSearchParams({
                 practice_id: practiceId,
             });
-            const url = 'api/practice/detail?' + params;
+            const url = 'api/exam/detail?' + params;
 
             const options = {
                 method: 'GET',
@@ -400,7 +341,6 @@
             } else {
                 await renderTimer(0);
             }
-
             await renderDifficulty();
             await renderBox();
             switch (practiceDetail.practice_type) {
@@ -414,46 +354,52 @@
                     break;
                 case 'reading_select_real_eng_word':
                     console.log('reading_select_real_eng_word');
-                    await renderPraticeReading();
+                    await renderPraticeReadingSelectRealEngWord();
                     break;
                 case 'fill_in_blank':
                     console.log('fill_in_blank');
-                    await renderPraticeReading();
+                    await renderPraticeFillInBlank();
                     break;
                 case 'short_answer':
                     console.log('short_answer');
-                    await renderPraticeReading();
+                    await renderPraticeShortAnswer();
                     break;
                 case 'describe_a_photo':
                     console.log('describe_a_photo');
-                    await renderPraticeReading();
+                    await renderPraticeDescribeAPhoto();
                     break;
                 case 'write_down_what_you_hear':
                     console.log('write_down_what_you_hear');
-                    await renderPraticeReading();
+                    await renderPraticeWriteDownWhatYouHear();
                     break;
                 case 'listen_select_real_eng_word':
                     console.log('listen_select_real_eng_word');
-                    await renderPraticeReading();
+                    await renderPraticeListenSelectRealEngWord();
                     break;
                 case 'interactive_conversation':
                     console.log('interactive_conversation');
-                    await renderPraticeReading();
+                    await renderPraticeInteractiveConversation();
                     break;
                 case 'read_aloud':
                     console.log('read_aloud');
-                    await renderPraticeReading();
+                    await renderPraticeReadAloud();
                     break;
             }
-
-
-            // await renderButton();
         }
 
         async function retryPractice() {
             console.log('retryPractice')
             initRender();
         }
+
+        async function getAudio(url) {
+            return new Promise((resolve, reject) => {
+                const audio = new Audio(url);
+                // audio.play()
+                resolve(audio);
+            });
+        }
+
 
         async function submitPractice() {
             if (countdownInterval) {
@@ -475,35 +421,35 @@
                         break;
                     case 'reading_select_real_eng_word':
                         console.log('reading_select_real_eng_word');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeReadingSelectRealEngWord();
                         break;
                     case 'fill_in_blank':
                         console.log('fill_in_blank');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeFillInBlank();
                         break;
                     case 'short_answer':
                         console.log('short_answer');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeShortAnswer();
                         break;
                     case 'describe_a_photo':
                         console.log('describe_a_photo');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeeDescribeAPhoto();
                         break;
                     case 'write_down_what_you_hear':
                         console.log('write_down_what_you_hear');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeWriteDownWhatYouHear();
                         break;
                     case 'listen_select_real_eng_word':
                         console.log('listen_select_real_eng_word');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeListenSelectRealEngWord();
                         break;
                     case 'interactive_conversation':
                         console.log('interactive_conversation');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeInteractiveConversation();
                         break;
                     case 'read_aloud':
                         console.log('read_aloud');
-                        await checkAnswerPraticeReading();
+                        await checkAnswerPraticeReadAloud();
                         break;
                 }
                 await renderFooter();
@@ -512,10 +458,10 @@
 
         async function renderDifficulty() {
             const container = $('#practice-content');
-            let row = $('<div>').addClass('row justify-content-end');
+            let row = $('<div>').addClass('row justify-content-end mt-3 mb-2');
             let col = $('<div>').addClass('col-auto');
             row.append(col);
-            let diff = $('<div>').addClass('bage bage-diff').text(practiceDetail.difficulty);
+            let diff = $('<div>').addClass('badge-difficulty').text(practiceDetail.difficulty);
             col.append(diff)
             container.append(row);
         }
@@ -523,8 +469,8 @@
         async function renderBox() {
             const container = $('#practice-content');
             let box1 = $('<div>').addClass('question-box').attr('id', 'question-box');
-            let box2 = $('<div>').addClass('answer-box').attr('id', 'answer-box');
-            let box3 = $('<div>').addClass('button-box').attr('id', 'button-box');
+            let box2 = $('<div>').addClass('answer-box').attr('id', 'answer-box').hide();
+            let box3 = $('<div>').addClass('button-box mt-5').attr('id', 'button-box');
             container.append(box1);
             container.append(box2);
             container.append(box3);
@@ -539,7 +485,7 @@
                 let row = $('<div>').addClass('row justify-content-end');
                 let col = $('<div>').addClass('col-auto');
                 row.append(col);
-                let timer = $('<div>').attr('id', 'countdown-timer');
+                let timer = $('<div>').attr('id', 'countdown-timer').addClass('countdown-timer');
                 col.append(timer)
                 container.append(row);
                 const countdownTimer = $('#countdown-timer');
@@ -567,7 +513,6 @@
                 } else {
                     countdownTimer.text('No limit!');
                 }
-
             }
         }
 
@@ -575,14 +520,14 @@
             const container = $('#button-box');
             // const container = $('#practice-content');
             console.log(container)
-            let row = $('<div>').addClass('row justify-content-between');
+            let row = $('<div>').addClass('row justify-content-between ');
             let colLeft = $('<div>').addClass('col-auto');
-            let btnRetry = $('<button>').addClass('btn btn-dark').text('RETRY').unbind('click').bind('click', function () {
+            let btnRetry = $('<button>').addClass('btn btn-dark btn-round').text('RETRY').unbind('click').bind('click', function () {
                 retryPractice();
             });
             colLeft.append(btnRetry);
             let colRight = $('<div>').addClass('col-auto');
-            let btnSubmit = $('<button>').attr('id', 'btn-submit').addClass('btn btn-dark').text('SUBMIT').unbind('click').bind('click', function () {
+            let btnSubmit = $('<button>').attr('id', 'btn-submit').addClass('btn btn-dark btn-round').text('SUBMIT').unbind('click').bind('click', function () {
                 submitPractice();
             });
             colRight.append(btnSubmit);
@@ -591,7 +536,6 @@
             row.append(colRight);
 
             container.append(row);
-            console.log(11111)
         }
 
         function countWords(str) {
@@ -600,14 +544,24 @@
         }
 
         async function renderFooter() {
+            console.log(practiceData)
             const container = $('#practice-content');
             let row = $('<div>').addClass('row justify-content-end mt-3');
 
             let col = $('<div>').addClass('col-auto practice-footer');
+            let button
+            if (practiceData.total > practiceData.actualNumber) {
+                button = $('<button>').addClass('btn btn-primary btn-round').text('Next Exam').unbind('click').bind('click', function () {
+                    startPractice(false, true);
+                });
+            } else {
+                button = $('<button>').addClass('btn btn-primary btn-round').text('Finish').unbind('click').bind('click', function () {
+                    localStorage.removeItem('_cc');
+                    localStorage.removeItem('practice')
+                    window.location = '/exam';
+                });
+            }
 
-            let button = $('<button>').addClass('btn btn-primary').text('Next Question').unbind('click').bind('click', function () {
-                startPractice(false, true);
-            });
             col.append(button);
             row.append(col);
             container.append(row);
@@ -629,7 +583,7 @@
             let item = practiceDetail.data[count]
             let row1 = $('<div>').addClass('row justify-content-between');
             let col1 = $('<div>').addClass('col-md-12');
-            let questionCtn = $('<div>').addClass('question-container');
+            let questionCtn = $('<div>').addClass('question-container mt-4 mb-3');
             let questionText = '<span>' + (count + 1) + ')</span>&nbsp;' + item.question;
             let questionContent = $('<div>').addClass('question-content').attr('question-id', item.id).html(questionText);
             questionCtn.append(questionContent);
@@ -639,7 +593,7 @@
             if (item.answer_type === 'select') {
                 let row2 = $('<div>').addClass('row justify-content-between');
                 let col2 = $('<div>').addClass('col-md-12');
-                let answerCtn = $('<div>').addClass('answer-container');
+                let answerCtn = $('<div>').addClass('answer-container mt-4');
                 item.option.forEach((option, j) => {
                     const letters = String.fromCharCode(j + 1 + 96);
                     let text = '<span>' + letters + ')</span>&nbsp;' + option.value;
@@ -647,7 +601,7 @@
                         if (practiceState === "practicing") {
                             $(`div[question-id="${item.id}"].selected`).removeClass('selected');
                             $(this).addClass('selected');
-                            practiceDetail.data[count].answered = true;
+                            practiceDetail.data[count].answered = $(this).attr('option-id');
                         }
                     });
                     answerCtn.append(optionContent);
@@ -660,14 +614,14 @@
                 let row2 = $('<div>').addClass('row justify-content-between');
                 let col2 = $('<div>').addClass('col-md-12');
                 let answerCtn = $('<div>').addClass('answer-container');
-                let textArea = $('<textarea>').attr('id', 'practice-textarea').on('input', function (event) {
+                let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
                     const wordCount = countWords(textArea.val());
                     if (wordCount > 0) {
                         practiceDetail.data[count].answered = true;
                     }
                     $('#word-count').text(`Word count: ${wordCount}`);
                 });
-                let wc = $('<p>').attr('id', 'word-count').addClass('words-count').text('Word count: 0');
+                let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
                 answerCtn.append(textArea);
                 answerCtn.append(wc);
                 col2.append(answerCtn);
@@ -677,7 +631,7 @@
             if ((count + 1) < practiceDetail.data.length) {
                 let row3 = $('<div>').addClass('row justify-content-end');
                 let col3 = $('<div>').addClass('col-auto');
-                let button = $('<button>').addClass('btn btn-primary').text('Next').unbind('click').bind('click', function () {
+                let button = $('<button>').addClass('btn btn-primary btn-round').text('Next').unbind('click').bind('click', function () {
                     localStorage.setItem('_cc', count + 1);
                     updatePraticeProcess(false, true);
                     renderPraticeReading();
@@ -694,29 +648,32 @@
         async function checkAnswerPraticeReading() {
             const container = $('#practice-content');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
             container.append(pName);
 
-
-            console.log(practiceDetail)
+            let div = $('<div>').addClass('answer-box mb-5');
             practiceDetail.data.forEach((item, i) => {
-                let row = $('<div>').addClass('row justify-content-between');
+                console.log(item)
+                let row = $('<div>').addClass('row justify-content-between answer-item');
                 let col1 = $('<div>').addClass('col-auto').text(`# ${(i + 1)}`)
-                let col2 = $('<div>').addClass('col-auto')
-                if (item.answered) {
-                    let bage = $('<span>').addClass('bage-answered').text('Answered');
+                let col2 = $('<div>').addClass('col-auto');
+                console.log(window.atob(item.answer))
+                if (item.answer_type === 'select' && item.answered && (item.answered == window.atob(item.answer))) {
+                    let bage = $('<span>').addClass('badge-correct').text('Correct');
+                    col2.append(bage);
+                }
+                else if (item.answer_type === 'type' && item.answered) {
+                    let bage = $('<span>').addClass('badge-correct').text('Correct');
                     col2.append(bage);
                 } else {
-                    let bage = $('<span>').addClass('bage-not-answer').text('Not answer');
+                    let bage = $('<span>').addClass('badge-incorrect').text('Incorrect');
                     col2.append(bage);
                 }
                 row.append(col1);
                 row.append(col2);
-                container.append(row);
-
+                div.append(row);
             });
-
-
+            container.append(div);
         }
 
         // =========================== 1. section reading end ==========================================================
@@ -772,121 +729,507 @@
             box.append(yAnswerContent);
             box.append(cAnswerHeader);
             box.append(cAnswerContent);
+            box.show();
         }
 
         // =========================== 2. section matching end ==========================================================
 
         // =========================== 3. section reading_select_real_eng_word start ==========================================================
 
+        async function renderPraticeReadingSelectRealEngWord() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let row = $('<div>').addClass('real-word-box mt-5');
 
+
+            practiceDetail.data.forEach((item, i) => {
+                let col = $('<div>')
+                let box = $('<div>').addClass('real-word-item').attr('word-id', item.id).text(item.value).unbind('click').bind('click', function () {
+                    if (practiceState === 'practicing') {
+                        if ($(this).hasClass('selected')) {
+                            $(this).removeClass('selected');
+                        } else {
+                            $(this).addClass('selected');
+                        }
+                    }
+
+                });
+                col.append(box);
+                row.append(col);
+            })
+            container.append(row);
+            await renderButton();
+        }
+
+        async function checkAnswerPraticeReadingSelectRealEngWord() {
+            practiceDetail.data.forEach((item, i) => {
+                console.log(item)
+                let answer = window.atob(item.answer);
+                if (answer === 'correct') {
+                    let ans = $(`div[word-id="${item.id}"]`).addClass('correct');
+                } else {
+                    let ans = $(`div[word-id="${item.id}"]`).addClass('incorrect');
+                }
+
+            });
+        }
 
 
         // =========================== 3. section reading_select_real_eng_word end ==========================================================
 
         // =========================== 4. section fill_in_blank start ==========================================================
 
+        async function renderPraticeFillInBlank() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            await renderButton();
+        }
 
+        async function checkAnswerPraticeFillInBlank() {
 
+        }
 
         // =========================== 4. section fill_in_blank end ==========================================================
 
         // =========================== 5. section short_answer start ==========================================================
 
 
+        async function renderPraticeShortAnswer() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let p = $('<p>').addClass('topic mt-5 mb-5').text(practiceDetail.data);
+            container.append(p);
+            let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
+                const wordCount = countWords(textArea.val());
+                $('#word-count').text(`Word count: ${wordCount}`);
+            });
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            container.append(textArea);
+            container.append(wc);
+            await renderButton();
 
+        }
+
+        async function checkAnswerPraticeShortAnswer() {
+            let box = $('.answer-box');
+            let yAnswerHeader = $('<div>').addClass('a-header').html('Your Answer');
+            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
+            let hr = $('<hr>')
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Example Answer');
+            let cAnswerContent = $('<p>').addClass('a-content').html(window.atob(practiceDetail.answer));
+            box.append(yAnswerHeader);
+            box.append(yAnswerContent);
+            box.append(hr);
+            box.append(cAnswerHeader);
+            box.append(cAnswerContent);
+            box.show();
+            $('#practice-textarea').hide();
+            $('#word-count').hide();
+        }
 
         // =========================== 5. section short_answer end ==========================================================
 
         // =========================== 6. section describe_a_photo start ==========================================================
 
 
+        async function renderPraticeDescribeAPhoto() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let image = $('<img>').addClass('image-box mt-5 mb-5').attr('src', practiceDetail.data);
+            container.append(image);
+            let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
+                const wordCount = countWords(textArea.val());
+                $('#word-count').text(`Word count: ${wordCount}`);
+            });
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            container.append(textArea);
+            container.append(wc);
+            await renderButton();
+        }
 
+        async function checkAnswerPraticeeDescribeAPhoto() {
+            let box = $('.answer-box');
+            let yAnswerHeader = $('<div>').addClass('a-header').html('Your Answer');
+            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
+            let hr = $('<hr>')
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Example Answer');
+            let cAnswerContent = $('<p>').addClass('a-content').html(window.atob(practiceDetail.answer));
+            box.append(yAnswerHeader);
+            box.append(yAnswerContent);
+            box.append(hr);
+            box.append(cAnswerHeader);
+            box.append(cAnswerContent);
+            box.show();
+            $('#practice-textarea').hide();
+            $('#word-count').hide();
+        }
 
         // =========================== 6. section describe_a_photo end ==========================================================
 
         // =========================== 7. section write_down_what_you_hear start ==========================================================
 
 
+        async function renderPraticeWriteDownWhatYouHear() {
+            let playingAudio = false;
+            const container = $('#question-box');
+            container.empty();
+            let audio = await getAudio(practiceDetail.data);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
+            let col = $('<div>').addClass('col-auto');
+            let button = $('<div>').addClass('btn-play').unbind('click').bind('click', function () {
+                if (!playingAudio) {
+                    audio.play();
+                    playingAudio = true;
+                    button.empty();
+                    let icon = $('<i>').addClass('pause fa fa-pause-circle-o fa-lg');
+                    button.append(icon);
+                    audio.addEventListener('ended', () => {
+                        playingAudio = false;
+                        button.empty();
+                        let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+                        button.append(icon);
+                    });
+                } else {
+                    audio.pause();
+                    playingAudio = false;
+                    button.empty();
+                    let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+                    button.append(icon);
+                }
+            });
+            let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+            button.append(icon);
+            col.append(button);
+            row.append(col);
+            container.append(row);
+            let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
+                const wordCount = countWords(textArea.val());
+                $('#word-count').text(`Word count: ${wordCount}`);
+            });
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            container.append(textArea);
+            container.append(wc);
+            await renderButton();
+        }
 
+        async function checkAnswerPraticeWriteDownWhatYouHear() {
+            let box = $('.answer-box');
+            let yAnswerHeader = $('<div>').addClass('a-header').html('Your Answer');
+            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
+            let hr = $('<hr>')
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Correct Answer');
+            let cAnswerContent = $('<p>').addClass('a-content').html(window.atob(practiceDetail.answer));
+            box.append(yAnswerHeader);
+            box.append(yAnswerContent);
+            box.append(hr);
+            box.append(cAnswerHeader);
+            box.append(cAnswerContent);
+            box.show();
+            $('#practice-textarea').hide();
+            $('#word-count').hide();
+        }
 
         // =========================== 7. section write_down_what_you_hear end ==========================================================
 
         // =========================== 8. section listen_select_real_eng_word start ==========================================================
 
 
+        async function renderPraticeListenSelectRealEngWord() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
 
+            practiceDetail.data.forEach(async (item, i) => {
+                let audio = await getAudio(item.value);
+                let col = $('<div>').addClass('col-sm-2 col-md-4');
+                let box = $('<div>').addClass('l-word-item').attr('word-id', item.id);
+                let play = $('<div>').addClass('play').html('<i class="fa fa-volume-off"></i>').unbind('click').bind('click', function () {
+                    console.log(item);
+                    play.empty();
+                    play.html('<i class="fa fa-volume-up"></i>');
+                    audio.play();
+                    audio.addEventListener('ended', () => {
+                        play.empty();
+                        play.html('<i class="fa fa-volume-off"></i>');
+                    });
+                });
+                let label = $('<div>').addClass('label').text(item.name);
+                let select = $('<div>').addClass('selection').html('<i class="fa fa-check"></i>').unbind('click').bind('click', function () {
+                    if (practiceState === 'practicing') {
+                        if (box.hasClass('selected')) {
+                            box.removeClass('selected');
+                        } else {
+                            box.addClass('selected');
+                        }
+                    }
+                });
+                box.append(play);
+                box.append(label);
+                box.append(select);
+                col.append(box);
+                row.append(col);
+            });
+            container.append(row);
+            await renderButton();
+
+        }
+
+        async function checkAnswerPraticeListenSelectRealEngWord() {
+            practiceDetail.data.forEach((item, i) => {
+                console.log(item)
+                let answer = window.atob(item.answer);
+                if (answer === 'correct') {
+                    let ans = $(`div[word-id="${item.id}"]`).addClass('correct');
+                } else {
+                    let ans = $(`div[word-id="${item.id}"]`).addClass('incorrect');
+                }
+
+            });
+        }
 
         // =========================== 8. section listen_select_real_eng_word end ==========================================================
 
         // =========================== 9. section interactive_conversation start ==========================================================
 
 
+        async function renderPraticeInteractiveConversation() {
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
 
+            let count = 0;
+            if (localStorage.getItem('_cc')) {
+                count = parseInt(localStorage.getItem('_cc'));
+            }
+
+            let audio = await getAudio(practiceDetail.audio);
+            let playingAudio = false;
+            renderPracticeCycle(practiceData.actualNumber);
+            let hRow = $('<div>').addClass('row justify-content-center mt-3 mb-3');
+            let hCol = $('<div>').addClass('col-auto');
+            let hButton = $('<div>').addClass('btn-play small').unbind('click').bind('click', async () => {
+                if (!playingAudio) {
+                    audio.play();
+                    playingAudio = true;
+                    hButton.empty();
+                    let icon = $('<i>').addClass('pause fa fa-pause-circle-o fa-lg');
+                    hButton.append(icon);
+                    audio.addEventListener('ended', () => {
+                        playingAudio = false;
+                        hButton.empty();
+                        let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+                        hButton.append(icon);
+                    });
+                } else {
+                    audio.pause();
+                    playingAudio = false;
+                    hButton.empty();
+                    let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+                    hButton.append(icon);
+                }
+            });
+            let icon = $('<i>').addClass('play fa fa-play-circle-o fa-lg');
+            hButton.append(icon);
+            hCol.append(hButton);
+            hRow.append(hCol);
+            console.log(hRow)
+            container.append(hRow);
+            let item = practiceDetail.data[count]
+            let row1 = $('<div>').addClass('row justify-content-between');
+            let col1 = $('<div>').addClass('col-md-12');
+            let questionCtn = $('<div>').addClass('question-container');
+            let questionText = '<span>' + (count + 1) + ')</span>&nbsp;' + item.question;
+            let questionContent = $('<div>').addClass('question-content').attr('question-id', item.id).html(questionText);
+            questionCtn.append(questionContent);
+            col1.append(questionCtn);
+            row1.append(col1);
+            container.append(row1);
+            if (item.answer_type === 'select') {
+                let row2 = $('<div>').addClass('row justify-content-between');
+                let col2 = $('<div>').addClass('col-md-12');
+                let answerCtn = $('<div>').addClass('answer-container');
+                item.option.forEach((option, j) => {
+                    const letters = String.fromCharCode(j + 1 + 96);
+                    let text = '<span>' + letters + ')</span>&nbsp;' + option.value;
+                    let optionContent = $('<div>').attr('question-id', item.id).attr('option-id', option.id).addClass('option-content').html(text).unbind('click').bind('click', function () {
+                        if (practiceState === "practicing") {
+                            $(`div[question-id="${item.id}"].selected`).removeClass('selected');
+                            $(this).addClass('selected');
+                            practiceDetail.data[count].answered = true;
+                        }
+                    });
+                    answerCtn.append(optionContent);
+                });
+                col2.append(answerCtn);
+                row2.append(col2);
+                container.append(row2);
+            }
+            if (item.answer_type === 'type') {
+                let row2 = $('<div>').addClass('row justify-content-between');
+                let col2 = $('<div>').addClass('col-md-12');
+                let answerCtn = $('<div>').addClass('answer-container');
+                let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
+                    const wordCount = countWords(textArea.val());
+                    if (wordCount > 0) {
+                        practiceDetail.data[count].answered = true;
+                    }
+                    $('#word-count').text(`Word count: ${wordCount}`);
+                });
+                let wc = $('<p>').attr('id', 'word-count').addClass('words-count text-start').text('Word count: 0');
+                answerCtn.append(textArea);
+                answerCtn.append(wc);
+                col2.append(answerCtn);
+                row2.append(col2);
+                container.append(row2);
+            }
+            if ((count + 1) < practiceDetail.data.length) {
+                let row3 = $('<div>').addClass('row justify-content-end');
+                let col3 = $('<div>').addClass('col-auto');
+                let button = $('<button>').addClass('btn btn-primary').text('Next').unbind('click').bind('click', function () {
+                    localStorage.setItem('_cc', count + 1);
+                    updatePraticeProcess(false, true);
+                    renderPraticeInteractiveConversation();
+                });
+                col3.append(button);
+                row3.append(col3);
+                container.append(row3);
+            } else {
+                renderButton();
+            }
+        }
+
+        async function checkAnswerPraticeInteractiveConversation() {
+            const container = $('#practice-content');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+
+            let div = $('<div>').addClass('answer-box mb-5');
+            practiceDetail.data.forEach((item, i) => {
+                console.log(item)
+                let row = $('<div>').addClass('row justify-content-between answer-item');
+                let col1 = $('<div>').addClass('col-auto').text(`# ${(i + 1)}`)
+                let col2 = $('<div>').addClass('col-auto');
+                console.log(window.atob(item.answer))
+                if (item.answer_type === 'select' && item.answered && (item.answered == window.atob(item.answer))) {
+                    let bage = $('<span>').addClass('badge-correct').text('Correct');
+                    col2.append(bage);
+                }
+                else if (item.answer_type === 'type' && item.answered) {
+                    let bage = $('<span>').addClass('badge-correct').text('Correct');
+                    col2.append(bage);
+                } else {
+                    let bage = $('<span>').addClass('badge-incorrect').text('Incorrect');
+                    col2.append(bage);
+                }
+                row.append(col1);
+                row.append(col2);
+                div.append(row);
+
+            });
+            container.append(div);
+        }
 
         // =========================== 9. section interactive_conversation end ==========================================================
 
         // =========================== 10. section read_aloud start ==========================================================
 
 
+        async function renderPraticeReadAloud() {
 
+            let mediaRecorder;
+            let chunks = [];
+            let startTime;
+
+            const container = $('#question-box');
+            container.empty();
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            container.append(pName);
+            let question = $('<p>').addClass('text-start mt-5 mb-4').text(practiceDetail.data);
+            container.append(question);
+            let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
+            let col = $('<div>').addClass('col-auto');
+            let timer = $('<p>').text('00:00')
+            let speakStart = $('<div>').addClass('btn-media').html('<i class="fa fa-solid fa-microphone"></i>').unbind('click').bind('click', async () => {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                startTime = Date.now();
+
+                mediaRecorder.addEventListener("dataavailable", (event) => {
+                    chunks.push(event.data);
+                });
+
+                const timerInterval = setInterval(() => {
+                    const elapsedTime = Date.now() - startTime;
+                    const minutes = Math.floor(elapsedTime / 60000);
+                    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+                    timer.text(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+                }, 1000);
+
+                // Stop the time counter when the recording is stopped
+                mediaRecorder.addEventListener("stop", async () => {
+                    clearInterval(timerInterval);
+                    timer.hide()
+                    let audioPlayback = $('<audio controls>').attr('id', 'audio-playback');
+                    col.append(audioPlayback);
+                    const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+                    audioPlayback.attr('src', URL.createObjectURL(blob));
+                    await renderButton();
+                    submitPractice();
+                });
+                speakStart.hide();
+                speakStop.show();
+            });
+
+
+            let speakStop = $('<div>').addClass('btn-media').html('<i class="fa fa-solid fa-pause"></i>').unbind('click').bind('click', async () => {
+                mediaRecorder.stop();
+                speakStop.hide();
+
+            }).hide();
+
+            col.append(speakStart);
+            col.append(speakStop);
+            col.append(timer);
+            row.append(col);
+            container.append(row);
+
+
+        }
+
+        async function checkAnswerPraticeReadAloud() {
+            let box = $('.answer-box');
+            let yAnswerHeader = $('<div>').addClass('a-header').html('Your Answer');
+            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
+            let hr = $('<hr>')
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Example Answer');
+            let cAnswerContent = $('<p>').addClass('a-content').html(window.atob(practiceDetail.answer));
+            // box.append(yAnswerHeader);
+            // box.append(yAnswerContent);
+            // box.append(hr);
+            box.append(cAnswerHeader);
+            box.append(cAnswerContent);
+            box.show();
+
+        }
 
 
         // =========================== 10. section read_aloud end ==========================================================
 
-
-
-        async function renderPracticeWriting() {
-            console.log('renderPracticeWriting')
-            const container = $('#practice-content');
-            let header = $('<h5>').addClass('text-align-center').text('Listen and type what you hear');
-            let row = $('<div>').addClass('row justify-content-center practice-box');
-
-            let col = $('<div>').addClass('col-md-6 story');
-            let story = $('<p>').text(practiceDetail.story);
-            let button = $('<button>').addClass('btn btn-primary').text('Next Question').unbind('click').bind('click', function () {
-                const speech = new SpeechSynthesisUtterance('สวัสดี');
-                speech.lang = 'th-TH';
-                speech.rate = 1;
-                speech.pitch = 1;
-                window.speechSynthesis.speak(speech);
-            });
-            col.append(story);
-            col.append(button);
-            row.append(col);
-            container.append(header);
-            container.append(row);
-            let aRow = $('<div>').addClass('row justify-content-start  practice-box');
-            let aCol = $('<div>').addClass('col-md-6');
-            let textArea = $('<textarea>').attr('id', 'practice-textarea').on('input', function (event) {
-                const wordCount = countWords(textArea.val());
-                $('#word-count').text(`Word count: ${wordCount}`);
-            });
-            let wc = $('<p>').attr('id', 'word-count').addClass('words-count').text('Word count: 0');
-            aCol.append(textArea);
-            aCol.append(wc);
-            aRow.append(aCol);
-            container.append(aRow);
-        }
-
-        async function checkAnswerWriting() {
-            $('.practice-box').hide();
-            let box = $('.answer-box');
-            let yAnswerHeader = $('<div>').addClass('a-heder').html('Your Answer');
-            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
-            let cAnswerHeader = $('<div>').addClass('a-heder').html('Correct Answer');
-            let cAnswerContent = $('<p>').addClass('a-content').html(practiceDetail.story);
-            box.append(yAnswerHeader);
-            box.append(yAnswerContent);
-            box.append(cAnswerHeader);
-            box.append(cAnswerContent);
-            // container.append(box);
-        }
-
-        async function renderPracticeFillInBlank() { }
-
-
-
-        // =========================== 2. section writing end ==========================================================
 
 
 

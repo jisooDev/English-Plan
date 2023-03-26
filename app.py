@@ -95,7 +95,7 @@ def logout():
 def main_page():
     return render_template('main.html')
 
-@app.route("/practice")
+@app.route("/exam")
 def practice_page():
     return render_template('practice.html')
 
