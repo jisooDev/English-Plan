@@ -127,6 +127,12 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="sidebar-menu-item {% if request.path.startswith('/admin/config') %}active{% endif %}">
+                            <a class="sidebar-menu-button" href="/admin/config">
+                                <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">settings</i>
+                                <span class="sidebar-menu-text">Configuration</span>
+                            </a>
+                        </li>
                         <li class="sidebar-menu-item" style="background: #333333;">
                             <a class="sidebar-menu-button" href="/">
                                 <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">keyboard_return</i>

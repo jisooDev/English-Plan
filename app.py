@@ -13,6 +13,7 @@ from routes.reading import blueprintReading as reading_bp
 from routes.listening import blueprintListening as lintening_bp
 from routes.readandwrite import blueprintReadandWrite as readandwrite_bp
 from routes.talking import blueprintTalking as talking_bp
+from routes.config import blueprintConfig as config_bp
 from routes.api import blueprint as api_bp
 
 import pyrebase
@@ -104,9 +105,10 @@ app.register_blueprint(reading_bp, url_prefix='/admin')
 app.register_blueprint(lintening_bp, url_prefix='/admin')
 app.register_blueprint(readandwrite_bp, url_prefix='/admin')
 app.register_blueprint(talking_bp, url_prefix='/admin')
+app.register_blueprint(config_bp, url_prefix='/admin')
 app.register_blueprint(api_bp, url_prefix='/api')
 
 if __name__ == '__main__':
     app.debug = True
 
-    app.run(host='0.0.0.0', port=70)
+    app.run(host='0.0.0.0', port=100)
