@@ -17,7 +17,7 @@ blueprint = Blueprint('api', __name__)
     8. เขียนตามจำนวนคำ => write_by_number_of_words => ???  => 
 """
 
-@blueprint.route('/practice/list', methods=['POST'])
+@blueprint.route('/exam/list', methods=['POST'])
 def api_get_parctice_list():
     res = request.json
     print(res)
@@ -49,7 +49,7 @@ def api_get_parctice_list():
 btoa = lambda x:base64.b64decode(x)
 atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 
-@blueprint.route('/practice/detail', methods=['GET'])
+@blueprint.route('/exam/detail', methods=['GET'])
 def api_get_parctice_detail():
     try:
         practiceId = request.args.get('practice_id')
@@ -115,7 +115,8 @@ practice_read_aloud = {
     'limited_time': True,
     'timer': 30,
     'difficulty': 'medium',
-    'data': 'Which of the following titles best describes the passage?',
+    'data': 'Talk about a person you know who inspires you. Who is this person? How do you know this person? Why does this person inspire you?',
+    'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
 }
 
 
@@ -127,12 +128,25 @@ practice_interactive_conversation = {
     'limited_time': True,
     'timer': 480,
     'difficulty': 'medium',
+    'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
     'data': [{
         'id': 1,
-        'question': '',
-        'answer': '',
-        'answer_type': 'listen',
-        'option': []
+        'question': 'What your name',
+        'answer': atob('12c'),
+        'answer_type': 'select',
+        'option': [{
+            'id': '12a',
+            'value': 'The Rise and Fall of the Roman Empire'
+        },{
+            'id': '12b',
+            'value': 'A Brief History of European Architecture'
+        },{
+            'id': '12c',
+            'value': 'European History: From Ancient Times to the Present Day'
+        },{
+            'id': '12d',
+            'value': 'The Industrial Revolution and Its Impact on Europe'
+        }]
     },{
         'id': 2,
         'question': 'Which of the following titles best describes the passage?',
@@ -190,62 +204,74 @@ practice_listen_select_real_eng_word = {
     'data': [
         {
             'id': 's1',
-            'value': 'bird',
+            'name': 'unvasivement',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/unvasivement.mp3',
             'answer': atob('incorrect'),
         },
         {
             'id': 's2',
-            'value': 'bus',
+            'name': 'feedback',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/feedback.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's3',
-            'value': 'dot',
+            'name': 'macropapa',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/macropapa.mp3',
             'answer': atob('incorrect'),
         },
         {
             'id': 's4',
-            'value': 'giraffe',
+            'name': 'monophasement',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/monophasement.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's5',
-            'value': 'ice cream',
+            'name': 'jurpeting',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/jurpeting.mp3',
             'answer': atob('incorrect'),
         },
         {
             'id': 's6',
-            'value': 'listen',
+            'name': 'helature',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/helature.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's7',
-            'value': 'monkey',
+            'name': 'contractor',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/contractor.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's8',
-            'value': 'papaya',
+            'name': 'exploit',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
             'answer': atob('incorrect'),
         },
         {
             'id': 's9',
-            'value': 'queen',
+            'name': 'Dictation',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's10',
-            'value': 'school',
+            'name': 'Dictation',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
             'answer': atob('incorrect'),
         },
         {
             'id': 's11',
-            'value': 'small',
+            'name': 'Dictation',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
             'answer': atob('correct'),
         },
         {
             'id': 's12',
-            'value': 'student',
+            'name': 'Dictation',
+            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
             'answer': atob('correct'),
         }    
     ]
@@ -259,7 +285,7 @@ practice_write_down_what_you_hear = {
     'limited_time': True,
     'timer': 30,
     'difficulty': 'medium',
-    'data': '',
+    'data': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
     'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
 }
 
