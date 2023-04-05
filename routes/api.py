@@ -321,16 +321,68 @@ practice_fill_in_blank = {
     'limited_time': True,
     'timer': 180,
     'difficulty': 'medium',
-    'data': '''Although she was {{1}}, she decided to {{2}} up and {{3}} her work.''',
+    'data': '''Evolution is a biological process in which all living beings {{0}}{{1}}{{2}}{{3}}{{4}}{{5}} their organism <br> attributes through {{6}}{{7}}{{8}}{{9}}{{10}}{{11}}{{12}} 
+            mutations over long {{13}}{{14}}{{15}}{{16}}{{17}}{{18}}{{19}} of time.''',
     'answer': [
         {
-            'value': atob('a'),
-            'show': False,
-        }, {
-            'value': atob('b'),
+            'value': atob('c'),
             'show': True,
         }, {
+            'value': atob('h'),
+            'show': True,
+        }, {
+            'value': atob('a'),
+            'show': True,
+        }, {
+            'value': atob('n'),
+            'show': False,
+        }, {
+            'value': atob('g'),
+            'show': False,
+        }, {
+            'value': atob('e'),
+            'show': False,
+        }, {
+            'value': atob('g'),
+            'show': True,
+        }, {
+            'value': atob('e'),
+            'show': True,
+        }, {
+            'value': atob('n'),
+            'show': True,
+        }, {
+            'value': atob('e'),
+            'show': False,
+        }, {
+            'value': atob('t'),
+            'show': False,
+        }, {
+            'value': atob('i'),
+            'show': False,
+        }, {
             'value': atob('c'),
+            'show': False,
+        }, {
+            'value': atob('p'),
+            'show': True,
+        }, {
+            'value': atob('e'),
+            'show': True,
+        }, {
+            'value': atob('r'),
+            'show': True,
+        }, {
+            'value': atob('i'),
+            'show': False,
+        }, {
+            'value': atob('o'),
+            'show': False,
+        }, {
+            'value': atob('d'),
+            'show': False,
+        }, {
+            'value': atob('s'),
             'show': False,
         }
     ],

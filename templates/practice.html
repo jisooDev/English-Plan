@@ -132,6 +132,7 @@
 
 
     {% include 'script-b.html' %}
+    {% raw %}
     <script>
         let practiceData, practiceDetail, countdownInterval;
         let practiceLength = 0;
@@ -141,12 +142,6 @@
         let practiceState = "practicing";
         let timeLimit = false;
         $(function ($) {
-            // $('.progress').circleProgress(
-            //     {
-            //         max: 15,
-            //         value: practiceLength,
-            //     }
-            // );
             checkStarting();
         });
 
@@ -257,6 +252,7 @@
                 });
             });
         }
+
         function getPracticeDeatail(practiceId) {
             const params = new URLSearchParams({
                 practice_id: practiceId,
@@ -400,7 +396,6 @@
             });
         }
 
-
         async function submitPractice() {
             if (countdownInterval) {
                 clearInterval(countdownInterval);
@@ -470,7 +465,7 @@
             const container = $('#practice-content');
             let box1 = $('<div>').addClass('question-box').attr('id', 'question-box');
             let box2 = $('<div>').addClass('answer-box').attr('id', 'answer-box').hide();
-            let box3 = $('<div>').addClass('button-box mt-5').attr('id', 'button-box');
+            let box3 = $('<div>').addClass('button-box mt-5 pb-4').attr('id', 'button-box');
             container.append(box1);
             container.append(box2);
             container.append(box3);
@@ -688,12 +683,14 @@
 
             let row = $('<div>').addClass('row justify-content-between mt-5');
             let colL = $('<div>').addClass('col-md-6 matching l');
-            let colR = $('<div>').addClass('col-md-6 matching r');
-            let select = $('<select>');
+            let colR = $('<div>').addClass('col-md-6 matching r text-start');
+            let select = $('<select>').addClass('select-matching');
+            let optionEmtry = $('<option>').text("").attr('value', "");
+            select.append(optionEmtry);
             practiceDetail.options.forEach((item, i) => {
                 const letters = String.fromCharCode(i + 1 + 96);
                 let text = '<span>' + letters + ')</span>&nbsp;' + item.value;
-                let p = $('<p>').attr('id', item.id).html(`<span id="b-${item.id}"></span>&nbsp;${text}`).addClass('matching-value');
+                let p = $('<p>').attr('id', `o-${item.id}`).html(`<span id="b-${item.id}"></span>&nbsp;${text}`).addClass('matching-value');
                 let option = $('<option>').text(letters).attr('value', item.id);
                 colR.append(p);
                 select.append(option);
@@ -702,32 +699,102 @@
             practiceDetail.data.forEach((item, i) => {
                 let div = $('<div>').attr('id', item.id).addClass('matching-data');
                 let letters = $('<p>').text(`${i + 1})`).addClass('letters');
-                select.attr('id', `a-${item.id}"`);
-                let p = $('<p>').attr('id', item.id).text(item.value).addClass('text');
+                select.attr('id', `a-${item.id}`);
+                let p = $('<p>').attr('data-id', item.id).text(item.value).addClass('matching-data-text');
                 div.append(letters);
-                // div.append(select);
                 select.clone().appendTo(div);
                 div.append(p);
                 colL.append(div);
             });
 
+
             row.append(colL);
             row.append(colR);
             container.append(row);
+            $('.select-matching').on('change', function () {
+                const div = $(this).closest('div');
+                div.attr('data-option', `o-${$(this).val()}`);
+                const selects = $('.select-matching');
+                const selected = countSelectedOptions(selects);
+                practiceDetail.options.forEach((item) => {
+                    const count = selected[item.id];
+                    $(`#b-${item.id}`).removeClass('success fail')
+                    if (count == 1) {
+                        $(`#b-${item.id}`).addClass('success').html('<i class="fa fa-check"></i>');
+                    }
+                    else if (count > 1) {
+                        $(`#b-${item.id}`).addClass('fail').html('<i class="fa fa-warning"></i>');
+                    }
+                });
+                practiceDetail.data.forEach((item, index) => {
+                    item['answered'] = $(selects[index]).val()
+                });
+            });
+            $('.matching-data-text').unbind('click').bind('click', function () {
+                $('.matching-data').removeClass('selected');
+                const div = $(this).closest('div');
+                div.addClass('selected');
+                const value = $(`#a-${$(this).attr('data-id')}`).val();
+                $('.matching-value').removeClass('selected')
+                $(`#o-${value}`).addClass('selected');
+            });
+
+            $('.matching-value').unbind('click').bind('click', function () {
+                $('.matching-value').removeClass('selected');
+                const div = $(this).closest('div');
+                $(this).addClass('selected');
+                $('.matching-data').removeClass('selected');
+                $(`div[data-option="${$(this).attr('id')}"].matching-data`).addClass('selected');
+
+            });
+
             await renderButton();
+
+        }
+        function countSelectedOptions(selects) {
+            const counts = {};
+            selects.each(function () {
+                const selectedValue = $(this).val();
+                if (selectedValue !== '') {
+                    if (counts[selectedValue]) {
+                        counts[selectedValue]++;
+                    } else {
+                        counts[selectedValue] = 1;
+                    }
+                }
+            });
+
+            return counts;
         }
 
-        async function checkAnswerPraticeMatching() {
 
+        async function checkAnswerPraticeMatching() {
+            console.log(practiceDetail)
             // $('.practice-box').hide();
             let box = $('.answer-box');
-            let yAnswerHeader = $('<div>').addClass('a-heder').html('Your Answer');
-            let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
-            let cAnswerHeader = $('<div>').addClass('a-heder').html('Correct Answer');
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Correct Answer');
+            let hr = $('<hr>');
             let cAnswerContent = $('<p>').addClass('a-content').html(practiceDetail.story);
-            box.append(yAnswerHeader);
-            box.append(yAnswerContent);
+            practiceDetail.data.forEach((item, i) => {
+                console.log(item)
+                let row = $('<div>').addClass('row justify-content-between answer-item');
+                let col1 = $('<div>').addClass('col-auto').text(`# ${(i + 1)}`)
+                let col2 = $('<div>').addClass('col-auto');
+                console.log(window.atob(item.answer))
+                if (item.answered && (item.answered == window.atob(item.answer))) {
+                    let bage = $('<span>').addClass('badge-correct').text('Correct');
+                    col2.append(bage);
+                } else {
+                    let bage = $('<span>').addClass('badge-incorrect').text('Incorrect');
+                    col2.append(bage);
+                }
+                row.append(col1);
+                row.append(col2);
+                cAnswerContent.append(row);
+            });
+
             box.append(cAnswerHeader);
+            box.append(hr);
             box.append(cAnswerContent);
             box.show();
         }
@@ -786,11 +853,100 @@
             container.empty();
             let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
             container.append(pName);
+
+            let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
+            let col = $('<div>').addClass('col-auto fill-in-blank');
+            const renderedSentence = practiceDetail.data.replace(/{{\d+}}/g, (match) => {
+                const number = parseInt(match.match(/\d+/)[0], 10);
+                let data = practiceDetail.answer[number];
+
+                if (data.show) {
+                    let value = window.atob(data.value);
+                    return `<input type="text" class="blank free" value="${value}" maxlength="1" disabled>`;
+                } else {
+                    return '<input type="text" class="blank" maxlength="1">';
+                }
+            });
+
+            col.append(renderedSentence);
+            row.append(col);
+            container.append(row);
+            addEventListeners();
             await renderButton();
         }
 
-        async function checkAnswerPraticeFillInBlank() {
+        function addEventListeners() {
+            const blanks = $('.blank');
+            blanks.each((index, blank) => {
+                $(blank).keyup((e) => handleKeyPress(e, index, blanks));
+            });
+        }
 
+        function handleKeyPress(e, index, blanks) {
+            if (practiceState === 'practicing') {
+                const key = e.key;
+                const value = e.target.value;
+                if (key.length === 1 && value.length === 1) {
+                    if (index < blanks.length - 1) {
+                        let nextIndex = index + 1;
+                        while (blanks[nextIndex] && blanks[nextIndex].hasAttribute('disabled')) {
+                            nextIndex++;
+                        }
+                        if (blanks[nextIndex]) {
+                            blanks[nextIndex].focus();
+                        }
+                    }
+                } else if (key === 'Backspace' && value.length === 0) {
+                    if (index > 0) {
+                        let prevIndex = index - 1;
+                        while (blanks[prevIndex] && blanks[prevIndex].hasAttribute('disabled')) {
+                            prevIndex--;
+                        }
+                        if (blanks[prevIndex]) {
+                            blanks[prevIndex].focus();
+                        }
+                    }
+                }
+            }
+        }
+
+        async function checkAnswerPraticeFillInBlank() {
+            const blanks = $('.blank');
+            blanks.each((index, blank) => {
+                $(blank).prop('disabled', true);
+                if (!$(blank).hasClass('free')) {
+                    const userAnswer = blank.value.trim().toLowerCase();
+                    const correctAnswer = window.atob(practiceDetail.answer[index].value);
+                    if (userAnswer === correctAnswer) {
+                        $(blank).addClass('correct')
+                    } else {
+                        $(blank).addClass('incorrect')
+                    }
+                }
+            });
+
+            const result = practiceDetail.data.replace(/(\{{\d+\}})+/g, (match) => {
+                console.log(match)
+                const matchedNumbers = match.match(/\d+/g);
+                let text = '<span class="blank-answer">'
+                matchedNumbers.forEach((number) => {
+                    const index = parseInt(number, 10);
+                    console.log(index)
+                    let value = window.atob(practiceDetail.answer[index].value);
+                    console.log(value)
+                    text += value;
+                });
+                text += '</span>';
+                return text;
+            });
+            console.log(result);
+
+            let box = $('.answer-box');
+            let cAnswerHeader = $('<div>').addClass('a-header').html('Correct Answer');
+            let cAnswerContent = $('<p>').addClass('a-content').html(result);
+            box.append(cAnswerHeader);
+            box.append(cAnswerContent);
+            box.show();
         }
 
         // =========================== 4. section fill_in_blank end ==========================================================
@@ -1234,5 +1390,6 @@
 
 
     </script>
+    {% endraw %}
 </body>
 </html>

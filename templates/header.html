@@ -24,7 +24,11 @@
                     <div class="navbar-btn d-sm-inline-block">
                         <div style="color: white;">
                             <button class="main-btn" id="logout">
+<<<<<<< HEAD
                             Logout
+=======
+                                Logout
+>>>>>>> origin/demo
                             </button>
                         </div>
                     </div>
@@ -44,16 +48,16 @@
 </header>
 {% include 'script-b.html' %}
 <script>
-  		$(function() {
-		$("#logout").click(function () {
+    $(function () {
+        $("#logout").click(function () {
             $.ajax({
                 type: "GET",
                 url: "/logout",
                 success: function (res) {
                     window.location.reload();
                 }
-             });
-         });
+            });
+        });
 
-		});
+    });
 </script>
