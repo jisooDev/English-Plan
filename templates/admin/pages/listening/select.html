@@ -52,12 +52,12 @@
                                 {% for item in response %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    {% if item.value == '1' %}
+                                    {% if item.answer == 'correct' %}
                                         <td class="d-flex justify-content-center"><span class="badge badge-success text-white">correct</span></td>
                                     {% else %}
                                         <td class="d-flex justify-content-center"><span class="badge badge-danger">incorrect</span></td>
                                     {% endif %}
-                                    <td>{{ item.answer }}</td>
+                                    <td>{{ item.name }}</td>
                                     <td>{{ item.difficulty }}</td>
                                     <td>
                                         <button style="border: none;background: none;" onclick="playAudio('{{ item.data }}')"><i class="fa fa-headphones" aria-hidden="true"></i></button>

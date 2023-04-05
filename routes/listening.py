@@ -60,14 +60,14 @@ def create_writedown():
                 storage.child('lintening/writedown/%s'%_uuid).put(file_data)
                 _url = storage.child('lintening/writedown/%s'%_uuid).get_url(None)
                 
-                sql_data.append((_uuid , difficulty , _url ,answer ))
+                sql_data.append((_uuid , difficulty , _url ,answer , atob(answer) ))
 
 
             sql_str = '''
                 INSERT INTO listening_write_down
-                (id , difficulty , data ,  answer)
+                (id , difficulty , data ,  answer , answer_atob)
                 VALUES
-                (%s ,%s ,%s ,%s)
+                (%s ,%s ,%s ,%s ,%s)
             '''
             cursor.executemany(sql_str, sql_data)
             connection.commit()
@@ -97,7 +97,7 @@ def render_selectword():
 
     try :
         sql_str = '''
-            SELECT id,difficulty,value,answer,data FROM listening_select_words
+            SELECT id,difficulty,name,answer,data FROM listening_select_words
         '''
         cursor.execute(sql_str)
         response = cursor.fetchall()
@@ -128,14 +128,14 @@ def create_selectword():
                 storage.child('lintening/selectword/%s'%_uuid).put(file_data)
                 _url = storage.child('lintening/selectword/%s'%_uuid).get_url(None)
                 
-                sql_data.append((_uuid , value , difficulty , _url , answer ))
+                sql_data.append((_uuid , value , difficulty , _url , answer , atob(value)))
 
 
             sql_str = '''
                 INSERT INTO listening_select_words
-                (id , value, difficulty , data ,  answer)
+                (id , answer, difficulty , data ,  name , answer_atob )
                 VALUES
-                (%s ,%s ,%s ,%s , %s)
+                (%s ,%s ,%s ,%s , %s , %s)
             '''
             cursor.executemany(sql_str, sql_data)
             connection.commit()
