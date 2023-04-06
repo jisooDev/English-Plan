@@ -120,34 +120,7 @@
             audioPlayer.play();
         }
 
-        function onclickAddrow(){
-
-            let _html = `
-                        <li class="my-2 card-li">
-                            <div class="form-group w-50">
-                                <label for="">word-character</label>
-                                <input class="form-control" type="text">
-                            </div>
-                            <div class="form-group w-50">
-                                <label for="">word-sound mp3</label>
-                                <input class="form-control" type="file">
-                            </div>
-                            <button class="btn btn-danger w-100 delete-btn">Delete</button>
-                        </li>
-                        
-                        `
-
-
-                        $('#select-real-word').append(_html)
-        }
-
         $(document).ready(function() { 
-
-
-            $(document).on('click', '.delete-btn', function() {
-                $(this).parent().remove();
-            });
-
 
             $('#display-table').DataTable();
         } )
