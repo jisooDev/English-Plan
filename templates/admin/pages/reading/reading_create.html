@@ -1,0 +1,270 @@
+{% include 'admin/script-t.html' %}
+<style>
+    .card-li{
+        all: unset;
+    }
+    .w-100.active{
+        background: #c4c4c4;
+    }
+</style>
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Reading' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+                        <form id="post-form" method="POST" enctype="multipart/form-data" >
+                            <div class="row">
+                                <div class="col-12 border-bottom">
+                                    <div class="form-group">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label for="">Choose a level of difficulty</label> 
+                                            <div>
+                                                <!-- <div onclick="onclickAddrow()" class="btn btn-info" style="cursor: pointer;">&plus; type</div> -->
+                                                <div onclick="onAddSelect()" class="btn btn-info" style="cursor: pointer;">&plus; select</div>
+                                            </div>
+                                        </div>
+                                        <select id="difficulty" class="form-control" name="difficulty" required>
+                                            <option value="" selected>select here!</option>
+                                            <option value="easy">easy</option>
+                                            <option value="medium">medium</option>
+                                            <option value="difficult">difficult</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <ul id="interactive" class="p-0">
+                                        <li class="my-2 p-2 card-li select">
+                                            <div class="text-success" style="font-size: 18px;margin-bottom: 5px;">
+                                                type : <strong>select</strong>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="">Question text</label>
+                                                    <input autocomplete="off" required class="form-control qustion">
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        Options Text
+                                                    </div>
+                                                    <div class="card-option">
+                                                        <div data-choice="A" class="d-flex w-100 active" style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio" checked>
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="B" class="d-flex w-100"  style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="C" class="d-flex w-100" style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="D" class="d-flex w-100"  style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <input type="submit" class="btn btn-primary w-100" value="Save">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+
+
+
+    {% include 'admin/script-b.html' %}
+
+    <script>
+        function onAddSelect(){
+
+            let _html = `
+            
+            <li class="my-2 p-2 card-li select">
+                                            <div class="text-success" style="font-size: 18px;margin-bottom: 5px;">
+                                                type : <strong>select</strong>
+                                            </div>
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="">Question text</label>
+                                                    <input autocomplete="off" required class="form-control qustion">
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        Options Text
+                                                    </div>
+                                                    <div class="card-option">
+                                                        <div data-choice="A" class="d-flex w-100 active" style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio" checked>
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="B" class="d-flex w-100"  style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="C" class="d-flex w-100" style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                        <div data-choice="D" class="d-flex w-100"  style="padding: 2px;">
+                                                            <div class="d-flex align-items-center px-2">
+                                                                <input type="radio">
+                                                            </div>  
+                                                            <div class="w-100">
+                                                                <input autocomplete="off" required class="form-control" type="text">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-danger w-100 delete-btn">Delete</button>
+                                        </li>
+                                        `
+
+                                        $('#interactive').append(_html)
+
+        }
+
+        $(document).ready(function() { 
+
+            $(document).on('click', '.delete-btn', function() {
+                $(this).parent().remove();
+            });
+        } )
+
+
+        $(document).on('click', 'input[type="radio"]', function() {
+            let cardOption = $(this).closest('.card-option');
+            cardOption.find('input[type="radio"]').parent().parent().removeClass('active');
+            $(this).parent().parent().addClass('active');
+            cardOption.find('input:radio').not(this).removeClass('active').prop('checked', false);
+        });
+
+        $('#post-form').submit(function(event) {
+                event.preventDefault();
+                Swal.showLoading(); 
+
+                let _json = []
+                let _count = 1
+                $('#interactive li').each(function() {
+
+                    if($(this).hasClass('select')){
+
+                        let _option = []
+                        $(this).find('input[type="text"]').each(function(){
+                            _subOption = {
+                                'id' : `${_count}${$(this).parent().parent().data('choice')}` ,
+                                'value' : $(this).val()
+                            }
+
+                            _option.push(_subOption) 
+                        })
+
+                        let _payload = {
+                                    'id': _count ,
+                                    'question': $(this).find('.qustion').val(),
+                                    'answer': _count + $(this).find('.active').attr('data-choice'),
+                                    'answer_type': 'select',
+                                    'option': _option
+                                }
+
+                        _json.push(_payload)
+                    }
+                    if($(this).hasClass('type')){
+                        console.log('type')
+                    }
+
+                    _count++;
+
+                 })
+                var formData = new FormData();
+                formData.append('data', JSON.stringify(_json));
+                formData.append('difficulty', $('#difficulty').val());
+
+                 $.ajax({
+                    url: '/admin/reading/reading/create',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle successful response from the API
+                        window.location.href = '/admin/reading/reading'
+                    },
+                    error: function(error) {
+                        // Handle error response from the API
+                        console.log(error);
+                    }
+                });
+
+
+        })
+
+       
+    
+
+    </script>

@@ -2,9 +2,6 @@ from . import *
 
 blueprintListening = Blueprint('listening', __name__)
 
-
-atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
-
 @blueprintListening.route('/listening/writedown')
 def render_writedown():
     connection = query.get_connection()
@@ -164,7 +161,7 @@ def del_selectword(_id):
 
 
 @blueprintListening.route('/listening/interactive')
-def render_matching():
+def render_interactive():
     connection = query.get_connection()
     cursor = connection.cursor()
 
@@ -181,7 +178,7 @@ def render_matching():
     return render_template('admin/pages/listening/interactive.html' , response=response , json=json , atob=atob , btoa=btoa)
 
 @blueprintListening.route('/listening/interactive/create' , methods=[ 'GET' , 'POST'])
-def render_matching_create():
+def render_interactive_create():
 
     if request.method == 'POST':
         try :
@@ -221,7 +218,7 @@ def render_matching_create():
         return render_template('admin/pages/listening/interactive_create.html')
 
 @blueprintListening.route('/listening/interactive/delete/<_id>')
-def del_matching(_id):    
+def del_interactive(_id):    
 
     connection = query.get_connection()
     cursor = connection.cursor()
