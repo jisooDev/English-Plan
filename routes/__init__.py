@@ -5,7 +5,7 @@ import base64
 import query_helper as query
 import json
 
-btoa = lambda x:base64.b64decode(x)
+btoa = lambda x: base64.b64decode(x).decode('utf-8')
 atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 
 config = {

@@ -74,12 +74,6 @@ def del_selectword(_id):
     return redirect('/admin/reading/selectword')
 
 
-
-@blueprintReading.route('/reading/matching')
-def render_matching():
-    return render_template('admin/pages/reading/matching.html')
-
-
 @blueprintReading.route('/reading/reading')
 def render_reading():
     connection = query.get_connection()
@@ -151,3 +145,78 @@ def del_reading(_id):
         print(e)
 
     return redirect('/admin/reading/reading')
+
+
+
+@blueprintReading.route('/reading/matching')
+def render_matching():
+    connection = query.get_connection()
+    cursor = connection.cursor()
+
+    try :
+        sql_str = '''
+            SELECT id,difficulty,json_data,json_option FROM reading_matching
+        '''
+        cursor.execute(sql_str)
+        response = cursor.fetchall()
+        
+    except Exception as e :
+        print(e)
+
+    return render_template('admin/pages/reading/matching.html' , response=response , json=json , atob=atob , btoa=btoa)
+
+@blueprintReading.route('/reading/matching/create' , methods=[ 'GET' , 'POST'])
+def render_matching_create():
+
+    if request.method == 'POST':
+        try :
+            json_data = request.form.get('json_data')
+            json_options = request.form.get('json_option')
+            difficulty = request.form.get('difficulty')
+
+            connection = query.get_connection()
+            cursor = connection.cursor()
+            _uuid = uuid.uuid4().hex
+
+            reformat_json = json.loads(json_data)
+            for item in reformat_json :
+                item['answer'] = atob(item['answer'])
+
+            reformat_option = json.loads(json_options)
+            for item in reformat_option :
+                item['answer'] = atob(item['answer'])
+
+            sql_data = (_uuid , difficulty , json.dumps(reformat_json) , json.dumps(reformat_option))
+            sql_str = '''
+                INSERT INTO reading_matching
+                (id , difficulty, json_data , json_option)
+                VALUES
+                (%s , %s, %s, %s)
+            '''
+            cursor.execute(sql_str, sql_data)
+            connection.commit()
+
+        except Exception as e :
+            print(e)
+
+    return render_template('admin/pages/reading/matching_create.html')
+
+
+@blueprintReading.route('/reading/matching/delete/<_id>')
+def del_matching(_id):    
+
+    connection = query.get_connection()
+    cursor = connection.cursor()
+
+    try :
+        sql_str = '''
+            DELETE FROM reading_matching
+            WHERE id = "%s";
+        '''%_id
+        cursor.execute(sql_str)
+        connection.commit()
+
+    except Exception as e :
+        print(e)
+
+    return redirect('/admin/reading/matching')
