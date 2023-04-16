@@ -55,6 +55,7 @@ def register():
     try:
         user = auth.create_user_with_email_and_password(email, password)
         user = auth.refresh(user['refreshToken'])
+        print(user)
         user_id = user['idToken']
         try :
             query.register_user(user_id,name,user["email"])

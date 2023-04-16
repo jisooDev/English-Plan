@@ -1,0 +1,109 @@
+{% include 'admin/script-t.html' %}
+<style>
+     [dir=ltr] .table tbody td {
+    vertical-align: top !important;
+    }
+</style>
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Read Aloud' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div></div>
+                            <div>
+                                <a href="/admin/talking/read/create">
+                                    <button class="btn btn-primary">Create</button>
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <table id="display-table" class="table table-striped ">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th scope="col">#</th>
+                                <th class="text-center" scope="col">question</th>
+                                <th scope="col">answer</th>
+                                <th scope="col">difficulty</th>
+                                <th class="text-center" scope="col">action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in response %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ item.data }}</td>
+                                    <td>{{ item.answer }}</td>
+                                    <td>{{ item.difficulty }}</td>
+                                    <td>
+                                        <button onclick="del('{{item.id}}')" style="border: none;background: none;">
+                                            <i  class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                          </table>
+                    
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+   
+
+    {% include 'admin/script-b.html' %}
+
+
+    <script>
+        function del(_id){
+            console.log(_id)
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to Delete this form?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/admin/talking/read/delete/${_id}`
+                    } 
+                });
+
+        }
+
+        $(document).ready(function() { 
+            $('#display-table').DataTable();
+        } )
+    </script>
