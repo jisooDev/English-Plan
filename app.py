@@ -51,18 +51,14 @@ def register():
     data = request.json
     name = data["name"]
     email = data["email"]
+    print(email)
     password = data["password"]
     try:
         user = auth.create_user_with_email_and_password(email, password)
         user = auth.refresh(user['refreshToken'])
-        print(user)
-        user_id = user['idToken']
-        try :
-            query.register_user(user_id,name,user["email"])
-            return json.dumps({"status" : 200})
-        except Exception as e:
-            print(e)
-            return json.dumps({"status" : 400})
+        user_id = user['userId']
+        query.register_user(user_id,name,email)
+        return json.dumps({"status" : 200})
     except Exception as e:
         print(e)
         return json.dumps({"status" : 400})

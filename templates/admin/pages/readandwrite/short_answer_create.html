@@ -90,14 +90,14 @@
                 formData.append('difficulty', $('#difficulty').val());
 
                  $.ajax({
-                    url: '/admin/talking/read/create',
+                    url: '/admin/readandwrite/shortanswer/create',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
                         // Handle successful response from the API
-                        window.location.href = '/admin/talking/read'
+                        window.location.href = '/admin/readandwrite/shortanswer'
                     },
                     error: function(error) {
                         // Handle error response from the API

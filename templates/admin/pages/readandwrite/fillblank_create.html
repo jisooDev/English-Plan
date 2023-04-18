@@ -20,7 +20,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Short Answer' %}
+                {% set _header =  'Fill in blank' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -90,14 +90,14 @@
                 formData.append('difficulty', $('#difficulty').val());
 
                  $.ajax({
-                    url: '/admin/talking/read/create',
+                    url: '/admin/readandwrite/fillblank/create',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
                         // Handle successful response from the API
-                        window.location.href = '/admin/talking/read'
+                        window.location.href = '/admin/readandwrite/fillblank'
                     },
                     error: function(error) {
                         // Handle error response from the API
@@ -107,8 +107,5 @@
 
 
         })
-
-       
-    
 
     </script>
