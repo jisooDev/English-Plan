@@ -3,9 +3,6 @@
     .card-li{
         all: unset;
     }
-    .active{
-        background: #c4c4c4;
-    }
 </style>
 
 <body class="layout-default">
@@ -20,7 +17,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Short Answer' %}
+                {% set _header =  'Describe a Photo' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -34,7 +31,7 @@
                                 <div class="col-12 border-bottom">
                                     <div class="form-group">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <label for="">Choose a level of difficulty</label> 
+                                            <label for="">Choose a level of difficulty</label>
                                         </div>
                                         <select id="difficulty" class="form-control" name="difficulty" required>
                                             <option value="" selected>select here!</option>
@@ -46,8 +43,8 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group w-50">
-                                        <label for="">question</label>
-                                        <textarea class="form-control" id="question" rows="5" required></textarea>
+                                        <label for="">image</label>
+                                        <input autocomplete="off" class="form-control" type="file" name="data[]" required>
                                     </div>
                                     <div class="form-group w-50">
                                         <label for="">answer</label>
@@ -84,20 +81,23 @@
                 event.preventDefault();
                 Swal.showLoading(); 
 
+                var fileInput = $('input[type="file"]');
+                var file = fileInput.prop('files')[0];
+
                 var formData = new FormData();
-                formData.append('data', $('#question').val());
+                formData.append('data', file);
                 formData.append('answer', $('#answer').val());
                 formData.append('difficulty', $('#difficulty').val());
 
                  $.ajax({
-                    url: '/admin/talking/read/create',
+                    url: '/admin/readandwrite/describephoto/create',
                     type: 'POST',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
                         // Handle successful response from the API
-                        window.location.href = '/admin/talking/read'
+                        window.location.href = '/admin/readandwrite/describephoto'
                     },
                     error: function(error) {
                         // Handle error response from the API
@@ -107,8 +107,5 @@
 
 
         })
-
-       
-    
 
     </script>
