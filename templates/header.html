@@ -10,11 +10,12 @@
                     <a class="navbar-brand text-white" href="/">
                         English Plan
                     </a>
-                    <div id="navbarSupportedContent" class="navbar-collapse sub-menu-bar collapse">
+                    <div id="navbarSupportedContent" class="navbar-collapse sub-menu-bar collapse" style="z-index: 12;">
                         <ul id="nav" class="navbar-nav ms-auto">
                             <li class="nav-item"><a href="/" class="page-scroll">Home</a></li>
                             <li class="nav-item"><a href="/exam" class="page-scroll">Exam</a></li>
                             <li class="nav-item"><a href="/#pricing" class="page-scroll">Pricing</a></li>
+                            <li class="nav-item lang-menu" style="display: none;"><button id="toggle-lang" onclick="toggleLang()" style="border: none;background: none;color: #fff;">EN</button></li>
                             {% if session["role"] == 'admin' %}
                             <li class="nav-item"><a href="/admin" class="page-scroll">Admin</a></li>
                             {% endif %}

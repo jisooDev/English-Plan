@@ -14,7 +14,7 @@
     .card-button{
         all: unset;
         height: 48px;
-        padding: 15px 20px;
+        padding: 0px 20px;
         border-radius: 8px;
         color: #fff;
         cursor: pointer;
@@ -78,7 +78,7 @@
      }
 
      #footer .subscribe-area{
-        padding: 40px 50px 90px;
+        padding: 20px 40px;
         box-shadow: 0 0 18px 0 rgb(50 77 215 / 14%);
         border-radius: 10px;
         background-color: #fff;
@@ -122,87 +122,85 @@
 
 
     .slider-box {
-        width:80%;
+        width:100%;
         display:block;
         margin:0 auto;
     }
 
     .card-review{
-        height: 100px;
-        padding: 2%;
-    }
-    /* h3 {
-        background: #fff;
-        color: #3498db;
-        font-size: 36px;
-        line-height: 100px;
-        margin: 10px;
+        height: 125px;
         padding: 2%;
         position: relative;
-        text-align: center;
-    } */
+        border-radius: 10px;
+        background: #5ECED1;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        color: #fff;
+    }
+    .review-rating{
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0 5px;
+        font-size: 12px;
+    }
+    .review-text{
+        font-size: 12px;
+    }
+    .review-profile{
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 5px;
+        font-size: 12px;
+    }
 
 
-        .action{
-        display:block;
-        margin:100px auto;
-        width:100%;
-        text-align:center;
-        }
-        .action a {
-        display:inline-block;
-        padding:5px 10px; 
-        background:#f30;
-        color:#fff;
-        text-decoration:none;
-        }
-        .action a:hover{
-        background:#000;
-        }
+    .limit-text-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    }
+    
+    .slick-prev:before, .slick-next:before{
+        color: var(--primary);
+    }
 
-        .slick-prev:before, .slick-next:before{
-            color: var(--primary);
+    .lang-menu{
+        display: block !important;
+    }
+
+    @media only screen and (max-width: 992px) {
+        #toggle-lang{
+            color: #000 !important;
         }
+    }
+
 </style>
 <body style="font-family: 'Mitr', sans-serif; font-weight: 300;">
     {% include 'header.html' %}
 
     <section id="home" style="background-image: url('{{ url_for('static', filename='image/background-wave-top.svg') }}');" >
         <div class="container" style="position: relative; z-index: 10;">
-            <button onclick="toggleLang()" class="btn btn-success">toggle lang</button>
             <div class="row justify-content-center">
                 <div class="col-lg-8 lang-en">
                     <div class="text-center" style="padding-top: 100px;">
                         <img class="img-fluid" src="{{ url_for('static', filename='image/logo-name-nobackground.png') }}" alt="">
                         <h3>THE MOST EFFECTIVE PLATFORM TO INCREASE YOUR ENGLISH SKILLS FOR DUOLINGO ENGLISH TEST</h3>
                         <h4>Results guaranteed by more than 1000+ users getting their desired score </h4>
-                        <p class="text-start">
-                            Why is it perfect for you? <br>
-                            - The most up-to-date exams (including Interactive Listening Section) <br>
-                            - The most comprehensive vocabulary resources (listening, writing, choose real English words) <br>
-                            - Examples of good answers (speaking, writing) are provided to increase your score <br>
-                        </p>
-                        <a class="card-button" style="background: #5ECED1; margin-top: 40px;" href="#">
+                        <button class="card-button" style="background: #5ECED1;">
                             Get Started
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="col-lg-8 lang-th" style="display: none;">
                     <div class="text-center" style="padding-top: 100px;">
                         <img class="img-fluid" src="{{ url_for('static', filename='image/logo-name-nobackground.png') }}" alt="">
                         <h3>PLATEFORM แบบฝึกหัดสำหรับคนที่อยากเพิ่มคะแนน DUOLINGO ENGLISH TEST ที่ทำให้นักเรียนทั่วประเทศได้คะแนน 120+</h3>
-                        <h4>Results guaranteed by more than 1000+ users getting their desired score </h4>
-                        <p class="text-start">
-                            เหนือกว่าด้วย <br>
-                            - ข้อสอบที่ Update ที่สุด <br>
-                            - คลังคำศัพท์ พร้อมเฉลยที่เยอะที่สุด <br>
-                            - มีตัวอย่างการเขียนโจทย์ทุกแบบ​ <br>
-                            - มีตัวอย่างการพูดโจทย์ทุกแบบ​ <br>
-                            - อัพเดทล่าสุด!! มีแบบฝึกหัด interactive listening  <br>            
-                        </p>
-                        <a class="card-button" style="background: #5ECED1; margin-top: 40px;" href="#">
+                        <!-- <h4>Results guaranteed by more than 1000+ users getting their desired score </h4> -->
+                        <button class="card-button" style="background: #5ECED1;">
                             เริ่มทดลอง
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -229,7 +227,20 @@
                 <div class="col-lg-10">
                     <div class="text-center" style="margin-bottom: 40px;">
                         <div class="title">
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor, provident nostrum inventore ratione blanditiis molestiae, quidem, debitis ipsa ducimus enim dolorem optio sapiente est adipisci sunt quibusdam repellat ab tempora.
+                            <p class="text-start lang-th">
+                                เหนือกว่าด้วย <br>
+                                - ข้อสอบที่ Update ที่สุด <br>
+                                - คลังคำศัพท์ พร้อมเฉลยที่เยอะที่สุด <br>
+                                - มีตัวอย่างการเขียนโจทย์ทุกแบบ​ <br>
+                                - มีตัวอย่างการพูดโจทย์ทุกแบบ​ <br>
+                                - อัพเดทล่าสุด!! มีแบบฝึกหัด interactive listening  <br>            
+                            </p>
+                            <p class="text-start lang-en">
+                                Why is it perfect for you? <br>
+                                - The most up-to-date exams (including Interactive Listening Section) <br>
+                                - The most comprehensive vocabulary resources (listening, writing, choose real English words) <br>
+                                - Examples of good answers (speaking, writing) are provided to increase your score <br>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -301,8 +312,11 @@
                 </div>
                 <div class="col-lg-3 col-md-7 col-sm-8">
                     <div class="card-package">
-                        <div class="services-icon" >
+                        <div class="services-icon" style="position: relative;">
                             <h1>39.90$</h1>
+                            <small class="text-center" style="position: absolute;bottom: 0;font-size: 12px;padding:5%;">
+                                FREE! Flashcard games that allow to increase your vocabulary resource for Duolingo
+                            </small>
                         </div>
                         <div class="services-content">
                             <h4 class="services-title">
@@ -310,9 +324,6 @@
                                     Unlimited <br>
                                     Access <br>
                                     90 Days <br>
-                                    <small>
-                                        FREE! Flashcard games that allow to increase your vocabulary resource for Duolingo
-                                    </small>
                                 </a>
                             </h4>
                             <button class="more mt-5">
@@ -421,14 +432,14 @@
                     </div>
                 </div>
                 <div class="col-lg-6 mt-2 mt-xl-0">
-                    <div class="" style="padding-left: 70px;">
-                        <div class="counter-content">
+                    <div style="padding-left: 70px;">
+                        <div class="counter-content lang-th">
                             <div class="section-title">
                                 <h3 class="title">
                                     PLATFORM นี้การันตี <br>
-                                    <span>
+                                    <small>
                                         Duolingo English Test Expert!
-                                    </span>
+                                    </small>
                                 </h3>
                                 <p>- ฝึกเจอข้อสอบจริงเพราะแนะนำวิธีการตอบ</p>
                                 <p>- มีระดับยากง่ายให้เลือกเหมาะสำหรับคนที่พื้นฐานไม่เท่ากัน </p>
@@ -436,6 +447,22 @@
                                 <p>- ข้อสอบ UPDATE ใหม่เพราะ Update การสอบตลอดทุกเดือน </p>
                                 <p>- นักเรียนมากกว่า 100 คนทั่วประเทศได้คะแนน 120+ </p>
                                 <p>- สามารถเลือกฝึกโดยไม่จับเวลาได้ เพื่อเน้นปูพื้นให้แน่นก่อนเจอข้อสอบจริง</p>
+                            </div>
+                        </div>
+                        <div class="counter-content lang-en">
+                            <div class="section-title">
+                                <h3 class="title">
+                                    What's special? <br>
+                                    <small>
+                                        Duolingo English Test Expert!
+                                    </small>
+                                </h3>
+                                <p>- You will get to practise with actual Duolingo English Test.</p>
+                                <p>- You will get to see sample answers for writing and speaking questions.</p>
+                                <p>- The programme is designed by real test takers who scored 155 or higher and Duolingo English Test exports</p>
+                                <p>- You will get to practise with the most up-to-date questions (including interactive listening).</p>
+                                <p>- After using the programme, over 500 students worldwide scored higher than 120.</p>
+                                <p>- You can select "without timer" to build up your foundation for the exam and "with timer" to simulate the real exam.</p>
                             </div>
                         </div>
                     </div>
@@ -494,87 +521,114 @@
         </div>
     </section>
 
-    <!-- <section id="review" style="padding-top: 50px;">
-        <div class="slider-box">
-            <div class="slider slider-nav">
-              <div class="bg-danger">
-                <div class="card-review">
-                    1
-                </div>
-              </div>
-              <div class="bg-success">
-                <div class="card-review">
-                    2
-                </div>
-              </div>
-              <div>
-                <div class="card-review">
-                    3
-                </div>
-              </div>
-              <div>
-                <div class="card-review">
-                    4
-                </div>
-              </div>
-              <div>
-                <div class="card-review">
-                    5
-                </div>
-              </div>
-            </div>
-          </div>
-    </section> -->
-
     <footer id="footer" style="background-image: url('{{ url_for('static', filename='image/background-wave-bottom.svg') }}');"  >
         <div class="container" style="position: relative; z-index: 10;">
             <div class="card subscribe-area">
                 <div class="card-body">
-                    <!-- <div class="row">
-                        <div class="col-lg-6 " style="margin-top: 30px;">
-                            <h2 class="font-30-24">Subscribe!</h2>
-                            <div class="font-30-24 ms-2 ms-md-0">to get regular updates</div>
-                        </div>
-                        <div class="col-lg-6" style="margin-top: 30px;">
-                            <form class="input-group mb-3">
-                                <input type="text" class="form-control"  style="height: 65px;padding: 0 30px;border: 2px solid #e1e1e1;" placeholder="Email">
-                                <input type="submit" id="subscripbe-area" hidden >
-                                <label for="subscribe-area" class="input-group-append" style="cursor: pointer;">
-                                  <span class="input-group-text" style="height: 65px;background: #5ECED1;padding: 0 20px;border: none;color: #fff;">Subscribe</span>
-                                </label>
-                            </form>
-                        </div>
-                    </div> -->
                     <div class="row">
                         <div class="col-12">
-                            <h2>Review จากทางบ้าน</h2> 
+                            <h2>Review จากนักเรียน</h2> 
                         </div>
                         <div class="col-12">
                             <div class="slider-box">
                                 <div class="slider slider-nav">
-                                  <div class="bg-danger">
+                                  <div style="padding: 5px;">
                                     <div class="card-review">
-                                        1
+                                        <div class="review-rating" style="color: yellow;">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="review-text limit-text-4 pt-3"> 
+                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                        </div>
+
+                                        <div class="review-profile">
+                                            อุ้งอิ***
+                                        </div>
                                     </div>
                                   </div>
-                                  <div class="bg-success">
+                                  <div style="padding: 5px;">
                                     <div class="card-review">
-                                        2
+                                        <div class="review-rating" style="color: yellow;">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="review-text limit-text-4 pt-3"> 
+                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
+                                        </div>
+
+                                        <div class="review-profile">
+                                            easy***
+                                        </div>
                                     </div>
                                   </div>
-                                  <div class="bg-warning">
+                                  <div style="padding: 5px;">
                                     <div class="card-review">
-                                        3
+                                        <div class="review-rating" style="color: yellow;">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="review-text limit-text-4 pt-3"> 
+                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+                                        </div>
+
+                                        <div class="review-profile">
+                                            อุzz***
+                                        </div>
                                     </div>
                                   </div>
-                                  <div>
+                                  <div style="padding: 5px;">
                                     <div class="card-review">
-                                        4
+                                        <div class="review-rating" style="color: yellow;">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="review-text limit-text-4 pt-3"> 
+                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
+                                        </div>
+
+                                        <div class="review-profile">
+                                            อุ้งอิ***
+                                        </div>
                                     </div>
                                   </div>
-                                  <div>
+                                  <div style="padding: 5px;">
                                     <div class="card-review">
-                                        5
+                                        <div class="review-rating" style="color: yellow;">
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        </div>
+
+                                        <div class="review-text limit-text-4 pt-3"> 
+                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
+                                        </div>
+
+                                        <div class="review-profile">
+                                            อุ้งอิ***
+                                        </div>
                                     </div>
                                   </div>
                                 </div>
@@ -658,7 +712,23 @@
             $('.slider-nav').slick({
                 infinite: true,
                 slidesToShow: 3,
-                slidesToScroll: 3
+                slidesToScroll: 3 ,
+                responsive: [
+                    {
+                        breakpoint: 980,
+                        settings: {
+                            slidesToShow: 2,
+                            slidesToScroll: 2
+                        }
+                    },
+                    {
+                        breakpoint: 470,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+                ]
             });
     </script>
     
@@ -672,9 +742,11 @@
         }
 
         if(lang == 'en') {
+            $('#toggle-lang').text(lang.toUpperCase())
             $('.lang-en').show();
             $('.lang-th').hide();
         } else {
+            $('#toggle-lang').text(lang.toUpperCase())
             $('.lang-en').hide();
             $('.lang-th').show();
         }
@@ -684,9 +756,11 @@
         localStorage.setItem('lang' , localStorage.getItem('lang') == 'en' ? 'th' : 'en')
 
         if(localStorage.getItem('lang') == 'en') {
+            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
             $('.lang-en').show();
             $('.lang-th').hide();
         } else {
+            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
             $('.lang-en').hide();
             $('.lang-th').show();
         }
