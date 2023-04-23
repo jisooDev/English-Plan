@@ -40,8 +40,7 @@
                             <thead class="thead-dark">
                               <tr>
                                 <th scope="col">#</th>
-                                <th class="text-center" scope="col">question</th>
-                                <th scope="col">answer</th>
+                                <th class="text-center" scope="col">data</th>
                                 <th scope="col">difficulty</th>
                                 <th class="text-center" scope="col">action</th>
                               </tr>
@@ -50,8 +49,7 @@
                                 {% for item in response %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ item.data }}</td>
-                                    <td>{{ item.answer }}</td>
+                                    <td>{{ item.data_atob }}</td>
                                     <td>{{ item.difficulty }}</td>
                                     <td>
                                         <button onclick="del('{{item.id}}')" style="border: none;background: none;">
