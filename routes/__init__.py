@@ -3,6 +3,10 @@ import pyrebase
 import uuid
 import base64
 import query_helper as query
+import json
+
+btoa = lambda x: base64.b64decode(x).decode('utf-8')
+atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 
 config = {
     "apiKey": "AIzaSyDExn5Hbtc_w4IT2-hUe-VT7XE7OkIT5b8",

@@ -1,5 +1,9 @@
 {% include 'admin/script-t.html' %}
-
+<style>
+    [dir=ltr] .table tbody td {
+   vertical-align: top !important;
+   }
+</style>
 <body class="layout-default">
 
     
@@ -21,7 +25,70 @@
                 <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
 
                     <div class="container-fluid page__container">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div></div>
+                            <div>
+                                <a href="/admin/reading/matching/create">
+                                    <button class="btn btn-primary">Create</button>
+                                </a>
+                            </div>
+                        </div>
 
+
+
+                        <table id="display-table" class="table table-striped ">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">difficult</th>
+                                <th class="text-center" scope="col">Data</th>
+                                <th class="text-center" scope="col">action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in response %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ item.difficulty }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+
+                                            <div class="mx-2">
+                                            {% set json_data = json.loads(item.json_data)%}
+                                            {% for item in json_data %}
+
+                                            <div class="d-flex">
+                                                <div class="text-success" style="border-bottom: 1px solid black;"> {{ btoa(item.answer) }}</div>
+                                                <div style="margin-left: 5px;">{{item.value}}</div>
+                                            </div>                
+            
+                                            {% endfor %}
+
+                                            </div>
+                                            <div class="mx-2">
+                                            {% set json_option = json.loads(item.json_option)%}
+                                            {% for item in json_option %}
+
+                                            <div class="d-flex">
+                                                <div>{{item.id}}.</div>
+                                                <div style="margin-left: 5px;">{{item.value}}</div>
+                                            </div>                
+            
+                                            {% endfor %}
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <button onclick="del('{{item.id}}')" style="border: none;background: none;">
+                                            <i  class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                          </table>
                     
                     </div>
 
@@ -43,3 +110,26 @@
 
 
     {% include 'admin/script-b.html' %}
+
+
+    <script>
+        function del(_id){
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to Delete this form?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/admin/reading/matching/delete/${_id}`
+                    } 
+                });
+
+        }
+
+        $(document).ready(function() { 
+            $('#display-table').DataTable();
+        } )
+    </script>

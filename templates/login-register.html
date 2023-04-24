@@ -65,6 +65,9 @@
     </div>
 </div>
 {% include 'script-b.html' %}
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   		$(function() {
 				$("#submit-signup").click(function () {
@@ -84,7 +87,8 @@
                 ),
                 success: function (res) {
                 let data = JSON.parse(res);
-                if (data.status === 200) {
+                console.log(data);
+                if (data.status == 200) {
                     alert("Register success!!!");
                     $("#signup-name").val('');
                     $("#signup-email").val('');
@@ -92,7 +96,7 @@
                  } else {
                     alert("Duplicate email in the system!!!");
                   }
-                  }
+                }
              });
             }
             else{

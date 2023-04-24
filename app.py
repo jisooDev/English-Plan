@@ -1,7 +1,8 @@
-from flask import Flask , render_template , redirect ,request , session  , url_for , send_file;
+from flask import Flask , render_template , redirect ,request , session  , url_for , send_file , jsonify;
 from dbutils.pooled_db import PooledDB ;
 import pymysql ;
 import json
+import stripe
 
 import os ;
 # from dotenv import load_dotenv ;
@@ -46,6 +47,111 @@ config = {
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
+stripe_keys = {
+        "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
+        "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
+}
+
+stripe.api_key = stripe_keys["secret_key"]
+
+@app.route("/config")
+def get_publishable_key():
+    stripe_config = {"publicKey": stripe_keys["publishable_key"]}
+    return jsonify(stripe_config)
+
+@app.route('/start_payment_session')
+def start_payment_session():
+    stripe.api_key = stripe_keys["secret_key"]
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            "price_data": {
+            "currency": 'usd',
+            "product_data": {
+            "name": 'T-shirt',
+            },
+            "unit_amount": 2000,
+            },
+            "quantity": 1,
+        }],
+        mode='payment',
+        success_url='http://localhost:70/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url='http://localhost:70/cancel',
+    )
+    return jsonify({'session_id': session["id"]})
+
+# @app.route("/create-checkout-session")
+# def create_checkout_session():
+#     domain_url = "http://localhost:70/"
+#     stripe.api_key = stripe_keys["secret_key"]
+
+#     try:
+    
+#         checkout_session = stripe.checkout.Session.create(
+#             success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
+#             cancel_url=domain_url + "cancelled",
+#             payment_method_types=["card"],
+#             mode="payment",
+#             line_items=[
+#                 {
+#                     "name": "T-shirt",
+#                     "quantity": 1,
+#                     "currency": "usd",
+#                     "amount": "2000",
+#                 }
+#             ]
+#         )
+#         return jsonify({"sessionId": checkout_session["id"]})
+#     except Exception as e:
+#         return jsonify(error=str(e)), 403
+
+
+@app.route("/webhook", methods=['POST'])
+def stripe_webhook():
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get('Stripe-Signature')
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_keys["endpoint_secret"]
+        )
+
+    except ValueError as e:
+        # Invalid payload
+        return 'Invalid payload', 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return 'Invalid signature', 400
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+
+        # Fulfill the purchase...
+        handle_checkout_session(session)
+
+    return 'Success', 200
+
+
+def handle_checkout_session(session):
+    print("Payment was successful.")
+    # TODO: run some custom code here
+
+
+@app.route("/checkout")
+def checkout():
+    return render_template("checkout.html")
+
+
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+
+@app.route("/cancelled")
+def cancelled():
+    return render_template("cancelled.html")
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -55,13 +161,9 @@ def register():
     try:
         user = auth.create_user_with_email_and_password(email, password)
         user = auth.refresh(user['refreshToken'])
-        user_id = user['idToken']
-        try :
-            query.register_user(user_id,name,user["email"])
-            return json.dumps({"status" : 200})
-        except Exception as e:
-            print(e)
-            return json.dumps({"status" : 400})
+        user_id = user['userId']
+        query.register_user(user_id,name,email)
+        return json.dumps({"status" : 200})
     except Exception as e:
         print(e)
         return json.dumps({"status" : 400})
@@ -98,6 +200,7 @@ def main_page():
 @app.route("/exam")
 def practice_page():
     return render_template('practice.html')
+
 
 
 app.register_blueprint(admin_bp, url_prefix='/admin')

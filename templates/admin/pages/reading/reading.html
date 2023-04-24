@@ -1,9 +1,10 @@
 {% include 'admin/script-t.html' %}
 <style>
-    .card-li{
-        all: unset;
+     [dir=ltr] .table tbody td {
+    vertical-align: top !important;
     }
 </style>
+
 <body class="layout-default">
 
     
@@ -25,37 +26,76 @@
                 <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
 
                     <div class="container-fluid page__container">
-                        <form action="">
-                            <div class="row">
-                                <div class="col-12 border-bottom">
-                                    <div class="form-group">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <label for="">Choose a level of difficulty</label> <div onclick="onclickAddrow()" class="btn btn-info" style="cursor: pointer;">&plus; Add</div>
-                                        </div>
-                                        <select class="form-control" name="" id="">
-                                            <option value="" selected>select here!</option>
-                                            <option value="medium">medium</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <ul id="select-real-word" class="p-0">
-                                        <li class="my-2 card-li">
-                                            <div class="form-group w-50">
-                                                <label for="">word-character</label>
-                                                <input class="form-control" type="text">
-                                            </div>
-                                            <div class="form-group w-50">
-                                                <label for="">word-sound mp3</label>
-                                                <input class="form-control" type="file">
-                                            </div>
-                                        </li>
-                                    </ul>
-
-                                    <input type="submit" class="btn btn-primary w-100" value="Save">
-                                </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div></div>
+                            <div>
+                                <a href="/admin/reading/reading/create">
+                                    <button class="btn btn-primary">Create</button>
+                                </a>
                             </div>
-                        </form>
+                        </div>
+
+
+                        <table id="display-table" class="table table-striped ">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th scope="col">#</th>
+                                <th class="text-center" scope="col">id</th>
+                                <th class="text-center" scope="col">data</th>
+                                <th scope="col">difficult</th>
+                                <th class="text-center" scope="col">action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in response %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td class="text-center">{{ item.id }}</td>
+                                    {% set json_data =  json.loads(item.json_data) %}
+                                    <td class="text-start">
+                                        {% for item in  json_data %}
+                                        <div class="my-2" style="border-bottom: 1px solid red;">
+
+                                            {% for k , v in item.items()%}
+                                            {% set atob_answer = item.answer  %}
+                                            {% if k != 'option' %}
+                                            <div>{{ k }} : {{ v }}</div>
+                                            {% else %}
+                                            <div class="my-2 text-info">
+                                                <div>choice for select :</div>
+                                                {% for item in v%}
+                                                    {% if atob(item.id) == atob_answer%}
+                                                        {% for __k,__v in item.items()%}
+                                                            {% if __k != 'id' %}
+                                                            <div class="text-danger">answer : {{__v}}</div>
+                                                            {% endif %}
+                                                        {%endfor%}
+                                                    {% else %}
+                                                        {% for __k,__v in item.items()%}
+                                                            {% if __k != 'id' %}
+                                                            <div>option : {{__v}}</div>
+                                                            {% endif %}
+                                                        {%endfor%}
+                                                    {% endif %}
+                                                {% endfor%}
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ item.difficulty }}</td>
+                                    <td>
+                                        <button onclick="del('{{item.id}}')" style="border: none;background: none;">
+                                            <i  class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                          </table>
+
                     </div>
 
 
@@ -72,42 +112,30 @@
         {% include 'admin/components/sidebar.html' %}
 
     </div>
-
+   
 
     {% include 'admin/script-b.html' %}
 
 
     <script>
+        function del(_id){
+            console.log(_id)
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to Delete this form?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/admin/reading/reading/delete/${_id}`
+                    } 
+                });
 
-        function onclickAddrow(){
-
-            let _html = `
-                        <li class="my-2 card-li">
-                            <div class="form-group w-50">
-                                <label for="">word-character</label>
-                                <input class="form-control" type="text">
-                            </div>
-                            <div class="form-group w-50">
-                                <label for="">word-sound mp3</label>
-                                <input class="form-control" type="file">
-                            </div>
-                            <button class="btn btn-danger w-100 delete-btn">Delete</button>
-                        </li>
-                        
-                        `
-
-
-                        $('#select-real-word').append(_html)
         }
 
         $(document).ready(function() { 
-
-
-            $(document).on('click', '.delete-btn', function() {
-                $(this).parent().remove();
-            });
-
-
+            $('#display-table').DataTable();
         } )
-
     </script>

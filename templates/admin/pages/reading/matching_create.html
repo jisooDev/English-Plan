@@ -1,0 +1,295 @@
+{% include 'admin/script-t.html' %}
+<style>
+    .card-li{
+        all: unset;
+    }
+    .w-100.active{
+        background: #c4c4c4;
+    }
+    li select{
+        padding: 0 !important;
+    }
+</style>
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Matching Information' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+                        <form id="post-form" method="POST" enctype="multipart/form-data" >
+                            <div class="row">
+                                <div class="col-12 border-bottom">
+                                    <div class="form-group">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label for="">Choose a level of difficulty</label> 
+                                            <div>
+                                                <!-- <div onclick="onclickAddrow()" class="btn btn-info" style="cursor: pointer;">&plus; type</div> -->
+                                                <div onclick="onAddSelect()" class="btn btn-info" style="cursor: pointer;">&plus; row</div>
+                                            </div>
+                                        </div>
+                                        <select id="difficulty" class="form-control" name="difficulty" required>
+                                            <option value="" selected>select here!</option>
+                                            <option value="easy">easy</option>
+                                            <option value="medium">medium</option>
+                                            <option value="difficult">difficult</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <ul id="matching" class="p-0">
+                                        <div class="row pt-2">
+                                            <div class="col-6 d-flex">
+                                                <div id="randomize_first" style="cursor: pointer; font-size: 10px;border-radius: 5px;padding:5px;" class="bg-warning ml-auto d-flex align-items-center">
+                                                    random
+                                                </div>
+                                            </div>
+                                            <div class="col-6 d-flex">
+                                                <div id="randomize_seconde" style="cursor: pointer; font-size: 10px;border-radius: 5px;padding:5px;" class="bg-warning ml-auto d-flex align-items-center">
+                                                    random
+                                                </div>
+                                            </div>
+                                        </div>
+                                       <li class="card-matching my-2 p-2 card-li d-flex">
+                                            <div class="form-group d-flex row w-100">
+                                                <div class="first-section d-flex col-6 pr-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="first-select form-control mx-2" style="width: 10%;" name=""></select>
+                                                </div>
+                                                <div class="seconde-section d-flex col-6 pl-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
+                                                        <option class="empty" value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-secondary w-100 delete-btn" disabled>Delete</button>
+                                            </div>
+                                       </li>
+                                       <!-- <li class="card-matching my-2 p-2 card-li d-flex">
+                                            <div class="form-group d-flex row w-100">
+                                                <div class="d-flex col-6 pr-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="first-select form-control mx-2" style="width: 10%;"></select>
+                                                </div>
+                                                <div class="d-flex col-6 pl-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-danger w-100 delete-btn">Delete</button>
+                                            </div>
+                                       </li>
+                                       <li class="card-matching my-2 p-2 card-li d-flex">
+                                            <div class="form-group d-flex row w-100">
+                                                <div class="d-flex col-6 pr-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="first-select form-control mx-2" style="width: 10%;" ></select>
+                                                </div>
+                                                <div class="d-flex col-6 pl-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-danger w-100 delete-btn">Delete</button>
+                                            </div>
+                                       </li> -->
+                                    </ul>
+
+                                    <input type="submit" class="btn btn-primary w-100" value="Save">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+
+
+
+    {% include 'admin/script-b.html' %}
+
+    <script>
+        function onAddSelect(){
+
+            let _html = `
+            
+                                        <li class="card-matching my-2 p-2 card-li d-flex">
+                                            <div class="form-group d-flex row w-100">
+                                                <div class="first-section d-flex col-6 pr-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="first-select form-control mx-2" style="width: 10%;"></select>
+                                                </div>
+                                                <div class="seconde-section d-flex col-6 pl-0">
+                                                    <input class="form-control" type="text">
+                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-danger w-100 delete-btn">Delete</button>
+                                            </div>
+                                       </li>
+                                        `
+
+                                        $('#matching').append(_html)
+
+
+                                        setFirstSelectValues();
+
+        }
+
+        $(document).ready(function() { 
+
+            $(document).on('click', '.delete-btn', function() {
+                $(this).closest('li').remove();
+
+                setFirstSelectValues()
+            });
+        } )
+
+
+        $('#post-form').submit(function(event) {
+                event.preventDefault();
+                Swal.showLoading(); 
+
+                let _count = 1
+                let _data = []
+                let _option = []
+                $('#matching li').each(function() {
+                    $(this).find('.first-section').each(function(index){
+
+                        let _payload = {
+                            id : `a${_count}`,
+                            value : $(this).find('input[type="text"]').val(),
+                            answer : `b${$(this).find('select.first-select').val()}`,
+                        }
+
+                        _data.push(_payload)
+
+                    })
+
+                    $(this).find('.seconde-section').each(function(index){
+
+                        let _payload = {
+                            id : `b${_count}`,
+                            value : $(this).find('input[type="text"]').val(),
+                            answer : `a${$(this).find('select.seconde-select').val()}`,
+                        }
+
+                        _option.push(_payload)
+
+                    })
+                    _count++;
+
+                 }) 
+
+                var formData = new FormData();
+                formData.append('json_data', JSON.stringify(_data));
+                formData.append('json_option', JSON.stringify(_option));
+                formData.append('difficulty', $('#difficulty').val());
+
+                 $.ajax({
+                    url: '/admin/reading/matching/create',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle successful response from the API
+                        window.location.href = '/admin/reading/matching'
+                    },
+                    error: function(error) {
+                        // Handle error response from the API
+                        console.log(error);
+                    }
+                });
+
+
+        })
+
+        $(document).ready(function() {
+        // Get all the li elements
+            setFirstSelectValues();
+        });
+
+        function setFirstSelectValues() {
+
+            var $liElements = $('ul li.card-matching');
+
+            $liElements.find('select').empty();
+            for (var i = 1; i <= $liElements.length; i++) {
+                $liElements.find('select').append(`<option value="${i}"> ${i} </option>`);
+            }
+
+            $('select.first-select').each(function(index) {
+                $(this).val(index + 1);
+
+            });
+        }
+
+        function getAllLI(){
+            let li_list = []
+            $('li.card-matching').each(function(index) {
+                li_list.push(index + 1); 
+            });
+            return li_list
+        }
+
+        $('#randomize_first').click(function() {
+            var options = getAllLI();
+            options.sort(function() { return 0.5 - Math.random() });
+            var $selectFirst = $('select.first-select')
+            $selectFirst.each(function(index) {
+                $(this).val(`${options[index]}`)
+            });
+        });
+
+        $('#randomize_seconde').click(function() {
+            var options = getAllLI();
+            options.sort(function() { return 0.5 - Math.random() });
+            var $selectFirst = $('select.seconde-select')
+            $selectFirst.each(function(index) {
+                $(this).val(`${options[index]}`)
+            });
+        });
+
+       
+    
+
+    </script>

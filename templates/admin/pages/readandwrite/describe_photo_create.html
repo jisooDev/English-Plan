@@ -1,0 +1,111 @@
+{% include 'admin/script-t.html' %}
+<style>
+    .card-li{
+        all: unset;
+    }
+</style>
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Describe a Photo' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    <div class="container-fluid page__container">
+                        <form id="post-form" method="POST" enctype="multipart/form-data" >
+                            <div class="row">
+                                <div class="col-12 border-bottom">
+                                    <div class="form-group">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label for="">Choose a level of difficulty</label>
+                                        </div>
+                                        <select id="difficulty" class="form-control" name="difficulty" required>
+                                            <option value="" selected>select here!</option>
+                                            <option value="easy">easy</option>
+                                            <option value="medium">medium</option>
+                                            <option value="difficult">difficult</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group w-50">
+                                        <label for="">image</label>
+                                        <input autocomplete="off" class="form-control" type="file" name="data[]" required>
+                                    </div>
+                                    <div class="form-group w-50">
+                                        <label for="">answer</label>
+                                        <textarea class="form-control" id="answer" rows="5" required></textarea>
+                                    </div>
+                                    <input type="submit" class="btn btn-primary w-100" value="Save">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+
+
+
+    {% include 'admin/script-b.html' %}
+
+    <script>
+
+        $('#post-form').submit(function(event) {
+                event.preventDefault();
+                Swal.showLoading(); 
+
+                var fileInput = $('input[type="file"]');
+                var file = fileInput.prop('files')[0];
+
+                var formData = new FormData();
+                formData.append('data', file);
+                formData.append('answer', $('#answer').val());
+                formData.append('difficulty', $('#difficulty').val());
+
+                 $.ajax({
+                    url: '/admin/readandwrite/describephoto/create',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle successful response from the API
+                        window.location.href = '/admin/readandwrite/describephoto'
+                    },
+                    error: function(error) {
+                        // Handle error response from the API
+                        console.log(error);
+                    }
+                });
+
+
+        })
+
+    </script>

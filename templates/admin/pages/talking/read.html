@@ -17,7 +17,7 @@
             <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
 
                 <!-- Header -->
-                {% set _header =  'Short Answer' %}
+                {% set _header =  'Read Aloud' %}
                 {% include 'admin/components/header.html' %}
 
                 <!-- // END Header -->
@@ -29,7 +29,7 @@
                         <div class="d-flex justify-content-between mb-2">
                             <div></div>
                             <div>
-                                <a href="/admin/readandwrite/shortanswer/create">
+                                <a href="/admin/talking/read/create">
                                     <button class="btn btn-primary">Create</button>
                                 </a>
                             </div>
@@ -97,7 +97,7 @@
                 })
                 .then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = `/admin/readandwrite/shortanswer/delete/${_id}`
+                        window.location.href = `/admin/talking/read/delete/${_id}`
                     } 
                 });
 
