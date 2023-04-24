@@ -1,6 +1,8 @@
 from . import *
 import json
 import base64
+import random
+import traceback
 blueprint = Blueprint('api', __name__)
 
 
@@ -19,31 +21,65 @@ blueprint = Blueprint('api', __name__)
 
 @blueprint.route('/exam/list', methods=['POST'])
 def api_get_parctice_list():
-    res = request.json
-    print(res)
-    return  Response(response=json.dumps({'success': True, 'total': 16, 'data': [
-        {
-            'practice_id': 1,
-        },{
-            'practice_id': 2,
-        },{
-            'practice_id': 3,
-        },{
-            'practice_id': 4,
-        },{
-            'practice_id': 5,
-        },{
-            'practice_id': 6,
-        },{
-            'practice_id': 7,
-        },{
-            'practice_id': 8,
-        },{
-            'practice_id': 9,
-        },{
-            'practice_id': 10,
-        }
-    ]}), mimetype='application/json', status=200)
+    try:
+        connection = query.get_connection()
+        cursor = connection.cursor()
+        res = request.json
+        print(res)
+
+        _filter = ''''''
+
+        if res['tasks'] != 'all':
+            if len(_filter) == 0:
+                _filter += ' WHERE '
+            else:
+                _filter += ' AND '
+            _filter += ' practice_type = "%s"'%res['tasks']
+
+        if res['difficulty'] != 'all':
+            if len(_filter) == 0:
+                _filter += ' WHERE '
+            else:
+                _filter += ' AND '
+            _filter += ' difficulty = "%s"'%res['difficulty']
+            
+        sql_str = '''
+            SELECT practice_id, practice_type, number_of_questions  FROM exam_config %s ORDER BY RAND() LIMIT 16
+        '''%(_filter)
+        cursor.execute(sql_str)
+        response = cursor.fetchall()
+
+        practice_total = 0
+        if len(response) > 0:
+            random.shuffle(response)
+
+            practice_total = practice_total + response[0]['number_of_questions']
+            
+            for i in range(1, len(response)):
+                practice_total = practice_total + response[i]['number_of_questions']
+                current_practice_type = response[i]['practice_type']
+                previous_practice_type = response[i-1]['practice_type']
+                if current_practice_type == previous_practice_type:
+                    j = random.randint(0, i-1)
+                    response[i], response[j] = response[j], response[i]
+            
+            for i in range(1, len(response)):
+                current_practice_type = response[i]['practice_type']
+                previous_practice_type = response[i-1]['practice_type']
+                if current_practice_type == previous_practice_type:
+                    j = random.randint(0, i-1)
+                    response[i], response[j] = response[j], response[i]
+
+        return  Response(response=json.dumps({'success': True if len(response) else False, 'total': practice_total, 'data': response}), mimetype='application/json', status=200)
+    
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return  Response(response=json.dumps({'success': False}), mimetype='application/json', status=400)
+    finally:
+        cursor.close()
+        connection.close()
+
 
 
 btoa = lambda x:base64.b64decode(x)
@@ -52,47 +88,118 @@ atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 @blueprint.route('/exam/detail', methods=['GET'])
 def api_get_parctice_detail():
     try:
+        connection = query.get_connection()
+        cursor = connection.cursor()
         practiceId = request.args.get('practice_id')
-        practiceType = request.args.get('practice_type')
         print(practiceId)
-        result = practice_reading
-        if practiceId == "1":
-            result = practice_reading
-
-        if practiceId == "2":
-            result = practice_matching
-
-        if practiceId == "3":
-            result = practice_reading_select_real_eng_word
         
-        if practiceId == "4":
+        sql_str = '''SELECT practice_id, practice_type, practice_name, timer, limited_time, difficulty, number_of_questions FROM exam_config WHERE practice_id  = %s'''%practiceId
+
+        cursor.execute(sql_str)
+        practice = cursor.fetchone()
+        print(practice)
+        result = {
+            'practice_id': practice['practice_id'],
+            'practice_type': practice['practice_type'],
+            'practice_name': practice['practice_name'],
+            'number_of_questions': practice['number_of_questions'],
+            'limited_time': True if practice.get('limited_time') else False,
+            'timer': practice['timer'],
+            'difficulty': practice['difficulty'],
+        }
+        if practice['practice_type'] == "reading":
+            sql_str = '''SELECT json_data FROM reading_reading WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchone()
+            result['data'] = json.loads(data['json_data'])
+            
+        if practice['practice_type'] == "matching":
+            sql_str = '''SELECT json_data, json_option FROM reading_matching WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchone()
+            result['data'] = json.loads(data['json_data'])
+            result['options'] = json.loads(data['json_option'])
+
+        if practice['practice_type'] == "reading_select_real_eng_word":
+            sql_str = '''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE difficulty = "%s" ORDER BY RAND() LIMIT 12'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchall()
+            result['data'] = data
+            
+        if practice['practice_type'] == "fill_in_blank":
             result = practice_fill_in_blank
 
-        if practiceId == "5":
+        if practice['practice_type'] == "short_answer":
             result = practice_short_answer
 
-        if practiceId == "6":
+        if practice['practice_type'] == "describe_a_photo":
             result = practice_describe_a_photo
 
-        if practiceId == "7":
-            result = practice_write_down_what_you_hear
+        if practice['practice_type'] == "write_down_what_you_hear":
+            sql_str = '''SELECT data, answer_atob FROM listening_write_down WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchone()
+            result['data'] = data['data']
+            result['answer'] = data['answer_atob']
 
-        if practiceId == "8":
-            result = practice_listen_select_real_eng_word
+        if practice['practice_type'] == "listen_select_real_eng_word":
+           
+            sql_str = '''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE difficulty = "%s" ORDER BY RAND() LIMIT 12'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchall()
+            result['data'] = data
+            
+        if practice['practice_type'] == "interactive_conversation":
+            sql_str = '''SELECT json_data, audio FROM listening_interactive_conversation WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
+            cursor.execute(sql_str)
+            data = cursor.fetchone()
+            result['data'] = json.loads(data['json_data'])
+            result['audio'] = data['audio']
 
-        if practiceId == "9":
-            result = practice_interactive_conversation
-
-        if practiceId == "10":
+        if practice['practice_type'] == "read_aloud":
             result = practice_read_aloud
+        # result = practice_reading
+        # if practiceId == "1":
+        #     result = practice_reading
+
+        # if practiceId == "2":
+        #     result = practice_matching
+
+        # if practiceId == "3":
+        #     result = practice_reading_select_real_eng_word
+        
+        # if practiceId == "4":
+        #     result = practice_fill_in_blank
+
+        # if practiceId == "5":
+        #     result = practice_short_answer
+
+        # if practiceId == "6":
+        #     result = practice_describe_a_photo
+
+        # if practiceId == "7":
+        #     result = practice_write_down_what_you_hear
+
+        # if practiceId == "8":
+        #     result = practice_listen_select_real_eng_word
+
+        # if practiceId == "9":
+        #     result = practice_interactive_conversation
+
+        # if practiceId == "10":
+        #     result = practice_read_aloud
 
         
 
         return  Response(response=json.dumps({'success': True, 'data': result}), mimetype='application/json', status=200)
 
     except Exception as e:
-        print(e)
+        traceback.print_exc()
+        return  Response(response=json.dumps({'success': True, 'data': practice_short_answer}), mimetype='application/json', status=200)
         return  Response(response=json.dumps({'success': False, 'data': None, 'message': str(e)}), mimetype='application/json', status=400)
+    finally:
+        cursor.close()
+        connection.close()
     
 # practice_reading
 # practice_matching
@@ -312,6 +419,8 @@ practice_short_answer = {
     'data': 'What year was "We Belong Together" released?',
     'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
 }
+
+
 
 
 practice_fill_in_blank = {
