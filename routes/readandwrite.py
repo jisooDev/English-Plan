@@ -163,24 +163,38 @@ def render_fillblank_create():
 
     if request.method == 'POST':
         try :
-            data = request.files['data']
-            answer = request.form.get('answer')
-            difficulty = request.form.get('difficulty')
+            dataJson = request.json
+
+            data = dataJson['data']
+            data_atob = dataJson["data_atob"]
+            answer = dataJson['answer']
+            difficulty = dataJson['difficulty']
 
             connection = query.get_connection()
             cursor = connection.cursor()
             _uuid = uuid.uuid4().hex
 
-            file_data = data.read()
-            storage.child('lintening/interactive/%s'%_uuid).put(file_data)
-            _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
+            find_word = dataJson['find_word']
 
-            sql_data = (_uuid , difficulty , _url , answer)
+            _card = []
+            _index = 0
+            for vocab in find_word :
+                _text = ''
+
+                for _ in vocab :
+                    _text += '{{%s}}'%_index
+                    _index += 1
+
+                _card.append(_text)
+
+            _result = data%tuple(_card)
+
+            sql_data = (_uuid , difficulty , _result , data_atob , json.dumps(answer))
             sql_str = '''
-                INSERT INTO readandwrite_describe_photo
-                (id , difficulty, data , answer)
+                INSERT INTO readandwrite_fill_blank
+                (id , difficulty, data , data_atob ,answer)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s ,%s , %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()
