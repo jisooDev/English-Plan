@@ -28,18 +28,22 @@ def render_read_create():
             data = request.form.get('data')
             answer = request.form.get('answer')
             difficulty = request.form.get('difficulty')
+            file = request.files['audio']
 
             connection = query.get_connection()
             cursor = connection.cursor()
             _uuid = uuid.uuid4().hex
 
+            file_data = file.read()
+            storage.child('talking/read_aloud/%s'%_uuid).put(file_data)
+            _url = storage.child('talking/read_aloud/%s'%_uuid).get_url(None)
 
-            sql_data = (_uuid , difficulty , data , answer)
+            sql_data = (_uuid , difficulty , data , answer , _url)
             sql_str = '''
                 INSERT INTO talking_read_aloud
-                (id , difficulty, data , answer)
+                (id , difficulty, data , answer , audio)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s ,%s ,%s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()
