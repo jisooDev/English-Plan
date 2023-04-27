@@ -42,6 +42,7 @@
                                 <th scope="col">#</th>
                                 <th class="text-center" scope="col">question</th>
                                 <th scope="col">answer</th>
+                                <th scope="col">audio</th>
                                 <th scope="col">difficulty</th>
                                 <th class="text-center" scope="col">action</th>
                               </tr>
@@ -52,6 +53,9 @@
                                     <td>{{ loop.index }}</td>
                                     <td>{{ item.data }}</td>
                                     <td>{{ item.answer }}</td>
+                                    <td>
+                                        <button style="border: none;background: none;" onclick="playAudio('{{ item.audio }}')"><i class="fa fa-headphones" aria-hidden="true"></i></button>
+                                    </td>
                                     <td>{{ item.difficulty }}</td>
                                     <td>
                                         <button onclick="del('{{item.id}}')" style="border: none;background: none;">
@@ -63,7 +67,8 @@
 
                             </tbody>
                           </table>
-                    
+
+                          <audio id="audioPlayer"></audio>
                     </div>
 
 
@@ -101,6 +106,12 @@
                     } 
                 });
 
+        }
+
+        function playAudio(url) {
+            var audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = url;
+            audioPlayer.play();
         }
 
         $(document).ready(function() { 

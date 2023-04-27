@@ -4,7 +4,10 @@ blueprintAdmin = Blueprint('admin', __name__)
 
 @blueprintAdmin.route('/')
 def empty_path():
-    return redirect('dashboard')
+    if  session["role"] == "admin":
+        return redirect('dashboard')
+    else:
+        return render_template('main.html')
 
 @blueprintAdmin.route('/dashboard')
 def dashboard():

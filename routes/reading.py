@@ -21,14 +21,13 @@ def render_selectword():
 
 @blueprintReading.route('/reading/selectword/create', methods=[ 'GET' , 'POST'])
 def create_selectword():
-
     if request.method == 'POST':
 
         try :
             difficulty = request.form['difficulty']
             answers = request.form.getlist('answer[]')
             values = request.form.getlist('value[]')
-            
+                        
             connection = query.get_connection()
             cursor = connection.cursor()
             sql_data = []
@@ -99,6 +98,9 @@ def render_reading_create():
         try :
             json_data = request.form.get('data')
             difficulty = request.form.get('difficulty')
+
+            print(json_data ,' json_data ')
+            print(difficulty ,' json_data ')
 
             connection = query.get_connection()
             cursor = connection.cursor()

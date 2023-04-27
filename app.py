@@ -59,8 +59,9 @@ def get_publishable_key():
     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
     return jsonify(stripe_config)
 
-@app.route('/start_payment_session')
+@app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
+    data = request.json
     stripe.api_key = stripe_keys["secret_key"]
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -68,42 +69,17 @@ def start_payment_session():
             "price_data": {
             "currency": 'usd',
             "product_data": {
-            "name": 'T-shirt',
+            "name": data["name"],
             },
-            "unit_amount": 2000,
+            "unit_amount": data["unit_amount"],
             },
             "quantity": 1,
         }],
         mode='payment',
         success_url='http://localhost:70/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url='http://localhost:70/cancel',
+        cancel_url='http://localhost:70',
     )
     return jsonify({'session_id': session["id"]})
-
-# @app.route("/create-checkout-session")
-# def create_checkout_session():
-#     domain_url = "http://localhost:70/"
-#     stripe.api_key = stripe_keys["secret_key"]
-
-#     try:
-    
-#         checkout_session = stripe.checkout.Session.create(
-#             success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
-#             cancel_url=domain_url + "cancelled",
-#             payment_method_types=["card"],
-#             mode="payment",
-#             line_items=[
-#                 {
-#                     "name": "T-shirt",
-#                     "quantity": 1,
-#                     "currency": "usd",
-#                     "amount": "2000",
-#                 }
-#             ]
-#         )
-#         return jsonify({"sessionId": checkout_session["id"]})
-#     except Exception as e:
-#         return jsonify(error=str(e)), 403
 
 
 @app.route("/webhook", methods=['POST'])
@@ -147,10 +123,6 @@ def checkout():
 def success():
     return render_template("success.html")
 
-
-@app.route("/cancelled")
-def cancelled():
-    return render_template("cancelled.html")
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -214,4 +186,4 @@ app.register_blueprint(api_bp, url_prefix='/api')
 if __name__ == '__main__':
     app.debug = True
 
-    app.run(host='0.0.0.0', port=70)
+    app.run(host='0.0.0.0', port=80)
