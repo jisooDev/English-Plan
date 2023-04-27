@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "70:70"
+      - "80:80"
     environment:
       - DB_HOST=datastore
       - DB_DATABASE=sys
