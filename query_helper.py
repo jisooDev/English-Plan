@@ -6,6 +6,10 @@ from werkzeug.http import http_date
 
 from datetime import datetime, date, timedelta
 
+import os ;
+from dotenv import load_dotenv ;
+load_dotenv() 
+
 class fakefloat(float):
     def __init__(self, value):
         self._value = value
@@ -25,10 +29,10 @@ def defaultencode(o):
     raise TypeError(repr(o) + " is not JSON serializable")
 
 
-DB_HOST = "43.229.76.87"
-DB_USER = "oknumber_english"
-DB_PASSWORD = "hubqHD66f"
-DB_DB = "oknumber_english_plan"
+DB_HOST = os.getenv('DB_HOST')
+DB_USER = os.getenv('DB_USERNAME')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_DB = os.getenv('DB_DATABASE')
 
 def get_connection():
     connection = pymysql.connect(**{
@@ -37,7 +41,7 @@ def get_connection():
         'password': DB_PASSWORD,
         'db': DB_DB,
         'cursorclass': pymysql.cursors.DictCursor
-    })
+    })  
     return connection
 
 def register_user(uid,name,email):
