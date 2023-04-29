@@ -2,13 +2,13 @@ from flask import Flask , render_template , redirect ,request , session  , url_f
 from dbutils.pooled_db import PooledDB ;
 import pymysql ;
 import json
-# import stripe
+import stripe
 
 import os ;
-# from dotenv import load_dotenv ;
-# load_dotenv() 
-import query_helper as query
+from dotenv import load_dotenv ;
+load_dotenv() 
 
+import query_helper as query
 from routes.admin import blueprintAdmin as admin_bp
 from routes.reading import blueprintReading as reading_bp
 from routes.listening import blueprintListening as lintening_bp
@@ -25,10 +25,10 @@ app.config['SECRET_KEY'] = 'english_plan'
 pool_db = PooledDB(
     creator=pymysql, 
     maxconnections=3, 
-    host="43.229.76.87", 
-    user="oknumber_english", 
-    passwd="hubqHD66f",
-    db="oknumber_english_plan", 
+    host=os.getenv('DB_HOST'), 
+    user=os.getenv('DB_USERNAME'), 
+    passwd=os.getenv('DB_PASSWORD'),
+    db=os.getenv('DB_DATABASE'),  
     charset="utf8", 
     cursorclass=pymysql.cursors.DictCursor, 
     blocking=True
@@ -47,66 +47,66 @@ config = {
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
-# stripe_keys = {
-#         "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
-#         "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
-# }
+stripe_keys = {
+        "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
+        "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
+}
 
-# stripe.api_key = stripe_keys["secret_key"]
+stripe.api_key = stripe_keys["secret_key"]
 
-# @app.route("/config")
-# def get_publishable_key():
-#     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
-#     return jsonify(stripe_config)
+@app.route("/config")
+def get_publishable_key():
+    stripe_config = {"publicKey": stripe_keys["publishable_key"]}
+    return jsonify(stripe_config)
 
-# @app.route('/start_payment_session' , methods=['POST'])
-# def start_payment_session():
-#     data = request.json
-#     stripe.api_key = stripe_keys["secret_key"]
-#     session = stripe.checkout.Session.create(
-#         payment_method_types=['card'],
-#         line_items=[{
-#             "price_data": {
-#             "currency": 'usd',
-#             "product_data": {
-#             "name": data["name"],
-#             },
-#             "unit_amount": data["unit_amount"],
-#             },
-#             "quantity": 1,
-#         }],
-#         mode='payment',
-#         success_url='http://localhost:70/success?session_id={CHECKOUT_SESSION_ID}',
-#         cancel_url='http://localhost:70',
-#     )
-#     return jsonify({'session_id': session["id"]})
+@app.route('/start_payment_session' , methods=['POST'])
+def start_payment_session():
+    data = request.json
+    stripe.api_key = stripe_keys["secret_key"]
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            "price_data": {
+            "currency": 'usd',
+            "product_data": {
+            "name": data["name"],
+            },
+            "unit_amount": data["unit_amount"],
+            },
+            "quantity": 1,
+        }],
+        mode='payment',
+        success_url='http://localhost:70/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url='http://localhost:70',
+    )
+    return jsonify({'session_id': session["id"]})
 
 
-# @app.route("/webhook", methods=['POST'])
-# def stripe_webhook():
-#     payload = request.get_data(as_text=True)
-#     sig_header = request.headers.get('Stripe-Signature')
+@app.route("/webhook", methods=['POST'])
+def stripe_webhook():
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get('Stripe-Signature')
 
-#     try:
-#         event = stripe.Webhook.construct_event(
-#             payload, sig_header, stripe_keys["endpoint_secret"]
-#         )
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, stripe_keys["endpoint_secret"]
+        )
 
-#     except ValueError as e:
-#         # Invalid payload
-#         return 'Invalid payload', 400
-#     except stripe.error.SignatureVerificationError as e:
-#         # Invalid signature
-#         return 'Invalid signature', 400
+    except ValueError as e:
+        # Invalid payload
+        return 'Invalid payload', 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return 'Invalid signature', 400
 
-#     # Handle the checkout.session.completed event
-#     if event['type'] == 'checkout.session.completed':
-#         session = event['data']['object']
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
 
-#         # Fulfill the purchase...
-#         handle_checkout_session(session)
+        # Fulfill the purchase...
+        handle_checkout_session(session)
 
-#     return 'Success', 200
+    return 'Success', 200
 
 
 def handle_checkout_session(session):
