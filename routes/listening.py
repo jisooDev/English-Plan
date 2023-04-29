@@ -182,7 +182,7 @@ def render_interactive_create():
 
     if request.method == 'POST':
         try :
-            file = request.files['audio']
+            audio_files = request.files.getlist('audio[]')
             json_data = request.form.get('data')
             difficulty = request.form.get('difficulty')
 
@@ -190,15 +190,19 @@ def render_interactive_create():
             cursor = connection.cursor()
             _uuid = uuid.uuid4().hex
 
-
             reformat_json = json.loads(json_data)
 
-            for item in reformat_json :
-                item['answer'] = atob(item['answer'])
+            url_list = []
+            for audio in audio_files :
+                file_data = audio.read()
+                storage.child('lintening/interactive/%s'%_uuid).put(file_data)
+                _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
 
-            file_data = file.read()
-            storage.child('lintening/interactive/%s'%_uuid).put(file_data)
-            _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
+                url_list.append(_url)
+
+            for item , url in zip(reformat_json , url_list) :
+                item['answer'] = atob(item['answer'])
+                item['audio'] = url
 
             sql_data = (_uuid , difficulty, _url , json.dumps(reformat_json))
             sql_str = '''

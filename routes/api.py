@@ -235,12 +235,12 @@ practice_interactive_conversation = {
     'limited_time': True,
     'timer': 480,
     'difficulty': 'medium',
-    'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
     'data': [{
         'id': 1,
         'question': 'What your name',
         'answer': atob('12c'),
         'answer_type': 'select',
+        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
         'option': [{
             'id': '12a',
             'value': 'The Rise and Fall of the Roman Empire'
@@ -259,6 +259,7 @@ practice_interactive_conversation = {
         'question': 'Which of the following titles best describes the passage?',
         'answer': atob('2c'),
         'answer_type': 'select',
+        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
         'option': [{
             'id': '2a',
             'value': 'The Rise and Fall of the Roman Empire'
@@ -277,6 +278,7 @@ practice_interactive_conversation = {
         'question': 'What could be a synonym for "conquest" in the passage?',
         'answer': atob('3d'),
         'answer_type': 'select',
+        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
         'option': [{
             'id': '3a',
             'value': 'Battle'
@@ -295,6 +297,7 @@ practice_interactive_conversation = {
         'question': 'What could be a synonym for "pivotal" in the passage?',
         'answer': "",
         'answer_type': 'type',
+        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
         'option': []
     }]
 }
