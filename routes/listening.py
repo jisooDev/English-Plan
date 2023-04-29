@@ -204,7 +204,7 @@ def render_interactive_create():
                 item['answer'] = atob(item['answer'])
                 item['audio'] = url
 
-            sql_data = (_uuid , difficulty, _url , json.dumps(reformat_json))
+            sql_data = (_uuid , difficulty, 'none' , json.dumps(reformat_json))
             sql_str = '''
                 INSERT INTO listening_interactive_conversation
                 (id , difficulty, audio, json_data)
