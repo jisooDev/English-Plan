@@ -54,6 +54,15 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys["secret_key"]
 
+
+@app.before_request
+def check_admin():
+    if request.path.startswith('/admin/') and ('role' not in session or session['role'] != 'admin'):
+        return redirect('/')
+
+
+
+
 @app.route("/config")
 def get_publishable_key():
     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
