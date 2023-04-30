@@ -119,6 +119,7 @@ def stripe_webhook():
 
 
 def handle_checkout_session(session):
+    print(session)
     print("Payment was successful.")
     # TODO: run some custom code here
 
