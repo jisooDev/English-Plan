@@ -73,3 +73,58 @@ def get_user_by_email(email):
     if len(result) == 0:
         return False
     return result[0]
+
+def get_package(name):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM packages WHERE name = "%s" and active = 1 LIMIT 1''' % (name))
+    result = cursor.fetchall()
+    if len(result) == 0:
+        return False
+    return result[0]
+
+def get_user_package(user_id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM user_packages WHERE user_id = "%s" and active = 1 LIMIT 1''' % (user_id))
+    result = cursor.fetchall()
+    if len(result) == 0:
+        return False
+    return result[0]
+
+def insert_user_package(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+    sql_str = '''INSERT IGNORE INTO user_packages (user_id,package_id, start_date ,end_date) VALUES (
+            %(user_id)s, 
+            %(package_id)s, 
+            %(start_date)s, 
+            %(end_date)s
+        )'''
+
+    sql_data = {
+        'user_id': data["user_id"],
+        'package_id': data["package_id"],
+        'start_date': data["start_date"],
+        'end_date': data["end_date"],
+    }
+
+    cursor.execute(sql_str, sql_data)
+    connection.commit()
+    return True
+
+def update_user_package(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+    sql_str = '''UPDATE user_packages SET package_id = %(package_id)s , start_date = %(start_date)s , end_date = %(end_date)s WHERE user_id = %(user_id)s'''
+
+    sql_data = {
+        'user_id': data["user_id"],
+        'package_id': data["package_id"],
+        'start_date': data["start_date"],
+        'end_date': data["end_date"],
+    }
+
+    cursor.execute(sql_str, sql_data)
+    connection.commit()
+    return True
