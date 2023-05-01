@@ -85,8 +85,8 @@ def start_payment_session():
             "quantity": 1,
         }],
         mode='payment',
-        success_url='http://188.166.185.6:3300/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url='http://188.166.185.6:3300',
+        success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url= request.host_url,
     )
     return jsonify({'session_id': session["id"]})
 
