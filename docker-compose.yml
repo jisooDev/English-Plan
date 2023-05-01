@@ -1,20 +1,6 @@
 version: '3.8'
 
 services:
-
-  datastore:
-      platform: linux/amd64
-      image: mysql:8.0.27
-      command: --default-authentication-plugin=mysql_native_password
-      volumes:
-        - ./mysql-data:/var/lib/mysql
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-        
-      environment:
-        MYSQL_ROOT_PASSWORD: root
-        TZ: 'Asia/Bangkok'
-      ports:
-        - 3306:3306
   app:
     build:
       context: .
@@ -22,7 +8,7 @@ services:
     ports:
       - "3300:3300"
     environment:
-      - DB_HOST=datastore
+      - DB_HOST=128.199.83.238
       - DB_DATABASE=oknumber_english_plan
       - DB_USERNAME=root
       - DB_PASSWORD=root
