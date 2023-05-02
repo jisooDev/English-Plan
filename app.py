@@ -3,6 +3,7 @@ from dbutils.pooled_db import PooledDB ;
 import pymysql ;
 import json
 import stripe
+from datetime import date
 
 import os ;
 from dotenv import load_dotenv ;
@@ -28,7 +29,11 @@ pool_db = PooledDB(
     host=os.getenv('DB_HOST'), 
     user=os.getenv('DB_USERNAME'), 
     passwd=os.getenv('DB_PASSWORD'),
-    db=os.getenv('DB_DATABASE'),  
+    db=os.getenv('DB_DATABASE'),
+    # host="43.229.76.87", 
+    # user="oknumber_english", 
+    # passwd="hubqHD66f",
+    # db="oknumber_english_plan", 
     charset="utf8", 
     cursorclass=pymysql.cursors.DictCursor, 
     blocking=True
@@ -50,6 +55,7 @@ auth = firebase.auth()
 stripe_keys = {
         "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
         "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
+        "endpoint_secret": "english_plans"
 }
 
 stripe.api_key = stripe_keys["secret_key"]
@@ -59,9 +65,6 @@ stripe.api_key = stripe_keys["secret_key"]
 def check_admin():
     if request.path.startswith('/admin/') and ('role' not in session or session['role'] != 'admin'):
         return redirect('/')
-
-
-
 
 @app.route("/config")
 def get_publishable_key():
@@ -121,7 +124,37 @@ def stripe_webhook():
 def handle_checkout_session(session):
     print(session)
     print("Payment was successful.")
-    # TODO: run some custom code here
+    user_id = session["user_id"]
+    name = "Unlimited 15 days"
+    package = query.get_package(name)
+    if package:
+        package_id = package["id"]
+        days = package["days"]
+        check_package = query.get_user_package(user_id)
+        if check_package:
+            start_date = check_package["start_date"]
+            end_date = check_package["end_date"]
+            new_start_date = end_date
+            new_end_date = end_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : new_start_date,
+                end_date : new_end_date
+            }
+            update = query.update_user_package(data)
+            print("update package user_id = "+ user_id +" " +update)
+        else :
+            start_date = date.today()
+            end_date = start_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : start_date,
+                end_date : end_date
+            }
+            insert = query.insert_user_package(data)
+            print("insert package user_id = "+ user_id +" " +insert)
 
 
 @app.route("/checkout")
