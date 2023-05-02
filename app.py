@@ -97,6 +97,9 @@ def start_payment_session():
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
     payload = request.get_data(as_text=True)
+
+    print(payload)
+
     sig_header = request.headers.get('Stripe-Signature')
 
     try:
@@ -114,7 +117,7 @@ def stripe_webhook():
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-
+        
         # Fulfill the purchase...
         handle_checkout_session(session)
 
