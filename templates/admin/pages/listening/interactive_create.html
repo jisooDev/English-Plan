@@ -62,8 +62,12 @@
                                                     <label for="">Question text</label>
                                                     <textarea class="form-control qustion" name="text" rows="5" required></textarea>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="">explain text</label>
+                                                    <textarea class="form-control explain" name="text" rows="5" required></textarea>
+                                                </div>
                                                 <div>
-                                                    <div>
+                                                    <div class="mb-2">
                                                         Options Text
                                                     </div>
                                                     <div class="card-option">
@@ -148,8 +152,12 @@
                                                     <label for="">Question text</label>
                                                     <textarea class="form-control qustion" name="text" rows="5" required></textarea>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="">explain text</label>
+                                                    <textarea class="form-control explain" name="text" rows="5" required></textarea>
+                                                </div>
                                                 <div>
-                                                    <div>
+                                                    <div class="mb-2">
                                                         Options Text
                                                     </div>
                                                     <div class="card-option">
@@ -236,7 +244,8 @@
                                     'question': $(this).find('.qustion').val(),
                                     'answer': _count + $(this).find('.active').attr('data-choice'),
                                     'answer_type': 'select',
-                                    'option': _option
+                                    'option': _option ,
+                                    'explain' : $(this).find('.explain').val() ,
                                 }
 
                         _json.push(_payload)

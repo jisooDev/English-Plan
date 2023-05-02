@@ -1,0 +1,118 @@
+{% include 'admin/script-t.html' %}
+
+<style>
+    .card-li{
+        all: unset;
+    }
+</style>
+
+<body class="layout-default">
+
+    
+    <div class="preloader"></div>
+
+    <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
+        <div class="mdk-drawer-layout__content">
+
+            <!-- Header Layout -->
+            <div class="mdk-header-layout js-mdk-header-layout" data-has-scrolling-region>
+
+                <!-- Header -->
+                {% set _header =  'Select Real Word' %}
+                {% include 'admin/components/header.html' %}
+
+                <!-- // END Header -->
+
+                <!-- Header Layout Content -->
+                <div class="mdk-header-layout__content mdk-header-layout__content--fullbleed mdk-header-layout__content--scrollable page">
+
+                    
+                    <div class="container-fluid page__container">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div></div>
+                            <div>
+                                <a href="/admin/listening/selectword/create">
+                                    <button class="btn btn-primary">Create</button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <table id="display-table" class="table table-striped ">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th class="text-center" scope="col">id</th>
+                                <th class="text-center" scope="col">name</th>
+                                <th class="text-center" scope="col">role</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in response %}
+                                <tr>
+                                    <td class="text-center">
+                                       {{ item.id }}
+                                    </td>
+                                    <td class="text-center">
+                                       {{ item.name }}
+                                    </td>
+                                    <td class="text-center">
+                                       <span class="badge badge-secondary p-2">{{ item.role }}</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                          </table>
+
+                          <audio id="audioPlayer"></audio>
+                    </div>
+
+
+
+                </div>
+                <!-- // END header-layout__content -->
+
+            </div>
+            <!-- // END header-layout -->
+
+        </div>
+        <!-- // END drawer-layout__content -->
+
+        {% include 'admin/components/sidebar.html' %}
+
+    </div>
+
+    {% include 'admin/script-b.html' %}
+
+
+
+    <script>
+
+        function del(_id){
+            console.log(_id)
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to Delete this form?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/admin/listening/selectword/delete/${_id}`
+                    } 
+                });
+
+        }
+
+        function playAudio(url) {
+            var audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = url;
+            audioPlayer.play();
+        }
+
+        $(document).ready(function() { 
+
+            $('#display-table').DataTable();
+        } )
+
+    </script>
