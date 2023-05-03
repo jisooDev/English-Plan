@@ -12,6 +12,7 @@ services:
       - DB_DATABASE=oknumber_english_plan
       - DB_USERNAME=root
       - DB_PASSWORD=root
+      - PYTHONUNBUFFERED=1
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://localhost:70"]
     #   interval: 30s
