@@ -185,6 +185,7 @@ def render_interactive_create():
             audio_files = request.files.getlist('audio[]')
             json_data = request.form.get('data')
             difficulty = request.form.get('difficulty')
+            number_of_questions = request.form.get('number_of_questions')
 
             connection = query.get_connection()
             cursor = connection.cursor()
@@ -204,12 +205,12 @@ def render_interactive_create():
                 item['answer'] = atob(item['answer'])
                 item['audio'] = url
 
-            sql_data = (_uuid , difficulty, 'none' , json.dumps(reformat_json))
+            sql_data = (_uuid , difficulty, 'none' , json.dumps(reformat_json) , number_of_questions)
             sql_str = '''
                 INSERT INTO listening_interactive_conversation
-                (id , difficulty, audio, json_data)
+                (id , difficulty, audio, json_data , number_of_questions)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s ,%s, %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()

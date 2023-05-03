@@ -98,6 +98,7 @@ def render_reading_create():
         try :
             json_data = request.form.get('data')
             difficulty = request.form.get('difficulty')
+            number_of_questions = request.form.get('number_of_questions')
 
             print(json_data ,' json_data ')
             print(difficulty ,' json_data ')
@@ -111,12 +112,12 @@ def render_reading_create():
             for item in reformat_json :
                 item['answer'] = atob(item['answer'])
 
-            sql_data = (_uuid , difficulty , json.dumps(reformat_json))
+            sql_data = (_uuid , difficulty , json.dumps(reformat_json) , number_of_questions)
             sql_str = '''
                 INSERT INTO reading_reading
-                (id , difficulty, json_data)
+                (id , difficulty, json_data , number_of_questions)
                 VALUES
-                (%s , %s, %s)
+                (%s , %s, %s , %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()
