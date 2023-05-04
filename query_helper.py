@@ -77,7 +77,7 @@ def get_user_by_email(email):
 def get_package(id):
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute('''SELECT * FROM packages WHERE id = "%s" and active = 1 LIMIT 1''' % (id))
+    cursor.execute('''SELECT * FROM packages WHERE id = "%s"''' % (id))
     result = cursor.fetchall()
     if len(result) == 0:
         return False
