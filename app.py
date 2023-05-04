@@ -105,14 +105,13 @@ def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
     if stripe_payload["type"] == "checkout.session.completed":
-        handle_checkout_session()
+        handle_checkout_session(7,2)
     return 'Success'
 
 
-def handle_checkout_session():
+def handle_checkout_session(user_id , package_id):
     print("Payment was successful.")
-    user_id = 7
-    package = query.get_package(2)
+    package = query.get_package(package_id)
     if package:
         package_id = package["id"]
         days = package["days"]
@@ -129,8 +128,7 @@ def handle_checkout_session():
                 "end_date" : new_end_date
             }
             print(data)
-            update = query.update_user_package(data)
-            print("update package user_id = "+ user_id +" " +update)
+            query.update_user_package(data)
         else :
             start_date = date.today()
             end_date = start_date + timedelta(days=days)
@@ -141,8 +139,7 @@ def handle_checkout_session():
                 "end_date" : end_date
             }
             print(data)
-            insert = query.insert_user_package(data)
-            print("insert package user_id = "+ user_id +" " +insert)
+            query.insert_user_package(data)
 
 
 @app.route("/checkout")
