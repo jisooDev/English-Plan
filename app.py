@@ -80,6 +80,8 @@ def set_session_package():
 def start_payment_session():
     data = request.json
     session["package_id"] = data["package_id"]
+    print(session["user_id"])
+    print(session["package_id"])
     stripe.api_key = stripe_keys["secret_key"]
     sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
