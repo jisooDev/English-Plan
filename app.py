@@ -141,12 +141,12 @@ def stripe_webhook():
 
 def handle_checkout_session():
     print("Payment was successful.")
-    user_id = session["user_id"]
-    print(user_id)
+    # user_id = session["user_id"]
+    # print(user_id)
     print(session["package_id"])
     # package = query.get_package(session["package_id"])
     # if package:
-    #     package_id = session["id"]
+    #     package_id = package["id"]
     #     days = package["days"]
     #     check_package = query.get_user_package(user_id)
     #     if check_package:
