@@ -95,11 +95,8 @@ def start_payment_session():
             },
             "quantity": 1,
         }],
-        shipping_address_collection= {
-            "allowed_countries": ['US']
-        },
        custom_text={
-            "shipping_address": {
+            "submit": {
             "message":
             str(session["user_id"]) +","+ str(session["package_id"]),
             }
