@@ -81,7 +81,7 @@ def set_session_package():
 def start_payment_session():
     data = request.json
     stripe.api_key = stripe_keys["secret_key"]
-    session = stripe.checkout.Session.create(
+    sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
             "price_data": {
@@ -98,7 +98,7 @@ def start_payment_session():
         cancel_url= request.host_url,
     )
 
-    return jsonify({'session_id': session["id"]})
+    return jsonify({'session_id': sessions["id"]})
 
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
@@ -111,38 +111,36 @@ def stripe_webhook():
 
 def handle_checkout_session():
     print("Payment was successful.")
-    # user_id = session["user_id"]
-    # print(user_id)
-    print(session)
-    # package = query.get_package(session["package_id"])
-    # if package:
-    #     package_id = package["id"]
-    #     days = package["days"]
-    #     check_package = query.get_user_package(user_id)
-    #     if check_package:
-    #         start_date = check_package["start_date"]
-    #         end_date = check_package["end_date"]
-    #         new_start_date = end_date
-    #         new_end_date = end_date + days
-    #         data = {
-    #             package_id : package_id,
-    #             user_id : user_id,
-    #             start_date : new_start_date,
-    #             end_date : new_end_date
-    #         }
-    #         update = query.update_user_package(data)
-    #         print("update package user_id = "+ user_id +" " +update)
-    #     else :
-    #         start_date = date.today()
-    #         end_date = start_date + days
-    #         data = {
-    #             package_id : package_id,
-    #             user_id : user_id,
-    #             start_date : start_date,
-    #             end_date : end_date
-    #         }
-    #         insert = query.insert_user_package(data)
-    #         print("insert package user_id = "+ user_id +" " +insert)
+    user_id = session["user_id"]
+    package = query.get_package(session["package_id"])
+    if package:
+        package_id = package["id"]
+        days = package["days"]
+        check_package = query.get_user_package(user_id)
+        if check_package:
+            start_date = check_package["start_date"]
+            end_date = check_package["end_date"]
+            new_start_date = end_date
+            new_end_date = end_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : new_start_date,
+                end_date : new_end_date
+            }
+            update = query.update_user_package(data)
+            print("update package user_id = "+ user_id +" " +update)
+        else :
+            start_date = date.today()
+            end_date = start_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : start_date,
+                end_date : end_date
+            }
+            insert = query.insert_user_package(data)
+            print("insert package user_id = "+ user_id +" " +insert)
 
 
 @app.route("/checkout")
