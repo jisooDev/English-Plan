@@ -81,7 +81,7 @@ def set_session_package():
 def start_payment_session():
     data = request.json
     stripe.api_key = stripe_keys["secret_key"]
-    session = stripe.checkout.Session.create(
+    sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
             "price_data": {
@@ -98,53 +98,23 @@ def start_payment_session():
         cancel_url= request.host_url,
     )
 
-    return jsonify({'session_id': session["id"]})
-
-
-# @app.route("/webhook", methods=['POST'])
-# def stripe_webhook():
-#     payload = request.get_data(as_text=True)
-
-#     print(payload)
-
-#     sig_header = request.headers.get('Stripe-Signature')
-
-#     try:
-#         event = stripe.Webhook.construct_event(
-#             payload, sig_header, stripe_keys["endpoint_secret"]
-#         )
-
-#     except ValueError as e:
-#         # Invalid payload
-#         return 'Invalid payload', 400
-#     except stripe.error.SignatureVerificationError as e:
-#         # Invalid signature
-#         return 'Invalid signature', 400
-
-#     # Handle the checkout.session.completed event
-#     if event['type'] == 'checkout.session.completed':
-#         session = event['data']['object']
-        
-#         # Fulfill the purchase...
-#         handle_checkout_session(session)
-
-#     return 'Success', 200
+    return jsonify({'session_id': sessions["id"]})
 
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
-    handle_checkout_session()
+    if stripe_payload["type"] == "checkout.session.completed":
+        handle_checkout_session()
     return 'Success'
 
 
 def handle_checkout_session():
     print("Payment was successful.")
-    user_id = session["user_id"]
-    print(session["user_id"])
-    package = query.get_package(session["package_id"])
+    user_id = 7
+    package = query.get_package(2)
     if package:
-        package_id = session["id"]
+        package_id = package["id"]
         days = package["days"]
         check_package = query.get_user_package(user_id)
         if check_package:
