@@ -95,12 +95,15 @@ def start_payment_session():
             },
             "quantity": 1,
         }],
-       custom_text=[{
+        shipping_address_collection= {
+            "allowed_countries": ['US']
+        },
+       custom_text={
             "shipping_address": {
             "message":
             str(session["user_id"]) +","+ str(session["package_id"]),
             }
-        }],
+        },
         mode='payment',
         success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url= request.host_url,
