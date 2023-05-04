@@ -95,13 +95,12 @@ def start_payment_session():
             },
             "quantity": 1,
         }],
-        custom_fields=[
-            {
-            "key": "engraving",
-            "label": {"type": "custom", "custom": "Personalized engraving"},
-            "type": "text",
-            },
-        ],
+       custom_text={
+            "shipping_address": {
+            "message":
+            session["user_id"] +" , "+ session["package_id"],
+            }
+        },
         mode='payment',
         success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url= request.host_url,
