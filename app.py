@@ -60,6 +60,8 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys["secret_key"]
 
+userId = 0
+packageId = 0
 
 @app.before_request
 def check_admin():
@@ -80,6 +82,7 @@ def set_session_package():
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
+    packageId = data["package_id"]
     stripe.api_key = stripe_keys["secret_key"]
     sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -105,12 +108,14 @@ def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
     if stripe_payload["type"] == "checkout.session.completed":
-        handle_checkout_session(7,2)
+        handle_checkout_session(userId,packageId)
     return 'Success'
 
 
 def handle_checkout_session(user_id , package_id):
     print("Payment was successful.")
+    print(user_id)
+    print(package_id)
     package = query.get_package(package_id)
     if package:
         package_id = package["id"]
@@ -119,12 +124,11 @@ def handle_checkout_session(user_id , package_id):
         if check_package:
             start_date = check_package["start_date"]
             end_date = check_package["end_date"]
-            new_start_date = end_date
             new_end_date = end_date + timedelta(days=days)
             data = {
                 "package_id" : package_id,
                 "user_id" : user_id,
-                "start_date" : new_start_date,
+                "start_date" : start_date,
                 "end_date" : new_end_date
             }
             print(data)

@@ -802,19 +802,6 @@
 
         $('#checkout').click(function() {
 
-            let body1 = {
-                "package_id": 1
-            }
-
-            $.ajax({
-                    url: '/set_session_package',
-                    type: 'POST',
-                    data: JSON.stringify(body1),
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function(data) {}
-                });
-
             let body = {
                 "name": "Unlimited 15 Days",
                 "unit_amount": 1990,
@@ -840,19 +827,6 @@
 
         $('#checkout-2').click(function() {
 
-            let body1 = {
-                "package_id": 2
-            }
-
-            $.ajax({
-                    url: '/set_session_package',
-                    type: 'POST',
-                    data: JSON.stringify(body1),
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function(data) {}
-                });
-
             let body = {
                 "name": "Unlimited 30 Days",
                 "unit_amount": 2910,
@@ -877,19 +851,6 @@
         });
 
         $('#checkout-3').click(function() {
-
-            let body1 = {
-                "package_id": 3
-            }
-
-            $.ajax({
-                    url: '/set_session_package',
-                    type: 'POST',
-                    data: JSON.stringify(body1),
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: function(data) {}
-                });
 
             let body = {
                 "name": "Unlimited 90 Days",
