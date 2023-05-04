@@ -75,7 +75,7 @@ def get_publishable_key():
 def set_session_package():
     data = request.json
     session["package_id"] = data["package_id"]
-    return True
+    return "Success"
 
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
