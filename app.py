@@ -111,12 +111,9 @@ def start_payment_session():
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
     stripe_payload = request.json
-    # print(session["user_id"])
-    # print(session["package_id"])
-    print(stripe_payload)
     if stripe_payload["type"] == "checkout.session.completed":
-        print(stripe_payload["data"]["object"]["custom_text"]["submit"]["message"])
-        handle_checkout_session(8,2)
+        x = (stripe_payload["data"]["object"]["custom_text"]["submit"]["message"]).split(",")
+        handle_checkout_session(x[0],x[1])
     return 'Success'
 
 
