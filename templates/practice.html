@@ -129,7 +129,7 @@
     </div>
 
 
-
+    {% include 'login-register.html' %}
     {% include 'script-b.html' %}
     {% raw %}
     <script>
@@ -140,12 +140,14 @@
         let premium = true;
         let practiceState = "practicing";
         let timeLimit = false;
+        let packageData = false;
         $(async ($) => {
 
 
             let package = await checkPackage();
             if (package.success) {
-                if (package.have_package) {
+                packageData = package;
+                if (package.have_package && package.is_login) {
                     renderSelectDifficulty();
                     renderSelectType();
                     $('#select_difficulty').on('change', () => {
@@ -181,8 +183,8 @@
             container.append('<option value="easy">Easy </option>');
             container.append('<option value="medium ">medium </option>');
             container.append('<option value="difficult">Hard</option>');
-            let value = window.atob(localStorage.getItem('sd'));
-            if (value) {
+            if (localStorage.getItem('sd')) {
+                let value = window.atob(localStorage.getItem('sd'));
                 difficulty = value;
                 container.val(value);
             } else {
@@ -214,8 +216,9 @@
             container.append('<option value="listen_select_real_eng_word">Choose Real English Words Only</option>');
             container.append('<option value="interactive_conversation">Interactive Conversation</option>');
             container.append('<option value="read_aloud">Read the text within 20 seconds</option>');
-            let value = window.atob(localStorage.getItem('st'));
-            if (value) {
+
+            if (localStorage.getItem('st')) {
+                let value = window.atob(localStorage.getItem('st'));
                 tasks = value;
                 container.val(value);
             } else {
@@ -243,16 +246,21 @@
 
 
         function checkStarting(startNew) {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.get('time_limit') === 'true') {
-                timeLimit = true;
-            }
-            if (urlParams.get('start') === 'true') {
-                startPractice(startNew, false);
+            if (packageData && packageData.is_login) {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                if (urlParams.get('time_limit') === 'true') {
+                    timeLimit = true;
+                }
+                if (urlParams.get('start') === 'true') {
+                    startPractice(startNew, false);
+                } else {
+                    renderLandingReady();
+                }
             } else {
                 renderLandingReady();
             }
+
         }
 
         function renderLandingReady() {
@@ -274,10 +282,13 @@
             row.append(colLeft);
             row.append(colRight);
             container.append($('<button>').addClass('btn btn-primary btn-start').text('Begin Exam').attr('type', 'button').click(function () {
+                if (packageData && packageData.is_login) {
+                    $(this).hide();
+                    row.show();
+                } else {
+                    alert('Please login!')
+                }
 
-                // container.empty();
-                $(this).hide();
-                row.show();
 
             }));
             container.append(row);

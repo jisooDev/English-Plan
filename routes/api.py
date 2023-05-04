@@ -53,7 +53,7 @@ def check_user_package():
 def api_check_package():
     try:
         package = check_user_package()
-        return  Response(response=json.dumps({'success': True, 'have_package': package}), mimetype='application/json', status=200)
+        return  Response(response=json.dumps({'success': True, 'have_package': package, 'is_login': True if session.get('user_id') else False}), mimetype='application/json', status=200)
     
     except Exception as e:
         traceback.print_exc()
