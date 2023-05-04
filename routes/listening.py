@@ -189,12 +189,12 @@ def render_interactive_create():
 
             connection = query.get_connection()
             cursor = connection.cursor()
-            _uuid = uuid.uuid4().hex
 
             reformat_json = json.loads(json_data)
 
             url_list = []
             for audio in audio_files :
+                _uuid = uuid.uuid4().hex
                 file_data = audio.read()
                 storage.child('lintening/interactive/%s'%_uuid).put(file_data)
                 _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
@@ -202,6 +202,7 @@ def render_interactive_create():
                 url_list.append(_url)
 
             for item , url in zip(reformat_json , url_list) :
+                print('url :' , url)
                 item['answer'] = atob(item['answer'])
                 item['audio'] = url
 
