@@ -3,7 +3,7 @@ from dbutils.pooled_db import PooledDB ;
 import pymysql ;
 import json
 import stripe
-from datetime import date
+from datetime import date,timedelta
 
 import os ;
 from dotenv import load_dotenv ;
@@ -120,9 +120,8 @@ def handle_checkout_session():
         if check_package:
             start_date = check_package["start_date"]
             end_date = check_package["end_date"]
-            print(end_date)
             new_start_date = end_date
-            new_end_date = end_date + days
+            new_end_date = end_date + timedelta(days=days)
             data = {
                 package_id : package_id,
                 user_id : user_id,
@@ -133,7 +132,7 @@ def handle_checkout_session():
             print("update package user_id = "+ user_id +" " +update)
         else :
             start_date = date.today()
-            end_date = start_date + days
+            end_date = start_date + timedelta(days=days)
             data = {
                 package_id : package_id,
                 user_id : user_id,
