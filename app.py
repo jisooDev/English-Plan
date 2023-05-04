@@ -123,10 +123,10 @@ def handle_checkout_session():
             new_start_date = end_date
             new_end_date = end_date + timedelta(days=days)
             data = {
-                package_id : package_id,
-                user_id : user_id,
-                start_date : new_start_date,
-                end_date : new_end_date
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : new_start_date,
+                "end_date" : new_end_date
             }
             print(data)
             update = query.update_user_package(data)
@@ -135,10 +135,10 @@ def handle_checkout_session():
             start_date = date.today()
             end_date = start_date + timedelta(days=days)
             data = {
-                package_id : package_id,
-                user_id : user_id,
-                start_date : start_date,
-                end_date : end_date
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : start_date,
+                "end_date" : end_date
             }
             print(data)
             insert = query.insert_user_package(data)
