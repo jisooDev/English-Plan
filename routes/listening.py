@@ -182,30 +182,35 @@ def render_interactive_create():
 
     if request.method == 'POST':
         try :
-            file = request.files['audio']
+            audio_files = request.files.getlist('audio[]')
             json_data = request.form.get('data')
             difficulty = request.form.get('difficulty')
+            number_of_questions = request.form.get('number_of_questions')
 
             connection = query.get_connection()
             cursor = connection.cursor()
             _uuid = uuid.uuid4().hex
 
-
             reformat_json = json.loads(json_data)
 
-            for item in reformat_json :
+            url_list = []
+            for audio in audio_files :
+                file_data = audio.read()
+                storage.child('lintening/interactive/%s'%_uuid).put(file_data)
+                _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
+
+                url_list.append(_url)
+
+            for item , url in zip(reformat_json , url_list) :
                 item['answer'] = atob(item['answer'])
+                item['audio'] = url
 
-            file_data = file.read()
-            storage.child('lintening/interactive/%s'%_uuid).put(file_data)
-            _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
-
-            sql_data = (_uuid , difficulty, _url , json.dumps(reformat_json))
+            sql_data = (_uuid , difficulty, 'none' , json.dumps(reformat_json) , number_of_questions)
             sql_str = '''
                 INSERT INTO listening_interactive_conversation
-                (id , difficulty, audio, json_data)
+                (id , difficulty, audio, json_data , number_of_questions)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s ,%s, %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()

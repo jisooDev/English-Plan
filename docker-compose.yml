@@ -6,14 +6,14 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "70:70"
+      - "3300:3300"
     environment:
-      - DB_HOST=datastore
-      - DB_DATABASE=sys
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      - DB_HOST=43.229.76.87
+      - DB_DATABASE=oknumber_english_plan
+      - DB_USERNAME=oknumber_english
+      - DB_PASSWORD=hubqHD66f
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:70"]
+      test: ["CMD", "curl", "-f", "http://localhost:3300"]
       interval: 30s
       timeout: 10s
       retries: 3

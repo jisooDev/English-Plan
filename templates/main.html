@@ -266,7 +266,7 @@
                                 </a>
                             </h4> -->
 
-                            <button class="more mt-5" style="background: #5ECED1;">
+                            <button class="more mt-5" style="background: #5ECED1;" id="checkout-free">
                                 Started
                             </button>
                         </div>
@@ -285,7 +285,7 @@
                                     15 Days
                                 </a>
                             </h4>
-                            <button class="more mt-5">
+                            <button class="more mt-5" id="checkout">
                                 CHOOSE
                             </button>
                         </div>
@@ -304,7 +304,7 @@
                                     30 Days
                                 </a>
                             </h4>
-                            <button class="more mt-5">
+                            <button class="more mt-5" id="checkout-2">
                                 CHOOSE
                             </button>
                         </div>
@@ -326,7 +326,7 @@
                                     90 Days <br>
                                 </a>
                             </h4>
-                            <button class="more mt-5">
+                            <button class="more mt-5" id="checkout-3">
                                 CHOOSE
                             </button>
                         </div>
@@ -359,7 +359,7 @@
                 <div class="col-lg-3 col-md-7 col-sm-8">
                     <div class="card-package">
                         <div class="services-icon" >
-                            <h1>19.99$</h1>
+                            <h1>790 THB</h1>
                         </div>
                         <div class="services-content">
                             <h4 class="services-title">
@@ -378,7 +378,7 @@
                 <div class="col-lg-3 col-md-7 col-sm-8">
                     <div class="card-package">
                         <div class="services-icon" >
-                            <h1>21.90$</h1>
+                            <h1>990 THB</h1>
                         </div>
                         <div class="services-content">
                             <h4 class="services-title">
@@ -397,7 +397,7 @@
                 <div class="col-lg-3 col-md-7 col-sm-8">
                     <div class="card-package">
                         <div class="services-icon" >
-                            <h1>39.90$</h1>
+                            <h1>1590 THB</h1>
                         </div>
                         <div class="services-content">
                             <h4 class="services-title">
@@ -414,6 +414,31 @@
                                 CHOOSE
                             </button>
                         </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-md-8 mx-auto">
+                            <div class="card-package">
+                                <div class="services-icon" >
+                                    <h1>4990 THB</h1>
+                                </div>
+                                <div class="services-content">
+                                    <h4 class="services-title">
+                                        <a href="#">
+                                            เรียนเทคนิคสำหรับทำทุกโจทย์จากคนที่ได้คะแนน 155/160 
+                                            <small>
+                                                เข้าใช้ application ฝึกได้ 6 เดือน <br>
+                                                แถมฟรี Flashcard ฝึกคำศัพท์ (รวมศัพท์ Duolingo 300 คนพร้อมการออกเสียง) 
+                                            </small>
+                                        </a>
+                                    </h4>
+                                    <button class="more mt-5">
+                                        CHOOSE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>  
                     </div>
                 </div>
 
@@ -707,6 +732,7 @@
     {% include 'script-b.html' %}
 
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
             
             $('.slider-nav').slick({
@@ -765,6 +791,113 @@
             $('.lang-th').show();
         }
     }
+    </script>
+
+    <script>
+        fetch("/config")
+        .then((result) => { return result.json(); })
+        .then((data) => {
+        // Initialize Stripe.js
+        const stripe = Stripe(data.publicKey);
+
+        $('#checkout').click(function() {
+
+            let body = {
+                "name": "Unlimited 15 Days",
+                "unit_amount": 1990
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+        });
+
+        $('#checkout-2').click(function() {
+
+            let body = {
+                "name": "Unlimited 30 Days",
+                "unit_amount": 2910
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+        });
+
+        $('#checkout-3').click(function() {
+
+            let body = {
+                "name": "Unlimited 90 Days",
+                "unit_amount": 3990
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+        });
+
+        $('#checkout-free').click(function() {
+
+        let body = {
+            "name": "Free",
+            "unit_amount": 100
+        }
+
+        $.ajax({
+                url: '/start_payment_session',
+                type: 'POST',
+                data: JSON.stringify(body),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(data) {
+                    payment_session_id = data['session_id'];
+                    stripe.redirectToCheckout({
+                        sessionId: payment_session_id
+                    }).then(function (result) {
+                        console.log(result.error.message);
+                    });
+                }
+            });
+        });
+
+        });
+
     </script>
 </body>
 </html>

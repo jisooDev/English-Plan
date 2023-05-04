@@ -68,7 +68,7 @@
                                        <li class="card-matching my-2 p-2 card-li d-flex">
                                             <div class="form-group d-flex row w-100">
                                                 <div class="first-section d-flex col-6 pr-0">
-                                                    <input class="form-control" type="text">
+                                                    <textarea class="form-control" name="text" rows="5" required></textarea>
                                                     <select class="first-select form-control mx-2" style="width: 10%;" name=""></select>
                                                 </div>
                                                 <div class="seconde-section d-flex col-6 pl-0">
@@ -82,40 +82,6 @@
                                                 <button class="btn btn-secondary w-100 delete-btn" disabled>Delete</button>
                                             </div>
                                        </li>
-                                       <!-- <li class="card-matching my-2 p-2 card-li d-flex">
-                                            <div class="form-group d-flex row w-100">
-                                                <div class="d-flex col-6 pr-0">
-                                                    <input class="form-control" type="text">
-                                                    <select class="first-select form-control mx-2" style="width: 10%;"></select>
-                                                </div>
-                                                <div class="d-flex col-6 pl-0">
-                                                    <input class="form-control" type="text">
-                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
-                                                        <option value=""></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <button class="btn btn-danger w-100 delete-btn">Delete</button>
-                                            </div>
-                                       </li>
-                                       <li class="card-matching my-2 p-2 card-li d-flex">
-                                            <div class="form-group d-flex row w-100">
-                                                <div class="d-flex col-6 pr-0">
-                                                    <input class="form-control" type="text">
-                                                    <select class="first-select form-control mx-2" style="width: 10%;" ></select>
-                                                </div>
-                                                <div class="d-flex col-6 pl-0">
-                                                    <input class="form-control" type="text">
-                                                    <select class="seconde-select form-control mx-2" style="width: 10%;">
-                                                        <option value=""></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <button class="btn btn-danger w-100 delete-btn">Delete</button>
-                                            </div>
-                                       </li> -->
                                     </ul>
 
                                     <input type="submit" class="btn btn-primary w-100" value="Save">
@@ -151,7 +117,7 @@
                                         <li class="card-matching my-2 p-2 card-li d-flex">
                                             <div class="form-group d-flex row w-100">
                                                 <div class="first-section d-flex col-6 pr-0">
-                                                    <input class="form-control" type="text">
+                                                    <textarea class="form-control" name="text" rows="5" required></textarea>
                                                     <select class="first-select form-control mx-2" style="width: 10%;"></select>
                                                 </div>
                                                 <div class="seconde-section d-flex col-6 pl-0">
@@ -196,7 +162,7 @@
 
                         let _payload = {
                             id : `a${_count}`,
-                            value : $(this).find('input[type="text"]').val(),
+                            value : $(this).find('textarea[name="text"]').val(),
                             answer : `b${$(this).find('select.first-select').val()}`,
                         }
 

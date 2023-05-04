@@ -102,8 +102,8 @@ def render_describephoto_create():
             _uuid = uuid.uuid4().hex
 
             file_data = data.read()
-            storage.child('lintening/interactive/%s'%_uuid).put(file_data)
-            _url = storage.child('lintening/interactive/%s'%_uuid).get_url(None)
+            storage.child('readandwrite/describephoto/%s'%_uuid).put(file_data)
+            _url = storage.child('readandwrite/describephoto/%s'%_uuid).get_url(None)
 
             sql_data = (_uuid , difficulty , _url , answer)
             sql_str = '''
@@ -170,6 +170,13 @@ def render_fillblank_create():
             answer = dataJson['answer']
             difficulty = dataJson['difficulty']
 
+            new_answer = []
+            for x in answer:
+                new_answer.append({
+                    "value": atob(x["value"]),
+                    "show": x["show"]
+                })
+
             connection = query.get_connection()
             cursor = connection.cursor()
             _uuid = uuid.uuid4().hex
@@ -189,7 +196,7 @@ def render_fillblank_create():
 
             _result = data%tuple(_card)
 
-            sql_data = (_uuid , difficulty , _result , data_atob , json.dumps(answer))
+            sql_data = (_uuid , difficulty , _result , data_atob , json.dumps(new_answer))
             sql_str = '''
                 INSERT INTO readandwrite_fill_blank
                 (id , difficulty, data , data_atob ,answer)

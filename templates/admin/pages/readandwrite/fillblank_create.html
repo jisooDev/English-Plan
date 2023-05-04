@@ -139,8 +139,6 @@
                     "difficulty": $('#difficulty').val()
                 }
 
-                console.log(body);
-
                  $.ajax({
                     url: '/admin/readandwrite/fillblank/create',
                     type: 'POST',
@@ -153,7 +151,7 @@
                     },
                     error: function(error) {
                         // Handle error response from the API
-                        console.log(error);
+                        window.location.href = '/admin/readandwrite/fillblank'
                     }
                 });
 

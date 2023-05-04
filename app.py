@@ -3,12 +3,13 @@ from dbutils.pooled_db import PooledDB ;
 import pymysql ;
 import json
 import stripe
+from datetime import date
 
 import os ;
-# from dotenv import load_dotenv ;
-# load_dotenv() 
-import query_helper as query
+from dotenv import load_dotenv ;
+load_dotenv() 
 
+import query_helper as query
 from routes.admin import blueprintAdmin as admin_bp
 from routes.reading import blueprintReading as reading_bp
 from routes.listening import blueprintListening as lintening_bp
@@ -25,10 +26,14 @@ app.config['SECRET_KEY'] = 'english_plan'
 pool_db = PooledDB(
     creator=pymysql, 
     maxconnections=3, 
-    host="43.229.76.87", 
-    user="oknumber_english", 
-    passwd="hubqHD66f",
-    db="oknumber_english_plan", 
+    host=os.getenv('DB_HOST'), 
+    user=os.getenv('DB_USERNAME'), 
+    passwd=os.getenv('DB_PASSWORD'),
+    db=os.getenv('DB_DATABASE'),
+    # host="43.229.76.87", 
+    # user="oknumber_english", 
+    # passwd="hubqHD66f",
+    # db="oknumber_english_plan", 
     charset="utf8", 
     cursorclass=pymysql.cursors.DictCursor, 
     blocking=True
@@ -50,17 +55,25 @@ auth = firebase.auth()
 stripe_keys = {
         "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
         "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
+        "endpoint_secret": "english_plans"
 }
 
 stripe.api_key = stripe_keys["secret_key"]
+
+
+@app.before_request
+def check_admin():
+    if request.path.startswith('/admin/') and ('role' not in session or session['role'] != 'admin'):
+        return redirect('/')
 
 @app.route("/config")
 def get_publishable_key():
     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
     return jsonify(stripe_config)
 
-@app.route('/start_payment_session')
+@app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
+    data = request.json
     stripe.api_key = stripe_keys["secret_key"]
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -68,74 +81,89 @@ def start_payment_session():
             "price_data": {
             "currency": 'usd',
             "product_data": {
-            "name": 'T-shirt',
+            "name": data["name"],
             },
-            "unit_amount": 2000,
+            "unit_amount": data["unit_amount"],
             },
             "quantity": 1,
         }],
         mode='payment',
-        success_url='http://localhost:70/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url='http://localhost:70/cancel',
+        success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url= request.host_url,
     )
     return jsonify({'session_id': session["id"]})
 
-# @app.route("/create-checkout-session")
-# def create_checkout_session():
-#     domain_url = "http://localhost:70/"
-#     stripe.api_key = stripe_keys["secret_key"]
+
+# @app.route("/webhook", methods=['POST'])
+# def stripe_webhook():
+#     payload = request.get_data(as_text=True)
+
+#     print(payload)
+
+#     sig_header = request.headers.get('Stripe-Signature')
 
 #     try:
-    
-#         checkout_session = stripe.checkout.Session.create(
-#             success_url=domain_url + "success?session_id={CHECKOUT_SESSION_ID}",
-#             cancel_url=domain_url + "cancelled",
-#             payment_method_types=["card"],
-#             mode="payment",
-#             line_items=[
-#                 {
-#                     "name": "T-shirt",
-#                     "quantity": 1,
-#                     "currency": "usd",
-#                     "amount": "2000",
-#                 }
-#             ]
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, stripe_keys["endpoint_secret"]
 #         )
-#         return jsonify({"sessionId": checkout_session["id"]})
-#     except Exception as e:
-#         return jsonify(error=str(e)), 403
 
+#     except ValueError as e:
+#         # Invalid payload
+#         return 'Invalid payload', 400
+#     except stripe.error.SignatureVerificationError as e:
+#         # Invalid signature
+#         return 'Invalid signature', 400
+
+#     # Handle the checkout.session.completed event
+#     if event['type'] == 'checkout.session.completed':
+#         session = event['data']['object']
+        
+#         # Fulfill the purchase...
+#         handle_checkout_session(session)
+
+#     return 'Success', 200
 
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
-    payload = request.get_data(as_text=True)
-    sig_header = request.headers.get('Stripe-Signature')
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, stripe_keys["endpoint_secret"]
-        )
-
-    except ValueError as e:
-        # Invalid payload
-        return 'Invalid payload', 400
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        return 'Invalid signature', 400
-
-    # Handle the checkout.session.completed event
-    if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-
-        # Fulfill the purchase...
-        handle_checkout_session(session)
-
-    return 'Success', 200
+    stripe_payload = request.json
+    print(stripe_payload)
+    return 'Success'
 
 
 def handle_checkout_session(session):
+    print(session)
     print("Payment was successful.")
-    # TODO: run some custom code here
+    user_id = session["user_id"]
+    name = "Unlimited 15 days"
+    package = query.get_package(name)
+    if package:
+        package_id = package["id"]
+        days = package["days"]
+        check_package = query.get_user_package(user_id)
+        if check_package:
+            start_date = check_package["start_date"]
+            end_date = check_package["end_date"]
+            new_start_date = end_date
+            new_end_date = end_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : new_start_date,
+                end_date : new_end_date
+            }
+            update = query.update_user_package(data)
+            print("update package user_id = "+ user_id +" " +update)
+        else :
+            start_date = date.today()
+            end_date = start_date + days
+            data = {
+                package_id : package_id,
+                user_id : user_id,
+                start_date : start_date,
+                end_date : end_date
+            }
+            insert = query.insert_user_package(data)
+            print("insert package user_id = "+ user_id +" " +insert)
 
 
 @app.route("/checkout")
@@ -147,10 +175,6 @@ def checkout():
 def success():
     return render_template("success.html")
 
-
-@app.route("/cancelled")
-def cancelled():
-    return render_template("cancelled.html")
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -214,4 +238,4 @@ app.register_blueprint(api_bp, url_prefix='/api')
 if __name__ == '__main__':
     app.debug = True
 
-    app.run(host='0.0.0.0', port=70)
+    app.run(host='0.0.0.0', port=3300)
