@@ -141,6 +141,7 @@ def stripe_webhook():
 def handle_checkout_session():
     print("Payment was successful.")
     user_id = session["user_id"]
+    print(session["user_id"])
     package = query.get_package(session["package_id"])
     if package:
         package_id = session["id"]
@@ -209,6 +210,7 @@ def login():
         result = query.get_user_by_email(user["email"])
         if result:
             session["user_id"] = result["id"]
+            print(session["user_id"])
             session["role"] = result["role"]
             return json.dumps({"status" : 200})
         else :
