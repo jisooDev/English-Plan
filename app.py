@@ -104,7 +104,6 @@ def start_payment_session():
 def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
-    print(session["user_id"])
     if stripe_payload["type"] == "checkout.session.completed":
         handle_checkout_session()
     return 'Success'
