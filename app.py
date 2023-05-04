@@ -203,7 +203,11 @@ def main_page():
 def practice_page():
     return render_template('practice.html')
 
-
+@app.route("/test")
+def test_page():
+    print(session["user_id"])
+    print(session["package_id"])
+    return "Hello"
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(reading_bp, url_prefix='/admin')
