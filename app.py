@@ -60,9 +60,6 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys["secret_key"]
 
-userId = 0
-packageId = 0
-
 @app.before_request
 def check_admin():
     if request.path.startswith('/admin/') and ('role' not in session or session['role'] != 'admin'):
@@ -82,7 +79,7 @@ def set_session_package():
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
-    packageId = data["package_id"]
+    session["package_id"] = data["package_id"]
     stripe.api_key = stripe_keys["secret_key"]
     sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -108,7 +105,7 @@ def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
     if stripe_payload["type"] == "checkout.session.completed":
-        handle_checkout_session(userId,packageId)
+        handle_checkout_session(8,2)
     return 'Success'
 
 
@@ -183,7 +180,7 @@ def login():
         result = query.get_user_by_email(user["email"])
         if result:
             session["user_id"] = result["id"]
-            print(session["user_id"])
+            userId = result["id"]
             session["role"] = result["role"]
             return json.dumps({"status" : 200})
         else :
