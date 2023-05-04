@@ -100,36 +100,6 @@ def start_payment_session():
 
     return jsonify({'session_id': session["id"]})
 
-
-# @app.route("/webhook", methods=['POST'])
-# def stripe_webhook():
-#     payload = request.get_data(as_text=True)
-
-#     print(payload)
-
-#     sig_header = request.headers.get('Stripe-Signature')
-
-#     try:
-#         event = stripe.Webhook.construct_event(
-#             payload, sig_header, stripe_keys["endpoint_secret"]
-#         )
-
-#     except ValueError as e:
-#         # Invalid payload
-#         return 'Invalid payload', 400
-#     except stripe.error.SignatureVerificationError as e:
-#         # Invalid signature
-#         return 'Invalid signature', 400
-
-#     # Handle the checkout.session.completed event
-#     if event['type'] == 'checkout.session.completed':
-#         session = event['data']['object']
-        
-#         # Fulfill the purchase...
-#         handle_checkout_session(session)
-
-#     return 'Success', 200
-
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
     stripe_payload = request.json
@@ -143,7 +113,7 @@ def handle_checkout_session():
     print("Payment was successful.")
     # user_id = session["user_id"]
     # print(user_id)
-    print(session["package_id"])
+    print(session)
     # package = query.get_package(session["package_id"])
     # if package:
     #     package_id = package["id"]
