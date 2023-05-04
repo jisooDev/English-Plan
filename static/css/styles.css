@@ -720,3 +720,11 @@
     margin-top: 5px;
     line-height: 1.5rem;
 }
+
+.answer-audio {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border: 1px solid #d7d7d7;
+    border-radius: 47px;
+}
