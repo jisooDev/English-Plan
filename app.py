@@ -74,6 +74,7 @@ def get_publishable_key():
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
+    session["package_id"] = data["package_id"]
     stripe.api_key = stripe_keys["secret_key"]
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -91,6 +92,7 @@ def start_payment_session():
         success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url= request.host_url,
     )
+
     return jsonify({'session_id': session["id"]})
 
 
@@ -127,17 +129,16 @@ def start_payment_session():
 def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
+    handle_checkout_session()
     return 'Success'
 
 
-def handle_checkout_session(session):
-    print(session)
+def handle_checkout_session():
     print("Payment was successful.")
     user_id = session["user_id"]
-    name = "Unlimited 15 days"
-    package = query.get_package(name)
+    package = query.get_package(session["package_id"])
     if package:
-        package_id = package["id"]
+        package_id = session["id"]
         days = package["days"]
         check_package = query.get_user_package(user_id)
         if check_package:
