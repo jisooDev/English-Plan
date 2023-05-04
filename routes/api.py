@@ -3,6 +3,9 @@ import json
 import base64
 import random
 import traceback
+from flask import session
+from datetime import datetime
+from pytz import timezone
 blueprint = Blueprint('api', __name__)
 
 
@@ -19,85 +22,164 @@ blueprint = Blueprint('api', __name__)
     8. เขียนตามจำนวนคำ => write_by_number_of_words => ???  => 
 """
 
-@blueprint.route('/exam/list', methods=['POST'])
-def api_get_parctice_list():
+
+def check_user_package():
     try:
+        user_id = session.get('user_id')
+        # user_id = "6"
+        if not user_id:
+            return False
+        else:
+            connection = query.get_connection()
+            cursor = connection.cursor()
+            today = datetime.now(tz=timezone('Asia/Bangkok')).date()
+            sql_str = '''SELECT record_id FROM user_packages WHERE user_id = "%s" AND start_date <= "%s" AND end_date >= "%s"'''%(user_id, today, today)
+
+            cursor.execute(sql_str)
+            response = cursor.fetchone()
+
+            cursor.close()
+            connection.close()
+            if response:
+                return True
+            else:
+                return False
+        
+    except Exception as e:
+        traceback.print_exc()
+        return  False
+  
+
+@blueprint.route('/package/check', methods=['GET'])
+def api_check_package():
+    try:
+        package = check_user_package()
+        return  Response(response=json.dumps({'success': True, 'have_package': package}), mimetype='application/json', status=200)
+    
+    except Exception as e:
+        traceback.print_exc()
+        return  Response(response=json.dumps({'success': False}), mimetype='application/json', status=400)
+
+def sort_practice(data):
+    for i in range(1, len(data)):
+        current_practice_type = data[i]['practice_type']
+        previous_practice_type = data[i-1]['practice_type']
+        if current_practice_type == previous_practice_type:
+            j = random.randint(0, i-1)
+            data[i], data[j] = data[j], data[i]
+    
+    return data
+
+@blueprint.route('/exam/list', methods=['POST'])
+def api_get_practice_list():
+    try:
+        res = request.json
+        package = check_user_package()
+        is_demo = 0 
+        if not package:
+            is_demo = 1
+            res['tasks'] = 'all'
+            res['difficulty'] = 'medium'
+        limit = 16
+        _filter = ''''''
+        practice_total = 0
         connection = query.get_connection()
         cursor = connection.cursor()
-        res = request.json
-        print(res)
 
-        _filter = ''''''
+        if res['tasks'] == 'all':
 
-        if res['tasks'] != 'all':
-            if len(_filter) == 0:
-                _filter += ' WHERE '
-            else:
-                _filter += ' AND '
-            _filter += ' practice_type = "%s"'%res['tasks']
-
-        if res['difficulty'] != 'all':
-            if len(_filter) == 0:
-                _filter += ' WHERE '
-            else:
-                _filter += ' AND '
-            _filter += ' difficulty = "%s"'%res['difficulty']
+            if res['difficulty'] != 'all':
+                if len(_filter) == 0:
+                    _filter += ' WHERE '
+                else:
+                    _filter += ' AND '
+                _filter += ' difficulty = "%s"'%res['difficulty']
+                
+            sql_str = f'''SELECT practice_id, practice_type, difficulty, number_of_questions  FROM exam_config {_filter} ORDER BY RAND() LIMIT {limit}'''
             
-        sql_str = '''
-            SELECT practice_id, practice_type, number_of_questions  FROM exam_config %s ORDER BY RAND() LIMIT 16
-        '''%(_filter)
-        cursor.execute(sql_str)
-        response = cursor.fetchall()
+            cursor.execute(sql_str)
+            response = cursor.fetchall()
+            if len(response) > 0:
+                if res['tasks'] == 'all':
+                    random.shuffle(response)
+                    for item in response:
+                        if item['practice_type'] == 'reading':
+                            detail, id = get_practice_reading(cursor, True, item['difficulty'], None, None, is_demo)
+                            item['number_of_questions'] = len(detail)
+                            item['exam_id'] = id
+                        if item['practice_type'] == 'interactive_conversation': 
+                            detail, id = get_practice_interactive_conversation(cursor, True, item['difficulty'], None, None, is_demo)
+                            item['number_of_questions'] = len(detail)
+                            item['exam_id'] = id
+                    if limit > len(response):
+                        response = fullfill_practice(response, limit)
+                    for item in response: 
+                        practice_total = practice_total + item['number_of_questions']
+                    response = sort_practice(response)
+                    response = sort_practice(response)
+        else:
+            difficulty = res['difficulty'] if res['difficulty'] != 'all' else False
+            if res['tasks'] == 'reading':
+                response, practice_total = get_practice_reading(cursor, False, difficulty, False, limit, is_demo)
 
-        practice_total = 0
-        if len(response) > 0:
-            random.shuffle(response)
+            if res['tasks'] == 'matching':
+                response, practice_total = get_practice_matching(cursor, False, difficulty, False, limit, is_demo)
 
-            practice_total = practice_total + response[0]['number_of_questions']
+            if res['tasks'] == 'reading_select_real_eng_word':
+                response, practice_total = get_practice_reading_select_real_eng_word(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'fill_in_blank':
+                response, practice_total = get_practice_fill_in_blank(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'short_answer':
+                response, practice_total = get_practice_short_answer(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'describe_a_photo':
+                response, practice_total = get_practice_describe_a_photo(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'write_down_what_you_hear':
+                response, practice_total = get_practice_write_down_what_you_hear(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'listen_select_real_eng_word':
+                response, practice_total = get_practice_listen_select_real_eng_word(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'interactive_conversation':
+                response, practice_total = get_practice_interactive_conversation(cursor, False, difficulty, False, limit, is_demo)
+
+            if res['tasks'] == 'read_aloud':
+                response, practice_total = get_practice_read_aloud(cursor, False, difficulty, False, limit, is_demo)
+
+        cursor.close()
+        connection.close()
             
-            for i in range(1, len(response)):
-                practice_total = practice_total + response[i]['number_of_questions']
-                current_practice_type = response[i]['practice_type']
-                previous_practice_type = response[i-1]['practice_type']
-                if current_practice_type == previous_practice_type:
-                    j = random.randint(0, i-1)
-                    response[i], response[j] = response[j], response[i]
-            
-            for i in range(1, len(response)):
-                current_practice_type = response[i]['practice_type']
-                previous_practice_type = response[i-1]['practice_type']
-                if current_practice_type == previous_practice_type:
-                    j = random.randint(0, i-1)
-                    response[i], response[j] = response[j], response[i]
-
         return  Response(response=json.dumps({'success': True if len(response) else False, 'total': practice_total, 'data': response}), mimetype='application/json', status=200)
     
     except Exception as e:
         traceback.print_exc()
-        print(e)
         return  Response(response=json.dumps({'success': False}), mimetype='application/json', status=400)
-    finally:
-        cursor.close()
-        connection.close()
 
 
-
-btoa = lambda x:base64.b64decode(x)
-atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 
 @blueprint.route('/exam/detail', methods=['GET'])
-def api_get_parctice_detail():
+def api_get_practice_detail():
     try:
+        package = check_user_package()
+        is_demo = 0 
+        if not package:
+            is_demo = 1
         connection = query.get_connection()
         cursor = connection.cursor()
         practiceId = request.args.get('practice_id')
-        print(practiceId)
+        
+        examId = request.args.get('exam_id')
+
+        if examId == 'undefined':
+            examId = False
         
         sql_str = '''SELECT practice_id, practice_type, practice_name, timer, limited_time, difficulty, number_of_questions FROM exam_config WHERE practice_id  = %s'''%practiceId
 
         cursor.execute(sql_str)
         practice = cursor.fetchone()
-        print(practice)
         result = {
             'practice_id': practice['practice_id'],
             'practice_type': practice['practice_type'],
@@ -108,586 +190,350 @@ def api_get_parctice_detail():
             'difficulty': practice['difficulty'],
         }
         if practice['practice_type'] == "reading":
-            sql_str = '''SELECT json_data FROM reading_reading WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchone()
-            result['data'] = json.loads(data['json_data'])
+            result['data'], _ = get_practice_reading(cursor, True, practice['difficulty'], examId, 1, is_demo)
             
         if practice['practice_type'] == "matching":
-            sql_str = '''SELECT json_data, json_option FROM reading_matching WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchone()
-            result['data'] = json.loads(data['json_data'])
-            result['options'] = json.loads(data['json_option'])
+            data, _ = get_practice_matching(cursor, True, practice['difficulty'], examId, 1, is_demo)
+            result['data'] = data['data']
+            result['options'] = data['option']
 
         if practice['practice_type'] == "reading_select_real_eng_word":
-            sql_str = '''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE difficulty = "%s" ORDER BY RAND() LIMIT 12'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchall()
-            result['data'] = data
+            result['data'], _ = get_practice_reading_select_real_eng_word(cursor, True, False, examId, 12, is_demo)
+           
             
         if practice['practice_type'] == "fill_in_blank":
-            result = practice_fill_in_blank
+            data, _ = get_practice_fill_in_blank(cursor, True, False, examId, 1, is_demo)
+            result['data'] = data['data']
+            result['answer'] = data['answer']
 
         if practice['practice_type'] == "short_answer":
-            result = practice_short_answer
+            data, _ = get_practice_short_answer(cursor, True, False, examId, 1, is_demo)
+            result['data'] = data['data']
+            result['answer'] = data['answer']
 
         if practice['practice_type'] == "describe_a_photo":
-            result = practice_describe_a_photo
+            data, _ = get_practice_describe_a_photo(cursor, True, False, examId, 1, is_demo)
+            result['data'] = data['data']
+            result['answer'] = data['answer']
 
         if practice['practice_type'] == "write_down_what_you_hear":
-            sql_str = '''SELECT data, answer_atob FROM listening_write_down WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchone()
+            data, _ = get_practice_write_down_what_you_hear(cursor, True, False, examId, 1, is_demo)
             result['data'] = data['data']
-            result['answer'] = data['answer_atob']
+            result['answer'] = data['answer']
+            
 
         if practice['practice_type'] == "listen_select_real_eng_word":
-           
-            sql_str = '''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE difficulty = "%s" ORDER BY RAND() LIMIT 12'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchall()
-            result['data'] = data
+            result['data'], _ = get_practice_listen_select_real_eng_word(cursor, True, False, examId, 12, is_demo)
+            
             
         if practice['practice_type'] == "interactive_conversation":
-            sql_str = '''SELECT json_data, audio FROM listening_interactive_conversation WHERE difficulty = "%s" ORDER BY RAND() LIMIT 1'''%practice['difficulty']
-            cursor.execute(sql_str)
-            data = cursor.fetchone()
-            result['data'] = json.loads(data['json_data'])
-            result['audio'] = data['audio']
+            result['data'], _ = get_practice_interactive_conversation(cursor, True, False, examId, 1, is_demo)
 
         if practice['practice_type'] == "read_aloud":
-            result = practice_read_aloud
-        # result = practice_reading
-        # if practiceId == "1":
-        #     result = practice_reading
-
-        # if practiceId == "2":
-        #     result = practice_matching
-
-        # if practiceId == "3":
-        #     result = practice_reading_select_real_eng_word
-        
-        # if practiceId == "4":
-        #     result = practice_fill_in_blank
-
-        # if practiceId == "5":
-        #     result = practice_short_answer
-
-        # if practiceId == "6":
-        #     result = practice_describe_a_photo
-
-        # if practiceId == "7":
-        #     result = practice_write_down_what_you_hear
-
-        # if practiceId == "8":
-        #     result = practice_listen_select_real_eng_word
-
-        # if practiceId == "9":
-        #     result = practice_interactive_conversation
-
-        # if practiceId == "10":
-        #     result = practice_read_aloud
-
-        
+            data, _ = get_practice_read_aloud(cursor, True, False, examId, 1, is_demo)
+            result['data'] = data['data']
+            result['answer'] = data['answer']
+            result['audio'] = data['audio']
+       
 
         return  Response(response=json.dumps({'success': True, 'data': result}), mimetype='application/json', status=200)
 
     except Exception as e:
         traceback.print_exc()
-        return  Response(response=json.dumps({'success': True, 'data': practice_short_answer}), mimetype='application/json', status=200)
         return  Response(response=json.dumps({'success': False, 'data': None, 'message': str(e)}), mimetype='application/json', status=400)
     finally:
         cursor.close()
         connection.close()
+
+
+def fullfill_practice(data, limit):
+    result = []
+    for i in range(limit):
+        random_index = random.randint(0, len(data) - 1)
+        result.append(data[random_index])
+    return result
+
+        
+def get_practice_reading(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, json_data FROM reading_reading WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, json_data FROM reading_reading WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return json.loads(data['json_data']), data['id']
     
-# practice_reading
-# practice_matching
-# practice_reading_select_real_eng_word
-# practice_fill_in_blank
-# practice_short_answer
-# practice_describe_a_photo
-# practice_write_down_what_you_hear
-# practice_listen_select_real_eng_word
-# practice_interactive_conversation
-# practice_read_aloud
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, aa.number_of_questions
+                    FROM reading_reading aa
+                    LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "reading" 
+                    {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        total = 0
+        for item in data:
+            if total >= limit:
+                del item
+            else:
+                total = total + int(item['number_of_questions'])
 
+        if limit > total:
+            data = fullfill_practice(data, int(limit / data[0]['number_of_questions']))
+            total = 0
+            for item in data:
+                total = total + int(item['number_of_questions'])
+        return data, total
+            
 
-
-practice_read_aloud = {
-    'practice_id': 10,
-    'practice_type': 'read_aloud',
-    'practice_name': 'Read the text within 20 seconds ',
-    'number_of_questions': 1,
-    'limited_time': True,
-    'timer': 30,
-    'difficulty': 'medium',
-    'data': 'Talk about a person you know who inspires you. Who is this person? How do you know this person? Why does this person inspire you?',
-    'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
-}
-
-
-practice_interactive_conversation = {
-    'practice_id': 9,
-    'practice_type': 'interactive_conversation',
-    'practice_name': 'Interactive Conversation',
-    'number_of_questions': 4,
-    'limited_time': True,
-    'timer': 480,
-    'difficulty': 'medium',
-    'data': [{
-        'id': 1,
-        'question': 'What your name',
-        'answer': atob('12c'),
-        'answer_type': 'select',
-        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
-        'option': [{
-            'id': '12a',
-            'value': 'The Rise and Fall of the Roman Empire'
-        },{
-            'id': '12b',
-            'value': 'A Brief History of European Architecture'
-        },{
-            'id': '12c',
-            'value': 'European History: From Ancient Times to the Present Day'
-        },{
-            'id': '12d',
-            'value': 'The Industrial Revolution and Its Impact on Europe'
-        }]
-    },{
-        'id': 2,
-        'question': 'Which of the following titles best describes the passage?',
-        'answer': atob('2c'),
-        'answer_type': 'select',
-        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
-        'option': [{
-            'id': '2a',
-            'value': 'The Rise and Fall of the Roman Empire'
-        },{
-            'id': '2b',
-            'value': 'A Brief History of European Architecture'
-        },{
-            'id': '2c',
-            'value': 'European History: From Ancient Times to the Present Day'
-        },{
-            'id': '2d',
-            'value': 'The Industrial Revolution and Its Impact on Europe'
-        }]
-    },{
-        'id': 3,
-        'question': 'What could be a synonym for "conquest" in the passage?',
-        'answer': atob('3d'),
-        'answer_type': 'select',
-        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
-        'option': [{
-            'id': '3a',
-            'value': 'Battle'
-        },{
-            'id': '3b',
-            'value': 'Victory'
-        },{
-            'id': '3c',
-            'value': 'Occupation'
-        },{
-            'id': '3d',
-            'value': 'Expansion'
-        }]
-    },{
-        'id': 4,
-        'question': 'What could be a synonym for "pivotal" in the passage?',
-        'answer': "",
-        'answer_type': 'type',
-        'audio': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
-        'option': []
-    }]
-}
-
-
-practice_listen_select_real_eng_word = {
-    'practice_id': 8,
-    'practice_type': 'listen_select_real_eng_word',
-    'practice_name': 'Choose Real English Words Only',
-    'number_of_questions': 1,
-    'limited_time': False,
-    'timer': 120,
-    'difficulty': 'medium',
-    'data': [
-        {
-            'id': 's1',
-            'name': 'unvasivement',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/unvasivement.mp3',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's2',
-            'name': 'feedback',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/feedback.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's3',
-            'name': 'macropapa',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/macropapa.mp3',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's4',
-            'name': 'monophasement',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/monophasement.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's5',
-            'name': 'jurpeting',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/jurpeting.mp3',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's6',
-            'name': 'helature',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/helature.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's7',
-            'name': 'contractor',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/contractor.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's8',
-            'name': 'exploit',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's9',
-            'name': 'Dictation',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's10',
-            'name': 'Dictation',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's11',
-            'name': 'Dictation',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's12',
-            'name': 'Dictation',
-            'value': 'https://res.cloudinary.com/detready/video/upload/spoken-words/exploit.mp3',
-            'answer': atob('correct'),
-        }    
-    ]
-}
-
-
-practice_write_down_what_you_hear = {
-    'practice_id': 7,
-    'practice_type': 'write_down_what_you_hear',
-    'practice_name': 'Write down what you hear',
-    'limited_time': True,
-    'timer': 30,
-    'difficulty': 'medium',
-    'data': 'https://res.cloudinary.com/detready/video/upload/dictation/Dictation_247.mp3',
-    'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
-}
-
-
-practice_describe_a_photo = {
-    'practice_id': 6,
-    'practice_type': 'describe_a_photo',
-    'practice_name': 'Write at least one sentence about the following photo',
-    'limited_time': True,
-    'timer': 60,
-    'difficulty': 'medium',
-    'data': 'https://ik.imagekit.io/tvlk/blog/2019/01/shirakawago-1-800x534.jpg?tr=dpr-2,w-675',
-    'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
-}
-
-
-practice_short_answer = {
-    'practice_id': 5,
-    'practice_type': 'short_answer',
-    'practice_name': 'Write at least 50 words on the following topic',
-    'limited_time': True,
-    'timer': 300,
-    'difficulty': 'medium',
-    'data': 'What year was "We Belong Together" released?',
-    'answer': atob('''We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, Carey had originally recorded the song for a previous album but didn't feel like it fit. It wasn't until she revisited the track years later that she realized its true potential and decided to release it as a single. And the rest, as they say, is history.''')
-}
-
-
-
-
-practice_fill_in_blank = {
-    'practice_id': 4,
-    'practice_type': 'fill_in_blank',
-    'practice_name': 'Fill in The Blank',
-    'limited_time': True,
-    'timer': 180,
-    'difficulty': 'medium',
-    'data': '''Evolution is a biological process in which all living beings {{0}}{{1}}{{2}}{{3}}{{4}}{{5}} their organism <br> attributes through {{6}}{{7}}{{8}}{{9}}{{10}}{{11}}{{12}} 
-            mutations over long {{13}}{{14}}{{15}}{{16}}{{17}}{{18}}{{19}} of time.''',
-    'answer': [
-        {
-            'value': atob('c'),
-            'show': True,
-        }, {
-            'value': atob('h'),
-            'show': True,
-        }, {
-            'value': atob('a'),
-            'show': True,
-        }, {
-            'value': atob('n'),
-            'show': False,
-        }, {
-            'value': atob('g'),
-            'show': False,
-        }, {
-            'value': atob('e'),
-            'show': False,
-        }, {
-            'value': atob('g'),
-            'show': True,
-        }, {
-            'value': atob('e'),
-            'show': True,
-        }, {
-            'value': atob('n'),
-            'show': True,
-        }, {
-            'value': atob('e'),
-            'show': False,
-        }, {
-            'value': atob('t'),
-            'show': False,
-        }, {
-            'value': atob('i'),
-            'show': False,
-        }, {
-            'value': atob('c'),
-            'show': False,
-        }, {
-            'value': atob('p'),
-            'show': True,
-        }, {
-            'value': atob('e'),
-            'show': True,
-        }, {
-            'value': atob('r'),
-            'show': True,
-        }, {
-            'value': atob('i'),
-            'show': False,
-        }, {
-            'value': atob('o'),
-            'show': False,
-        }, {
-            'value': atob('d'),
-            'show': False,
-        }, {
-            'value': atob('s'),
-            'show': False,
-        }
-    ],
-}
-
-
-practice_reading_select_real_eng_word = {
-    'practice_id': 3,
-    'practice_type': 'reading_select_real_eng_word',
-    'practice_name': 'Choose Real English Words Only ',
-    'number_of_questions': 1,
-    'limited_time': False,
-    'timer': 120,
-    'difficulty': 'medium',
-    'data': [
-        {
-            'id': 's1',
-            'value': 'bird',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's2',
-            'value': 'bus',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's3',
-            'value': 'dot',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's4',
-            'value': 'giraffe',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's5',
-            'value': 'ice cream',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's6',
-            'value': 'listen',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's7',
-            'value': 'monkey',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's8',
-            'value': 'papaya',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's9',
-            'value': 'queen',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's10',
-            'value': 'school',
-            'answer': atob('incorrect'),
-        },
-        {
-            'id': 's11',
-            'value': 'small',
-            'answer': atob('correct'),
-        },
-        {
-            'id': 's12',
-            'value': 'student',
-            'answer': atob('correct'),
-        }    
-    ]
-}
-
-
-practice_matching = {
-    'practice_id': 2,
-    'practice_type': 'matching',
-    'practice_name': 'Match the right information with the right paragraph',
-    'number_of_questions': 1,
-    'limited_time': False,
-    'timer': 0,
-    'difficulty': 'medium',
-    'data': [
-        {
-            'id': 'a1',
-            'value': 'Exploring the Ethics of Genetic Modification A In a cutting-edge research institute, a diverse range of subjects are explored, from artificial intelligence to renewable energy. One particular course that stands out is "Genetic Engineering for Enhanced Traits." This course raises some eyebrows, as it delves into the controversial realm of manipulating genetic material to achieve desired characteristics in living organisms. It seems that this research institution is not afraid to push boundaries, but the question arises: is this course a responsible pursuit of knowledge?',
-            'answer': atob('b2'),
-        },{   
-            'id': 'a2',
-            'value': 'B This course is aimed at future geneticists and bioengineers, who will learn about the techniques and methods used to modify the genetic makeup of organisms to obtain specific traits. While the primary intention is to advance medical research and develop novel therapies for genetic disorders, there is a potential risk that this knowledge could be misused for purposes such as designer babies or the creation of harmful biological agents. Thus, the course raises ethical concerns about the possible misuse of the knowledge acquired.',
-            'answer': atob('b1'),
-        },{ 
-            'id': 'a3',
-            'value': 'C When discussing the ethics of genetic modification with students in this course, the conversation often revolves around the responsibilities and limitations of using this technology. How far should we go in modifying organisms to achieve desired traits, and who should have the authority to decide these limits? These are the questions that arise when considering the morality of genetic engineering.',
-            'answer': atob('b3'),
-        }
-    ],
-    'options': [
-        {
-            'id': 'b1',
-            'value': 'Courses that require a high level of commitment',
-        },{
-            'id': 'b2',
-            'value': 'A course title with two meanings',
-        },{
-            'id': 'b3',
-            'value': 'Applying a theory in an unexpected context',
-        }
-    ]
+def get_practice_matching(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, json_data, json_option FROM reading_matching WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, json_data, json_option FROM reading_matching WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': json.loads(data['json_data']), 'option': json.loads(data['json_option'])}, data['id']
     
-}
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM reading_matching aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "matching" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_reading_select_real_eng_word(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE id = "{id}" LIMIT {limit}'''
+        else:
+            sql_str = f'''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE is_demo = {is_demo} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        return data, None
+    
+    else:
+        _filter = ' WHERE bb.practice_type = "reading_select_real_eng_word" '
+        if difficulty:
+            _filter = _filter + f''' AND bb.difficulty = "{difficulty}"'''
+        
+        sql_str = f'''SELECT bb.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions 
+                FROM exam_config bb {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_fill_in_blank(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, data, answer FROM readandwrite_fill_blank WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, data, answer FROM readandwrite_fill_blank WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': data['data'], 'answer': json.loads(data['answer'])}, data['id']
+    
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM readandwrite_fill_blank aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "fill_in_blank" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_short_answer(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_short_answer WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_short_answer WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': data['data'], 'answer': data['answer']}, data['id']
+    
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM readandwrite_short_answer aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "short_answer" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_describe_a_photo(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_describe_photo WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_describe_photo WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': data['data'], 'answer': data['answer']}, data['id']
+    
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM readandwrite_describe_photo aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "describe_a_photo" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_write_down_what_you_hear(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM listening_write_down WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM listening_write_down WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': data['data'], 'answer': data['answer']}, data['id']
+    
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f'''WHERE aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM listening_write_down aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "write_down_what_you_hear" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_listen_select_real_eng_word(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE is_demo = {is_demo} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        return data, len(data)
+    
+    else:
+    
+        _filter = ' WHERE bb.practice_type = "listen_select_real_eng_word" '
+        if difficulty:
+            _filter = _filter + f''' AND bb.difficulty = "{difficulty}"'''
+        
+        sql_str = f'''SELECT bb.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions 
+                FROM exam_config bb {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
+
+def get_practice_interactive_conversation(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, json_data, audio FROM listening_interactive_conversation WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, json_data, audio FROM listening_interactive_conversation WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        json_data = json.loads(data['json_data'])
+        for item in json_data:
+            if not item.get('audio'):
+                item['audio'] = data['audio']
+        return json_data, data['id']
+    
+    else:
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, aa.number_of_questions
+                    FROM listening_interactive_conversation aa
+                    LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "interactive_conversation" 
+                    {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        total = 0
+        for item in data:
+            if total >= limit:
+                del item
+            else:
+                total = total + int(item['number_of_questions'])
+        if limit > total:
+            data = fullfill_practice(data, int(limit / data[0]['number_of_questions']))
+            total = 0
+            for item in data:
+                total = total + int(item['number_of_questions'])
+        return data, total
+    
+
+def get_practice_read_aloud(cursor, get_detail, difficulty, id, limit, is_demo):
+    if get_detail:
+        if id:
+            sql_str = f'''SELECT id, data, answer_atob AS answer, audio FROM talking_read_aloud WHERE id = "{id}"'''
+        else:
+            sql_str = f'''SELECT id, data, answer_atob AS answer, audio FROM talking_read_aloud WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+        cursor.execute(sql_str)
+        data = cursor.fetchone()
+        return {'data': data['data'], 'answer': data['answer'], 'audio': data['audio']}, data['id']
+    
+    else:
+    
+        _filter = f' WHERE aa.is_demo = {is_demo}'
+        if difficulty:
+            _filter = f''' AND aa.difficulty = "{difficulty}"'''
+        sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
+                FROM talking_read_aloud aa
+                LEFT JOIN exam_config bb ON aa.difficulty = bb.difficulty AND bb.practice_type = "read_aloud" 
+                {_filter} ORDER BY RAND() LIMIT {limit}'''
+        cursor.execute(sql_str)
+        data = cursor.fetchall()
+        if limit > len(data):
+            data = fullfill_practice(data, limit)
+        
+        return data, len(data)
 
 
-practice_reading = {
-    'practice_id': 1,
-    'practice_type': 'reading',
-    'practice_name': 'Interactive Reading : Read the following passage and choose the right answer',
-    'number_of_questions': 4,
-    'limited_time': True,
-    'timer': 480,
-    'difficulty': 'medium',
-    'data': [{
-        'id': 1,
-        'question': '''"We Belong Together" is a classic ballad by Mariah Carey that topped charts around the world upon its release in 2005. The song's soulful vocals and catchy melody struck a chord with listeners, creating a sense of longing and nostalgia that still resonates today. But what many people don't know is that the song almost didn't make it onto Carey's album. According to her producer, 
-
-_____________________________________(Missing Sentence)''',
-        'answer': atob('1c'),
-        'answer_type': 'select',
-        'option': [{
-            'id': '1a',
-            'value': 'Its influence of the British Empire'
-        },{
-            'id': '1b',
-            'value': 'Its impact on Asian countries'
-        },{
-            'id': '1c',
-            'value': 'The legacy of the Roman Empire'
-        },{
-            'id': '1d',
-            'value': 'Its contribution to African development'
-        }]
-    },{
-        'id': 2,
-        'question': 'Which of the following titles best describes the passage?',
-        'answer': atob('2c'),
-        'answer_type': 'select',
-        'option': [{
-            'id': '2a',
-            'value': 'The Rise and Fall of the Roman Empire'
-        },{
-            'id': '2b',
-            'value': 'A Brief History of European Architecture'
-        },{
-            'id': '2c',
-            'value': 'European History: From Ancient Times to the Present Day'
-        },{
-            'id': '2d',
-            'value': 'The Industrial Revolution and Its Impact on Europe'
-        }]
-    },{
-        'id': 3,
-        'question': 'What could be a synonym for "conquest" in the passage?',
-        'answer': atob('3d'),
-        'answer_type': 'select',
-        'option': [{
-            'id': '3a',
-            'value': 'Battle'
-        },{
-            'id': '3b',
-            'value': 'Victory'
-        },{
-            'id': '3c',
-            'value': 'Occupation'
-        },{
-            'id': '3d',
-            'value': 'Expansion'
-        }]
-    },{
-        'id': 4,
-        'question': 'What could be a synonym for "pivotal" in the passage?',
-        'answer': "",
-        'answer_type': 'type',
-        'option': []
-    }]
-}
-
-
-
-
-
-
+btoa = lambda x:base64.b64decode(x)
+atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')

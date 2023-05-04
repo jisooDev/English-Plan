@@ -140,25 +140,40 @@
         let premium = true;
         let practiceState = "practicing";
         let timeLimit = false;
-        $(function ($) {
-            renderSelectDifficulty();
-            renderSelectType();
-            checkStarting(false);
+        $(async ($) => {
 
-            $('#select_difficulty').on('change', () => {
-                const value = $('#select_difficulty').val();
-                console.log(value)
-                localStorage.setItem('sd', window.btoa(value));
-                difficulty = value;
-                checkStarting(true);
-            })
-            $('#select_type').on('change', () => {
-                const value = $('#select_type').val();
-                console.log(value)
-                localStorage.setItem('st', window.btoa(value));
-                tasks = value;
-                checkStarting(true);
-            })
+            checkStarting(false);
+            let package = await checkPackage();
+            console.log('package', package)
+            if (package.success) {
+                if (package.have_package) {
+                    renderSelectDifficulty();
+                    renderSelectType();
+                    $('#select_difficulty').on('change', () => {
+                        const value = $('#select_difficulty').val();
+                        console.log(value)
+                        localStorage.setItem('sd', window.btoa(value));
+                        difficulty = value;
+                        checkStarting(true);
+                    });
+                    $('#select_type').on('change', (event) => {
+                        console.log('event', event)
+                        const value = $('#select_type').val();
+                        console.log(value)
+                        localStorage.setItem('st', window.btoa(value));
+                        tasks = value;
+                        checkStarting(true);
+                    });
+                } else {
+                    renderSelectDifficultyLock();
+                    renderSelectTypeLock();
+                }
+            } else {
+                renderSelectDifficultyLock();
+                renderSelectTypeLock();
+            }
+
+
         });
 
 
@@ -169,7 +184,11 @@
             container.append('<option value="easy">Easy </option>');
             container.append('<option value="medium ">medium </option>');
             container.append('<option value="difficult">Hard</option>');
+            let value = window.atob(localStorage.getItem('sd'));
+            difficulty = value;
+            container.val(value);
         }
+
         function renderSelectDifficultyLock() {
             const container = $('#select_difficulty');
             container.empty();
@@ -182,7 +201,7 @@
         function renderSelectType() {
             const container = $('#select_type');
             container.empty();
-            container.append('<option value="all" selected>All</option>');
+            container.append('<option value="all">All</option>');
             container.append('<option value="reading">Interactive Reading</option>');
             container.append('<option value="matching">Match the right information</option>');
             container.append('<option value="reading_select_real_eng_word">Choose Real English Words Only</option>');
@@ -193,7 +212,9 @@
             container.append('<option value="listen_select_real_eng_word">Choose Real English Words Only</option>');
             container.append('<option value="interactive_conversation">Interactive Conversation</option>');
             container.append('<option value="read_aloud">Read the text within 20 seconds</option>');
-
+            let value = window.atob(localStorage.getItem('st'));
+            tasks = value;
+            container.val(value);
         }
 
         function renderSelectTypeLock() {
@@ -221,7 +242,7 @@
                 timeLimit = true;
             }
             if (urlParams.get('start') === 'true') {
-                startPractice(false, false);
+                startPractice(startNew, false);
             } else {
                 renderLandingReady();
             }
@@ -258,6 +279,9 @@
         }
 
         async function checkPracticeProcess(tasks, difficulty, premium) {
+            console.log('checkPracticeProcess')
+            console.log(tasks)
+            console.log(difficulty)
             let process = localStorage.getItem('practice');
             if (!process) {
                 return false;
@@ -319,9 +343,10 @@
             });
         }
 
-        function getPracticeDeatail(practiceId) {
+        function getPracticeDeatail(practiceId, examId) {
             const params = new URLSearchParams({
                 practice_id: practiceId,
+                exam_id: examId
             });
             const url = 'api/exam/detail?' + params;
 
@@ -340,6 +365,25 @@
             });
         }
 
+
+        function checkPackage() {
+            const url = 'api/package/check';
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            };
+            return new Promise((resolve, reject) => {
+                fetch(url, options).then(response => response.json()).then(data => {
+                    resolve(data)
+                }).catch(error => {
+                    reject(error)
+                });
+            });
+        }
+
         async function renderPracticeCycle(number) {
             $('.progress').circleProgress(
                 {
@@ -350,6 +394,7 @@
         }
 
         async function startPractice(startNew, next) {
+            console.log('startNew', startNew)
             if (startNew) {
                 localStorage.removeItem('_cc');
                 let data = await getPracticeList(tasks, difficulty, premium);
@@ -358,6 +403,7 @@
                 }
             } else {
                 let check = await checkPracticeProcess(tasks, difficulty, premium);
+                console.log('check', check)
                 if (check) {
                     practiceData = check;
                     if (next) {
@@ -380,7 +426,8 @@
                 await renderPracticeCycle(practiceData.actualNumber);
 
                 let currentPractice = practiceData.practice[practiceData.number - 1];
-                let detail = await getPracticeDeatail(currentPractice.practice_id);
+                console.log('currentPractice', currentPractice)
+                let detail = await getPracticeDeatail(currentPractice.practice_id, currentPractice.exam_id);
                 if (detail.success) {
                     practiceDetail = detail.data;
                     initRender();
@@ -706,6 +753,10 @@
                 }
                 row.append(col1);
                 row.append(col2);
+                if (item.explain) {
+                    let explain = $('<div>').html(item.explain).addClass('col-12 badge-answer-explain')
+                    row.append(explain);
+                }
                 div.append(row);
             });
             container.append(div);
@@ -1203,7 +1254,7 @@
                 count = parseInt(localStorage.getItem('_cc'));
             }
 
-            let audio = await getAudio(practiceDetail.audio);
+            let audio = await getAudio(practiceDetail.data[count].audio);
             let playingAudio = false;
             renderPracticeCycle(practiceData.actualNumber);
             let hRow = $('<div>').addClass('row justify-content-center mt-3 mb-3');
@@ -1304,6 +1355,7 @@
             let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
             let div = $('<div>').addClass('answer-box mb-5');
             practiceDetail.data.forEach((item, i) => {
+                console.log(item)
                 let questionText = '<span>' + (i + 1) + ')</span>&nbsp;' + item.question;
                 let row = $('<div>').addClass('row justify-content-between answer-item');
                 let col1 = $('<div>').addClass('col-12').html(questionText)
@@ -1329,6 +1381,11 @@
                 }
                 row.append(col1);
                 row.append(col2);
+                if (item.explain) {
+                    let explain = $('<div>').html(item.explain).addClass('col-12 badge-answer-explain')
+                    row.append(explain);
+                }
+
                 div.append(row);
             });
             container.append(div);
