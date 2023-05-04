@@ -142,24 +142,20 @@
         let timeLimit = false;
         $(async ($) => {
 
-            checkStarting(false);
+
             let package = await checkPackage();
-            console.log('package', package)
             if (package.success) {
                 if (package.have_package) {
                     renderSelectDifficulty();
                     renderSelectType();
                     $('#select_difficulty').on('change', () => {
                         const value = $('#select_difficulty').val();
-                        console.log(value)
                         localStorage.setItem('sd', window.btoa(value));
                         difficulty = value;
                         checkStarting(true);
                     });
                     $('#select_type').on('change', (event) => {
-                        console.log('event', event)
                         const value = $('#select_type').val();
-                        console.log(value)
                         localStorage.setItem('st', window.btoa(value));
                         tasks = value;
                         checkStarting(true);
@@ -173,6 +169,7 @@
                 renderSelectTypeLock();
             }
 
+            checkStarting(false);
 
         });
 
@@ -185,8 +182,13 @@
             container.append('<option value="medium ">medium </option>');
             container.append('<option value="difficult">Hard</option>');
             let value = window.atob(localStorage.getItem('sd'));
-            difficulty = value;
-            container.val(value);
+            if (value) {
+                difficulty = value;
+                container.val(value);
+            } else {
+                container.val('all');
+            }
+
         }
 
         function renderSelectDifficultyLock() {
@@ -213,8 +215,13 @@
             container.append('<option value="interactive_conversation">Interactive Conversation</option>');
             container.append('<option value="read_aloud">Read the text within 20 seconds</option>');
             let value = window.atob(localStorage.getItem('st'));
-            tasks = value;
-            container.val(value);
+            if (value) {
+                tasks = value;
+                container.val(value);
+            } else {
+                container.val('all');
+            }
+
         }
 
         function renderSelectTypeLock() {
@@ -279,9 +286,6 @@
         }
 
         async function checkPracticeProcess(tasks, difficulty, premium) {
-            console.log('checkPracticeProcess')
-            console.log(tasks)
-            console.log(difficulty)
             let process = localStorage.getItem('practice');
             if (!process) {
                 return false;
@@ -394,7 +398,6 @@
         }
 
         async function startPractice(startNew, next) {
-            console.log('startNew', startNew)
             if (startNew) {
                 localStorage.removeItem('_cc');
                 let data = await getPracticeList(tasks, difficulty, premium);
@@ -403,7 +406,6 @@
                 }
             } else {
                 let check = await checkPracticeProcess(tasks, difficulty, premium);
-                console.log('check', check)
                 if (check) {
                     practiceData = check;
                     if (next) {
@@ -426,7 +428,6 @@
                 await renderPracticeCycle(practiceData.actualNumber);
 
                 let currentPractice = practiceData.practice[practiceData.number - 1];
-                console.log('currentPractice', currentPractice)
                 let detail = await getPracticeDeatail(currentPractice.practice_id, currentPractice.exam_id);
                 if (detail.success) {
                     practiceDetail = detail.data;
@@ -1355,7 +1356,6 @@
             let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
             let div = $('<div>').addClass('answer-box mb-5');
             practiceDetail.data.forEach((item, i) => {
-                console.log(item)
                 let questionText = '<span>' + (i + 1) + ')</span>&nbsp;' + item.question;
                 let row = $('<div>').addClass('row justify-content-between answer-item');
                 let col1 = $('<div>').addClass('col-12').html(questionText)
@@ -1465,11 +1465,13 @@
             let yAnswerContent = $('<p>').addClass('a-content').html($('#practice-textarea').val());
             let hr = $('<hr>')
             let cAnswerHeader = $('<div>').addClass('a-header').html('Example Answer');
+            let answerAudio = $('<audio controls>').attr('id', 'audio-answer').attr('src', practiceDetail.audio).addClass('answer-audio');
             let cAnswerContent = $('<p>').addClass('a-content').html(window.atob(practiceDetail.answer));
             // box.append(yAnswerHeader);
             // box.append(yAnswerContent);
             // box.append(hr);
             box.append(cAnswerHeader);
+            box.append(answerAudio);
             box.append(cAnswerContent);
             box.show();
 

@@ -26,7 +26,7 @@ blueprint = Blueprint('api', __name__)
 def check_user_package():
     try:
         user_id = session.get('user_id')
-        # user_id = "6"
+        user_id = "6"
         if not user_id:
             return False
         else:
