@@ -114,6 +114,8 @@ def insert_user_package(data):
     return True
 
 def update_user_package(data):
+    print(data)
+    
     connection = get_connection()
     cursor = connection.cursor()
     sql_str = '''UPDATE user_packages SET package_id = %(package_id)s , start_date = %(start_date)s , end_date = %(end_date)s WHERE user_id = %(user_id)s'''

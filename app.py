@@ -128,6 +128,7 @@ def handle_checkout_session():
                 start_date : new_start_date,
                 end_date : new_end_date
             }
+            print(data)
             update = query.update_user_package(data)
             print("update package user_id = "+ user_id +" " +update)
         else :
@@ -139,6 +140,7 @@ def handle_checkout_session():
                 start_date : start_date,
                 end_date : end_date
             }
+            print(data)
             insert = query.insert_user_package(data)
             print("insert package user_id = "+ user_id +" " +insert)
 
