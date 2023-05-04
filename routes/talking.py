@@ -38,12 +38,12 @@ def render_read_create():
             storage.child('talking/read_aloud/%s'%_uuid).put(file_data)
             _url = storage.child('talking/read_aloud/%s'%_uuid).get_url(None)
 
-            sql_data = (_uuid , difficulty , data , answer , _url)
+            sql_data = (_uuid , difficulty , data , answer , _url , atob(answer))
             sql_str = '''
                 INSERT INTO talking_read_aloud
-                (id , difficulty, data , answer , audio)
+                (id , difficulty, data , answer , audio, answer_atob)
                 VALUES
-                (%s , %s, %s ,%s ,%s)
+                (%s , %s, %s ,%s ,%s , %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()

@@ -74,10 +74,10 @@ def get_user_by_email(email):
         return False
     return result[0]
 
-def get_package(name):
+def get_package(id):
     connection = get_connection()
     cursor = connection.cursor()
-    cursor.execute('''SELECT * FROM packages WHERE name = "%s" and active = 1 LIMIT 1''' % (name))
+    cursor.execute('''SELECT * FROM packages WHERE id = "%s" and active = 1 LIMIT 1''' % (id))
     result = cursor.fetchall()
     if len(result) == 0:
         return False

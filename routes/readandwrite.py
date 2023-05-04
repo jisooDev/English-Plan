@@ -105,12 +105,12 @@ def render_describephoto_create():
             storage.child('readandwrite/describephoto/%s'%_uuid).put(file_data)
             _url = storage.child('readandwrite/describephoto/%s'%_uuid).get_url(None)
 
-            sql_data = (_uuid , difficulty , _url , answer)
+            sql_data = (_uuid , difficulty , _url , answer,atob(answer))
             sql_str = '''
                 INSERT INTO readandwrite_describe_photo
-                (id , difficulty, data , answer)
+                (id , difficulty, data , answer, answer_atob)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s , %s , %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()

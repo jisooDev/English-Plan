@@ -802,9 +802,23 @@
 
         $('#checkout').click(function() {
 
+            let body1 = {
+                "package_id": 1
+            }
+
+            $.ajax({
+                    url: '/set_session_package',
+                    type: 'POST',
+                    data: JSON.stringify(body1),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {}
+                });
+
             let body = {
                 "name": "Unlimited 15 Days",
-                "unit_amount": 1990
+                "unit_amount": 1990,
+                "package_id": 1
             }
 
             $.ajax({
@@ -826,9 +840,23 @@
 
         $('#checkout-2').click(function() {
 
+            let body1 = {
+                "package_id": 2
+            }
+
+            $.ajax({
+                    url: '/set_session_package',
+                    type: 'POST',
+                    data: JSON.stringify(body1),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {}
+                });
+
             let body = {
                 "name": "Unlimited 30 Days",
-                "unit_amount": 2910
+                "unit_amount": 2910,
+                "package_id": 2
             }
 
             $.ajax({
@@ -850,9 +878,23 @@
 
         $('#checkout-3').click(function() {
 
+            let body1 = {
+                "package_id": 3
+            }
+
+            $.ajax({
+                    url: '/set_session_package',
+                    type: 'POST',
+                    data: JSON.stringify(body1),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {}
+                });
+
             let body = {
                 "name": "Unlimited 90 Days",
-                "unit_amount": 3990
+                "unit_amount": 3990,
+                "package_id": 3
             }
 
             $.ajax({
@@ -870,30 +912,6 @@
                         });
                     }
                 });
-        });
-
-        $('#checkout-free').click(function() {
-
-        let body = {
-            "name": "Free",
-            "unit_amount": 100
-        }
-
-        $.ajax({
-                url: '/start_payment_session',
-                type: 'POST',
-                data: JSON.stringify(body),
-                contentType: "application/json",
-                dataType: "json",
-                success: function(data) {
-                    payment_session_id = data['session_id'];
-                    stripe.redirectToCheckout({
-                        sessionId: payment_session_id
-                    }).then(function (result) {
-                        console.log(result.error.message);
-                    });
-                }
-            });
         });
 
         });

@@ -71,6 +71,12 @@ def get_publishable_key():
     stripe_config = {"publicKey": stripe_keys["publishable_key"]}
     return jsonify(stripe_config)
 
+@app.route('/set_session_package' , methods=['POST'])
+def set_session_package():
+    data = request.json
+    session["package_id"] = data["package_id"]
+    return "Success"
+
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
@@ -91,6 +97,7 @@ def start_payment_session():
         success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url= request.host_url,
     )
+
     return jsonify({'session_id': session["id"]})
 
 
@@ -127,17 +134,17 @@ def start_payment_session():
 def stripe_webhook():
     stripe_payload = request.json
     print(stripe_payload)
+    handle_checkout_session()
     return 'Success'
 
 
-def handle_checkout_session(session):
-    print(session)
+def handle_checkout_session():
     print("Payment was successful.")
     user_id = session["user_id"]
-    name = "Unlimited 15 days"
-    package = query.get_package(name)
+    print(session["user_id"])
+    package = query.get_package(session["package_id"])
     if package:
-        package_id = package["id"]
+        package_id = session["id"]
         days = package["days"]
         check_package = query.get_user_package(user_id)
         if check_package:
@@ -203,6 +210,7 @@ def login():
         result = query.get_user_by_email(user["email"])
         if result:
             session["user_id"] = result["id"]
+            print(session["user_id"])
             session["role"] = result["role"]
             return json.dumps({"status" : 200})
         else :
