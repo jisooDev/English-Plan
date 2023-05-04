@@ -98,7 +98,7 @@ def start_payment_session():
        custom_text={
             "shipping_address": {
             "message":
-            session["user_id"] +" , "+ session["package_id"],
+            str(session["user_id"]) +","+ str(session["package_id"]),
             }
         },
         mode='payment',
