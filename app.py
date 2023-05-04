@@ -120,6 +120,7 @@ def handle_checkout_session():
         if check_package:
             start_date = check_package["start_date"]
             end_date = check_package["end_date"]
+            print(end_date)
             new_start_date = end_date
             new_end_date = end_date + days
             data = {
