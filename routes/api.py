@@ -201,22 +201,22 @@ def api_get_practice_detail():
            
             
         if practice['practice_type'] == "fill_in_blank":
-            data, _ = get_practice_fill_in_blank(cursor, True, False, examId, 1, is_demo)
+            data, _ = get_practice_fill_in_blank(cursor, True,  practice['difficulty'], examId, 1, is_demo)
             result['data'] = data['data']
             result['answer'] = data['answer']
 
         if practice['practice_type'] == "short_answer":
-            data, _ = get_practice_short_answer(cursor, True, False, examId, 1, is_demo)
+            data, _ = get_practice_short_answer(cursor, True,  practice['difficulty'], examId, 1, is_demo)
             result['data'] = data['data']
             result['answer'] = data['answer']
 
         if practice['practice_type'] == "describe_a_photo":
-            data, _ = get_practice_describe_a_photo(cursor, True, False, examId, 1, is_demo)
+            data, _ = get_practice_describe_a_photo(cursor, True,  practice['difficulty'], examId, 1, is_demo)
             result['data'] = data['data']
             result['answer'] = data['answer']
 
         if practice['practice_type'] == "write_down_what_you_hear":
-            data, _ = get_practice_write_down_what_you_hear(cursor, True, False, examId, 1, is_demo)
+            data, _ = get_practice_write_down_what_you_hear(cursor, True,  practice['difficulty'], examId, 1, is_demo)
             result['data'] = data['data']
             result['answer'] = data['answer']
             
@@ -226,10 +226,10 @@ def api_get_practice_detail():
             
             
         if practice['practice_type'] == "interactive_conversation":
-            result['data'], _ = get_practice_interactive_conversation(cursor, True, False, examId, 1, is_demo)
+            result['data'], _ = get_practice_interactive_conversation(cursor, True,  practice['difficulty'], examId, 1, is_demo)
 
         if practice['practice_type'] == "read_aloud":
-            data, _ = get_practice_read_aloud(cursor, True, False, examId, 1, is_demo)
+            data, _ = get_practice_read_aloud(cursor, True,  practice['difficulty'], examId, 1, is_demo)
             result['data'] = data['data']
             result['answer'] = data['answer']
             result['audio'] = data['audio']
@@ -254,17 +254,21 @@ def fullfill_practice(data, limit):
 
         
 def get_practice_reading(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, json_data FROM reading_reading WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, json_data FROM reading_reading WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, json_data FROM reading_reading WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return json.loads(data['json_data']), data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         
@@ -290,17 +294,21 @@ def get_practice_reading(cursor, get_detail, difficulty, id, limit, is_demo):
             
 
 def get_practice_matching(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, json_data, json_option FROM reading_matching WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, json_data, json_option FROM reading_matching WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, json_data, json_option FROM reading_matching WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': json.loads(data['json_data']), 'option': json.loads(data['json_option'])}, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
@@ -315,11 +323,15 @@ def get_practice_matching(cursor, get_detail, difficulty, id, limit, is_demo):
         return data, len(data)
 
 def get_practice_reading_select_real_eng_word(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE id = "{id}" LIMIT {limit}'''
         else:
-            sql_str = f'''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE is_demo = {is_demo} ORDER BY RAND() LIMIT {limit}'''
+            sql_str = f'''SELECT id, value, answer_atob AS answer FROM reading_select_words WHERE is_demo IN {is_demo} ORDER BY RAND() LIMIT {limit}'''
         cursor.execute(sql_str)
         data = cursor.fetchall()
         if limit > len(data):
@@ -341,17 +353,21 @@ def get_practice_reading_select_real_eng_word(cursor, get_detail, difficulty, id
         return data, len(data)
 
 def get_practice_fill_in_blank(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, data, answer FROM readandwrite_fill_blank WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, data, answer FROM readandwrite_fill_blank WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, data, answer FROM readandwrite_fill_blank WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': data['data'], 'answer': json.loads(data['answer'])}, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
@@ -367,17 +383,21 @@ def get_practice_fill_in_blank(cursor, get_detail, difficulty, id, limit, is_dem
         return data, len(data)
 
 def get_practice_short_answer(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_short_answer WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_short_answer WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_short_answer WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': data['data'], 'answer': data['answer']}, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
@@ -392,17 +412,21 @@ def get_practice_short_answer(cursor, get_detail, difficulty, id, limit, is_demo
         return data, len(data)
 
 def get_practice_describe_a_photo(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_describe_photo WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_describe_photo WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM readandwrite_describe_photo WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': data['data'], 'answer': data['answer']}, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
@@ -417,17 +441,21 @@ def get_practice_describe_a_photo(cursor, get_detail, difficulty, id, limit, is_
         return data, len(data)
 
 def get_practice_write_down_what_you_hear(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, data, answer_atob AS answer FROM listening_write_down WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, data, answer_atob AS answer FROM listening_write_down WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, data, answer_atob AS answer FROM listening_write_down WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': data['data'], 'answer': data['answer']}, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f'''WHERE aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
@@ -442,11 +470,15 @@ def get_practice_write_down_what_you_hear(cursor, get_detail, difficulty, id, li
         return data, len(data)
 
 def get_practice_listen_select_real_eng_word(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE is_demo = {is_demo} ORDER BY RAND() LIMIT {limit}'''
+            sql_str = f'''SELECT id, name, data AS value, answer_atob AS answer FROM listening_select_words WHERE is_demo IN {is_demo} ORDER BY RAND() LIMIT {limit}'''
         cursor.execute(sql_str)
         data = cursor.fetchall()
         if limit > len(data):
@@ -469,11 +501,15 @@ def get_practice_listen_select_real_eng_word(cursor, get_detail, difficulty, id,
         return data, len(data)
 
 def get_practice_interactive_conversation(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, json_data, audio FROM listening_interactive_conversation WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, json_data, audio FROM listening_interactive_conversation WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, json_data, audio FROM listening_interactive_conversation WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         json_data = json.loads(data['json_data'])
@@ -483,7 +519,7 @@ def get_practice_interactive_conversation(cursor, get_detail, difficulty, id, li
         return json_data, data['id']
     
     else:
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         
@@ -508,18 +544,22 @@ def get_practice_interactive_conversation(cursor, get_detail, difficulty, id, li
     
 
 def get_practice_read_aloud(cursor, get_detail, difficulty, id, limit, is_demo):
+    if is_demo:
+        is_demo = '(1)'
+    else:
+        is_demo = '(0, 1)'
     if get_detail:
         if id:
             sql_str = f'''SELECT id, data, answer_atob AS answer, audio FROM talking_read_aloud WHERE id = "{id}"'''
         else:
-            sql_str = f'''SELECT id, data, answer_atob AS answer, audio FROM talking_read_aloud WHERE difficulty = "{difficulty}" AND is_demo = {is_demo} ORDER BY RAND() LIMIT 1'''
+            sql_str = f'''SELECT id, data, answer_atob AS answer, audio FROM talking_read_aloud WHERE difficulty = "{difficulty}" AND is_demo IN {is_demo} ORDER BY RAND() LIMIT 1'''
         cursor.execute(sql_str)
         data = cursor.fetchone()
         return {'data': data['data'], 'answer': data['answer'], 'audio': data['audio']}, data['id']
     
     else:
     
-        _filter = f' WHERE aa.is_demo = {is_demo}'
+        _filter = f' WHERE aa.is_demo IN {is_demo}'
         if difficulty:
             _filter = f''' AND aa.difficulty = "{difficulty}"'''
         sql_str = f'''SELECT aa.id AS exam_id, aa.difficulty, bb.practice_id, bb.practice_type, bb.number_of_questions
