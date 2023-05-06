@@ -252,6 +252,7 @@
     font-size: 19px;
     font-weight: 400;
     word-wrap: break-word;
+    white-space: break-spaces;
 }
 
 .option-content {
@@ -259,6 +260,7 @@
     margin-left: 25px;
     margin-bottom: 20px;
     cursor: pointer;
+    white-space: break-spaces;
 }
 
 .option-content.selected {
@@ -297,6 +299,7 @@
     border-radius: 5px;
     margin: 10px 0px;
     position: relative;
+    white-space: break-spaces;
 }
 
 .matching-value span {
@@ -331,6 +334,7 @@
     text-indent: 115px;
     text-align: left;
     cursor: pointer;
+    white-space: break-spaces;
 }
 
 .matching-data .la .matching-value {
@@ -417,6 +421,7 @@
     font-size: 18px;
     margin-bottom: 40px;
     line-height: 40px;
+    white-space: break-spaces;
 }
 
 .image-box {
@@ -451,6 +456,7 @@
 
 .answer-item {
     padding: 10px;
+    white-space: break-spaces;
 }
 
 .answer-container {
@@ -612,6 +618,7 @@
     line-height: 45px;
     text-align: start;
     text-indent: 25px;
+    white-space: break-spaces;
 }
 
 .blank {

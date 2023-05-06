@@ -32,7 +32,7 @@ def check_user_package():
             connection = query.get_connection()
             cursor = connection.cursor()
             today = datetime.now(tz=timezone('Asia/Bangkok')).date()
-            sql_str = '''SELECT record_id FROM user_packages WHERE user_id = "%s" AND start_date <= "%s" AND end_date >= "%s"'''%(user_id, today, today)
+            sql_str = '''SELECT record_id FROM user_packages WHERE user_id = "%s" AND active = 1 AND start_date <= "%s" AND end_date >= "%s"'''%(user_id, today, today)
 
             cursor.execute(sql_str)
             response = cursor.fetchone()
@@ -110,8 +110,8 @@ def api_get_practice_list():
                             detail, id = get_practice_interactive_conversation(cursor, True, item['difficulty'], None, None, is_demo)
                             item['number_of_questions'] = len(detail)
                             item['exam_id'] = id
-                    if limit > len(response):
-                        response = fullfill_practice(response, limit)
+                    # if limit > len(response):
+                    #     response = fullfill_practice(response, limit)
                     for item in response: 
                         practice_total = practice_total + item['number_of_questions']
                     response = sort_practice(response)

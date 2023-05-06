@@ -266,22 +266,22 @@
         function renderLandingReady() {
             const container = $('#practice-content');
             container.empty();
-            container.append($('<h2>').addClass('ready-header mt-5 mb-5').text('Are you ready?'));
+            container.append($('<h2>').addClass('ready-header mt-5 mb-5').html('Are you ready?'));
             container.append($('<p>').addClass('ready-content mb-5').html('With your current plan you only get access to <span>15 sample questions</span>,</br>so think carefully and use them wisely!'));
             let row = $('<div>').addClass('row justify-content-center').hide();
             let colLeft = $('<div>').addClass('col-auto');
             let colRight = $('<div>').addClass('col-auto');
-            let btnLeft = $('<button>').addClass('btn btn-primary').text('Time limit').click(function () {
+            let btnLeft = $('<button>').addClass('btn btn-primary').html('Time limit').click(function () {
                 window.location = '/exam?start=true&time_limit=true';
             });
-            let btnRight = $('<button>').addClass('btn btn-primary').text('No time limit').click(function () {
+            let btnRight = $('<button>').addClass('btn btn-primary').html('No time limit').click(function () {
                 window.location = '/exam?start=true&time_limit=false';
             });
             colLeft.append(btnLeft);
             colRight.append(btnRight);
             row.append(colLeft);
             row.append(colRight);
-            container.append($('<button>').addClass('btn btn-primary btn-start').text('Begin Exam').attr('type', 'button').click(function () {
+            container.append($('<button>').addClass('btn btn-primary btn-start').html('Begin Exam').attr('type', 'button').click(function () {
                 if (packageData && packageData.is_login) {
                     $(this).hide();
                     row.show();
@@ -553,7 +553,7 @@
             let row = $('<div>').addClass('row justify-content-end mt-3 mb-2');
             let col = $('<div>').addClass('col-auto');
             row.append(col);
-            let diff = $('<div>').addClass('badge-difficulty').text(practiceDetail.difficulty);
+            let diff = $('<div>').addClass('badge-difficulty').html(practiceDetail.difficulty);
             col.append(diff)
             container.append(row);
         }
@@ -588,22 +588,22 @@
                     const startMinutes = Math.floor(remainingSeconds / 60);
                     const startSeconds = remainingSeconds % 60;
                     let text = `${startMinutes.toString().padStart(2, "0")}:${startSeconds.toString().padStart(2, "0")}`;
-                    countdownTimer.text(text);
+                    countdownTimer.html(text);
                     countdownInterval = setInterval(async () => {
                         if (remainingSeconds <= 0) {
                             clearInterval(countdownInterval);
-                            countdownTimer.text("00:00");
+                            countdownTimer.html("00:00");
                             await submitPractice();
                         } else {
                             remainingSeconds--;
                             const minutes = Math.floor(remainingSeconds / 60);
                             const seconds = remainingSeconds % 60;
                             let text = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-                            countdownTimer.text(text);
+                            countdownTimer.html(text);
                         }
                     }, 1000);
                 } else {
-                    countdownTimer.text('No limit!');
+                    countdownTimer.html('No limit!');
                 }
             }
         }
@@ -612,12 +612,12 @@
             const container = $('#button-box');
             let row = $('<div>').addClass('row justify-content-between ');
             let colLeft = $('<div>').addClass('col-auto');
-            let btnRetry = $('<button>').addClass('btn btn-dark btn-round').text('RETRY').unbind('click').bind('click', function () {
+            let btnRetry = $('<button>').addClass('btn btn-dark btn-round').html('RETRY').unbind('click').bind('click', function () {
                 retryPractice();
             });
             colLeft.append(btnRetry);
             let colRight = $('<div>').addClass('col-auto');
-            let btnSubmit = $('<button>').attr('id', 'btn-submit').addClass('btn btn-dark btn-round').text('SUBMIT').unbind('click').bind('click', function () {
+            let btnSubmit = $('<button>').attr('id', 'btn-submit').addClass('btn btn-dark btn-round').html('SUBMIT').unbind('click').bind('click', function () {
                 submitPractice();
             });
             colRight.append(btnSubmit);
@@ -640,11 +640,11 @@
             let col = $('<div>').addClass('col-auto practice-footer');
             let button
             if (practiceData.total > practiceData.actualNumber) {
-                button = $('<button>').addClass('btn btn-primary btn-round').text('Next Exam').unbind('click').bind('click', function () {
+                button = $('<button>').addClass('btn btn-primary btn-round').html('Next Exam').unbind('click').bind('click', function () {
                     startPractice(false, true);
                 });
             } else {
-                button = $('<button>').addClass('btn btn-primary btn-round').text('Finish').unbind('click').bind('click', function () {
+                button = $('<button>').addClass('btn btn-primary btn-round').html('Finish').unbind('click').bind('click', function () {
                     localStorage.removeItem('_cc');
                     localStorage.removeItem('practice')
                     window.location = '/exam';
@@ -662,7 +662,7 @@
 
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
             let count = 0;
             if (localStorage.getItem('_cc')) {
@@ -708,9 +708,9 @@
                     if (wordCount > 0) {
                         practiceDetail.data[count].answered = textArea.val();
                     }
-                    $('#word-count').text(`Word count: ${wordCount}`);
+                    $('#word-count').html(`Word count: ${wordCount}`);
                 });
-                let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+                let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').html('Word count: 0');
                 answerCtn.append(textArea);
                 answerCtn.append(wc);
                 col2.append(answerCtn);
@@ -720,7 +720,7 @@
             if ((count + 1) < practiceDetail.data.length) {
                 let row3 = $('<div>').addClass('row justify-content-end');
                 let col3 = $('<div>').addClass('col-auto');
-                let button = $('<button>').addClass('btn btn-primary btn-round').text('Next').unbind('click').bind('click', function () {
+                let button = $('<button>').addClass('btn btn-primary btn-round').html('Next').unbind('click').bind('click', function () {
                     localStorage.setItem('_cc', count + 1);
                     updatePraticeProcess(false, true);
                     renderPraticeReading();
@@ -737,7 +737,7 @@
         async function checkAnswerPraticeReading() {
             const container = $('#practice-content');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').html(practiceDetail.practice_name);
             let div = $('<div>').addClass('answer-box mb-5');
             practiceDetail.data.forEach((item, i) => {
                 let questionText = '<span>' + (i + 1) + ')</span>&nbsp;' + item.question;
@@ -760,7 +760,7 @@
                     })
                 }
                 if (item.answer_type === 'type') {
-                    let badge = $('<span>').addClass('badge-typing').text(item.answered);
+                    let badge = $('<span>').addClass('badge-typing').html(item.answered);
                     col2.append(badge);
                 }
                 row.append(col1);
@@ -781,29 +781,29 @@
         async function renderPraticeMatching() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
 
             let row = $('<div>').addClass('row justify-content-between mt-5');
             let colL = $('<div>').addClass('col-md-6 matching l');
             let colR = $('<div>').addClass('col-md-6 matching r text-start');
             let select = $('<select>').addClass('select-matching');
-            let optionEmtry = $('<option>').text("").attr('value', "");
+            let optionEmtry = $('<option>').html("").attr('value', "");
             select.append(optionEmtry);
             practiceDetail.options.forEach((item, i) => {
                 const letters = String.fromCharCode(i + 1 + 96);
                 let text = '<span>' + letters + ')</span>&nbsp;' + item.value;
                 let p = $('<p>').attr('id', `o-${item.id}`).html(`<span id="b-${item.id}"></span>&nbsp;${text}`).addClass('matching-value');
-                let option = $('<option>').text(letters).attr('value', item.id);
+                let option = $('<option>').html(letters).attr('value', item.id);
                 colR.append(p);
                 select.append(option);
             });
 
             practiceDetail.data.forEach((item, i) => {
                 let div = $('<div>').attr('id', item.id).addClass('matching-data');
-                let letters = $('<p>').text(`${i + 1})`).addClass('letters');
+                let letters = $('<p>').html(`${i + 1})`).addClass('letters');
                 select.attr('id', `a-${item.id}`);
-                let p = $('<p>').attr('data-id', item.id).text(item.value).addClass('matching-data-text');
+                let p = $('<p>').attr('data-id', item.id).html(item.value).addClass('matching-data-text');
                 div.append(letters);
                 select.clone().appendTo(div);
                 div.append(p);
@@ -879,13 +879,13 @@
             let cAnswerContent = $('<p>').addClass('a-content').html(practiceDetail.story);
             practiceDetail.data.forEach((item, i) => {
                 let row = $('<div>').addClass('row justify-content-between answer-item');
-                let col1 = $('<div>').addClass('col-auto').text(`# ${(i + 1)}`)
+                let col1 = $('<div>').addClass('col-auto').html(`# ${(i + 1)}`)
                 let col2 = $('<div>').addClass('col-auto');
                 if (item.answered && (item.answered == window.atob(item.answer))) {
-                    let badge = $('<span>').addClass('badge-correct').text('Correct');
+                    let badge = $('<span>').addClass('badge-correct').html('Correct');
                     col2.append(badge);
                 } else {
-                    let badge = $('<span>').addClass('badge-incorrect').text('Incorrect');
+                    let badge = $('<span>').addClass('badge-incorrect').html('Incorrect');
                     col2.append(badge);
                 }
                 row.append(col1);
@@ -906,14 +906,14 @@
         async function renderPraticeReadingSelectRealEngWord() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
             let row = $('<div>').addClass('real-word-box mt-5');
 
 
             practiceDetail.data.forEach((item, i) => {
                 let col = $('<div>')
-                let box = $('<div>').addClass('real-word-item').attr('word-id', item.id).text(item.value).unbind('click').bind('click', function () {
+                let box = $('<div>').addClass('real-word-item').attr('word-id', item.id).html(item.value).unbind('click').bind('click', function () {
                     if (practiceState === 'practicing') {
                         if ($(this).hasClass('selected')) {
                             $(this).removeClass('selected');
@@ -950,7 +950,7 @@
         async function renderPraticeFillInBlank() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
 
             let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
@@ -1052,15 +1052,15 @@
         async function renderPraticeShortAnswer() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
-            let p = $('<p>').addClass('topic mt-5 mb-5').text(practiceDetail.data);
+            let p = $('<p>').addClass('topic mt-5 mb-5').html(practiceDetail.data);
             container.append(p);
             let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
                 const wordCount = countWords(textArea.val());
-                $('#word-count').text(`Word count: ${wordCount}`);
+                $('#word-count').html(`Word count: ${wordCount}`);
             });
-            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').html('Word count: 0');
             container.append(textArea);
             container.append(wc);
             await renderButton();
@@ -1092,15 +1092,15 @@
         async function renderPraticeDescribeAPhoto() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
             let image = $('<img>').addClass('image-box mt-5 mb-5').attr('src', practiceDetail.data);
             container.append(image);
             let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
                 const wordCount = countWords(textArea.val());
-                $('#word-count').text(`Word count: ${wordCount}`);
+                $('#word-count').html(`Word count: ${wordCount}`);
             });
-            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').html('Word count: 0');
             container.append(textArea);
             container.append(wc);
             await renderButton();
@@ -1133,7 +1133,7 @@
             const container = $('#question-box');
             container.empty();
             let audio = await getAudio(practiceDetail.data);
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
             let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
             let col = $('<div>').addClass('col-auto');
@@ -1165,9 +1165,9 @@
             container.append(row);
             let textArea = $('<textarea>').attr('id', 'practice-textarea').addClass('practice-textarea form-control').on('input', function (event) {
                 const wordCount = countWords(textArea.val());
-                $('#word-count').text(`Word count: ${wordCount}`);
+                $('#word-count').html(`Word count: ${wordCount}`);
             });
-            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').text('Word count: 0');
+            let wc = $('<p>').attr('id', 'word-count').addClass('words-count mb-5 text-start').html('Word count: 0');
             container.append(textArea);
             container.append(wc);
             await renderButton();
@@ -1198,7 +1198,7 @@
         async function renderPraticeListenSelectRealEngWord() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
             let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
 
@@ -1215,7 +1215,7 @@
                         play.html('<i class="fa fa-volume-off"></i>');
                     });
                 });
-                let label = $('<div>').addClass('label').text('');
+                let label = $('<div>').addClass('label').html('');
                 let select = $('<div>').addClass('selection').html('<i class="fa fa-check"></i>').unbind('click').bind('click', function () {
                     if (practiceState === 'practicing') {
                         if (box.hasClass('selected')) {
@@ -1241,10 +1241,10 @@
                 let answer = window.atob(item.answer);
                 if (answer === 'correct') {
                     $(`div[word-id="${item.id}"]`).addClass('correct');
-                    $(`div[word-id="${item.id}"] .label`).text(item.name);
+                    $(`div[word-id="${item.id}"] .label`).html(item.name);
                 } else {
                     $(`div[word-id="${item.id}"]`).addClass('incorrect');
-                    $(`div[word-id="${item.id}"] .label`).text(item.name);
+                    $(`div[word-id="${item.id}"] .label`).html(item.name);
                 }
 
             });
@@ -1258,7 +1258,7 @@
         async function renderPraticeInteractiveConversation() {
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
 
             let count = 0;
@@ -1336,9 +1336,9 @@
                     if (wordCount > 0) {
                         practiceDetail.data[count].answered = textArea.val();
                     }
-                    $('#word-count').text(`Word count: ${wordCount}`);
+                    $('#word-count').html(`Word count: ${wordCount}`);
                 });
-                let wc = $('<p>').attr('id', 'word-count').addClass('words-count text-start').text('Word count: 0');
+                let wc = $('<p>').attr('id', 'word-count').addClass('words-count text-start').html('Word count: 0');
                 answerCtn.append(textArea);
                 answerCtn.append(wc);
                 col2.append(answerCtn);
@@ -1348,7 +1348,7 @@
             if ((count + 1) < practiceDetail.data.length) {
                 let row3 = $('<div>').addClass('row justify-content-end');
                 let col3 = $('<div>').addClass('col-auto');
-                let button = $('<button>').addClass('btn btn-primary').text('Next').unbind('click').bind('click', function () {
+                let button = $('<button>').addClass('btn btn-primary').html('Next').unbind('click').bind('click', function () {
                     localStorage.setItem('_cc', count + 1);
                     updatePraticeProcess(false, true);
                     renderPraticeInteractiveConversation();
@@ -1364,7 +1364,7 @@
         async function checkAnswerPraticeInteractiveConversation() {
             const container = $('#practice-content');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 mb-5 p-name').html(practiceDetail.practice_name);
             let div = $('<div>').addClass('answer-box mb-5');
             practiceDetail.data.forEach((item, i) => {
                 let questionText = '<span>' + (i + 1) + ')</span>&nbsp;' + item.question;
@@ -1387,7 +1387,7 @@
                     })
                 }
                 if (item.answer_type === 'type') {
-                    let badge = $('<span>').addClass('badge-typing').text(item.answered);
+                    let badge = $('<span>').addClass('badge-typing').html(item.answered);
                     col2.append(badge);
                 }
                 row.append(col1);
@@ -1415,13 +1415,13 @@
 
             const container = $('#question-box');
             container.empty();
-            let pName = $('<h5>').addClass('text-center mt-4 p-name').text(practiceDetail.practice_name);
+            let pName = $('<h5>').addClass('text-center mt-4 p-name').html(practiceDetail.practice_name);
             container.append(pName);
-            let question = $('<p>').addClass('text-start mt-5 mb-4').text(practiceDetail.data);
+            let question = $('<p>').addClass('text-start mt-5 mb-4').html(practiceDetail.data);
             container.append(question);
             let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
             let col = $('<div>').addClass('col-auto');
-            let timer = $('<p>').text('00:00')
+            let timer = $('<p>').html('00:00')
             let speakStart = $('<div>').addClass('btn-media').html('<i class="fa fa-solid fa-microphone"></i>').unbind('click').bind('click', async () => {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
@@ -1436,7 +1436,7 @@
                     const elapsedTime = Date.now() - startTime;
                     const minutes = Math.floor(elapsedTime / 60000);
                     const seconds = Math.floor((elapsedTime % 60000) / 1000);
-                    timer.text(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+                    timer.html(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
                 }, 1000);
 
                 // Stop the time counter when the recording is stopped
