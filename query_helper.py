@@ -128,3 +128,35 @@ def update_user_package(data):
     cursor.execute(sql_str, sql_data)
     connection.commit()
     return True
+
+
+
+def handle_checkout_session(user_id , package_id):
+    package = get_package(package_id)
+    if package:
+        package_id = package["id"]
+        days = package["days"]
+        check_package = get_user_package(user_id)
+        if check_package:
+            start_date = check_package["start_date"]
+            end_date = check_package["end_date"]
+            new_end_date = end_date + timedelta(days=days)
+            data = {
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : start_date,
+                "end_date" : new_end_date
+            }
+            print(data)
+            update_user_package(data)
+        else :
+            start_date = date.today()
+            end_date = start_date + timedelta(days=days)
+            data = {
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : start_date,
+                "end_date" : end_date
+            }
+            print(data)
+            insert_user_package(data)

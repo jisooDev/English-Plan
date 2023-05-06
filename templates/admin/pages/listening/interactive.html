@@ -60,7 +60,11 @@
                                             {% for k , v in item.items()%}
                                             {% set atob_answer = item.answer  %}
                                             {% if k != 'option' %}
-                                            <div>{{ k }} : {{ v }}</div>
+                                                {% if k == 'question' %}
+                                                    <div style="white-space: pre-wrap;">{{ k }} : {{ v }}</div>
+                                                {% else %}
+                                                    <div>{{ k }} : {{ v }}</div>
+                                                {% endif %}
                                             {% else %}
                                             <div class="my-2 text-info">
                                                 <div>choice for select :</div>
