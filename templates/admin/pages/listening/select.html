@@ -42,9 +42,9 @@
                               <tr>
                                 <th scope="col">#</th>
                                 <th class="text-center" scope="col">value</th>
-                                <th scope="col">answer</th>
-                                <th scope="col">difficult</th>
-                                <th scope="col">sound</th>
+                                <th class="text-center" scope="col">answer</th>
+                                <th class="text-center" scope="col">difficult</th>
+                                <th class="text-center" scope="col">sound</th>
                                 <th class="text-center" scope="col">action</th>
                               </tr>
                             </thead>
@@ -53,17 +53,17 @@
                                 <tr>
                                     <td>{{ loop.index }}</td>
                                     {% if item.answer == 'correct' %}
-                                        <td class="d-flex justify-content-center"><span class="badge badge-success text-white">correct</span></td>
+                                        <td class="text-center"><span class="badge badge-success text-white">correct</span></td>
                                     {% else %}
-                                        <td class="d-flex justify-content-center"><span class="badge badge-danger">incorrect</span></td>
+                                        <td class="text-center"><span class="badge badge-danger">incorrect</span></td>
                                     {% endif %}
-                                    <td>{{ item.name }}</td>
-                                    <td>{{ item.difficulty }}</td>
-                                    <td>
+                                    <td class="text-center">{{ item.name }}</td>
+                                    <td class="text-center">{{ item.difficulty }}</td>
+                                    <td >
                                         <button style="border: none;background: none;" onclick="playAudio('{{ item.data }}')"><i class="fa fa-headphones" aria-hidden="true"></i></button>
                                     </td>
-                                    <td class="text-center">
-                                        <button onclick="del('{{item.id}}')" style="border: none;background: none;">
+                                    <td class="d-flex justify-content-center">
+                                        <button class="d-flex justify-content-center" onclick="del('{{item.id}}')" style="border: none;background: none;">
                                             <i  class="fa fa-trash text-danger" aria-hidden="true"></i>
                                         </button>
                                     </td>

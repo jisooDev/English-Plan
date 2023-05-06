@@ -3,6 +3,9 @@
      [dir=ltr] .table tbody td {
     vertical-align: top !important;
     }
+    td{
+        white-space: pre-wrap;
+    }
 </style>
 
 <body class="layout-default">
@@ -50,8 +53,8 @@
                                 {% for item in response %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ item.data }}</td>
-                                    <td>{{ item.answer }}</td>
+                                    <td>{{ item.data|safe }}</td>
+                                    <td>{{ item.answer|safe }}</td>
                                     <td>{{ item.difficulty }}</td>
                                     <td>
                                         <button onclick="del('{{item.id}}')" style="border: none;background: none;">

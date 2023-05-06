@@ -60,7 +60,6 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys["secret_key"]
 
-
 @app.before_request
 def check_admin():
     if request.path.startswith('/admin/') and ('role' not in session or session['role'] != 'admin'):
@@ -80,6 +79,9 @@ def set_session_package():
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
+    session["package_id"] = data["package_id"]
+    print(session["user_id"])
+    print(session["package_id"])
     stripe.api_key = stripe_keys["secret_key"]
     sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -93,6 +95,12 @@ def start_payment_session():
             },
             "quantity": 1,
         }],
+       custom_text={
+            "submit": {
+            "message":
+            str(session["user_id"]) +","+ str(session["package_id"]),
+            }
+        },
         mode='payment',
         success_url= request.host_url + 'success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url= request.host_url,
@@ -103,16 +111,17 @@ def start_payment_session():
 @app.route("/webhook", methods=['POST'])
 def stripe_webhook():
     stripe_payload = request.json
-    print(stripe_payload)
     if stripe_payload["type"] == "checkout.session.completed":
-        handle_checkout_session()
+        x = (stripe_payload["data"]["object"]["custom_text"]["submit"]["message"]).split(",")
+        handle_checkout_session(x[0],x[1])
     return 'Success'
 
 
-def handle_checkout_session():
+def handle_checkout_session(user_id , package_id):
     print("Payment was successful.")
-    user_id = 7
-    package = query.get_package(2)
+    print(user_id)
+    print(package_id)
+    package = query.get_package(package_id)
     if package:
         package_id = package["id"]
         days = package["days"]
@@ -120,29 +129,26 @@ def handle_checkout_session():
         if check_package:
             start_date = check_package["start_date"]
             end_date = check_package["end_date"]
-            new_start_date = end_date
             new_end_date = end_date + timedelta(days=days)
             data = {
-                package_id : package_id,
-                user_id : user_id,
-                start_date : new_start_date,
-                end_date : new_end_date
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : start_date,
+                "end_date" : new_end_date
             }
             print(data)
-            update = query.update_user_package(data)
-            print("update package user_id = "+ user_id +" " +update)
+            query.update_user_package(data)
         else :
             start_date = date.today()
             end_date = start_date + timedelta(days=days)
             data = {
-                package_id : package_id,
-                user_id : user_id,
-                start_date : start_date,
-                end_date : end_date
+                "package_id" : package_id,
+                "user_id" : user_id,
+                "start_date" : start_date,
+                "end_date" : end_date
             }
             print(data)
-            insert = query.insert_user_package(data)
-            print("insert package user_id = "+ user_id +" " +insert)
+            query.insert_user_package(data)
 
 
 @app.route("/checkout")
@@ -182,7 +188,7 @@ def login():
         result = query.get_user_by_email(user["email"])
         if result:
             session["user_id"] = result["id"]
-            print(session["user_id"])
+            userId = result["id"]
             session["role"] = result["role"]
             return json.dumps({"status" : 200})
         else :
@@ -205,7 +211,11 @@ def main_page():
 def practice_page():
     return render_template('practice.html')
 
-
+@app.route("/test")
+def test_page():
+    print(session["user_id"])
+    print(session["package_id"])
+    return "Hello"
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(reading_bp, url_prefix='/admin')
