@@ -742,6 +742,18 @@
     </script>
 
     <script>
+        let packageData = false;
+
+        $(async ($) => {
+
+        let package = await checkPackage();
+        console.log(package)
+        if (package.success) {
+            packageData = package;
+        } 
+
+        });
+
         fetch("/config")
         .then((result) => { return result.json(); })
         .then((data) => {
@@ -749,8 +761,8 @@
         const stripe = Stripe(data.publicKey);
 
         $('#checkout').click(function() {
-
-            let body = {
+            if (packageData && packageData.is_login) {
+                let body = {
                 "name": "Unlimited 15 Days",
                 "unit_amount": 100,
                 "package_id": 1
@@ -771,10 +783,14 @@
                         });
                     }
                 });
+            }
+            else{
+                alert('Please login!');
+            }
         });
 
         $('#checkout-2').click(function() {
-
+            if (packageData && packageData.is_login) {
             let body = {
                 "name": "Unlimited 30 Days",
                 "unit_amount": 2910,
@@ -796,10 +812,14 @@
                         });
                     }
                 });
+            }
+            else{
+                alert('Please login!');
+            }
         });
 
         $('#checkout-3').click(function() {
-
+            if (packageData && packageData.is_login) {
             let body = {
                 "name": "Unlimited 90 Days",
                 "unit_amount": 3990,
@@ -821,9 +841,31 @@
                         });
                     }
                 });
+            }
+            else{
+                alert('Please login!');
+            }
         });
 
         });
+
+        function checkPackage() {
+            const url = 'api/package/check';
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            };
+            return new Promise((resolve, reject) => {
+                fetch(url, options).then(response => response.json()).then(data => {
+                    resolve(data)
+                }).catch(error => {
+                    reject(error)
+                });
+            });
+        }
 
     </script>
 </body>
