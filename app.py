@@ -53,8 +53,8 @@ firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 
 stripe_keys = {
-        "secret_key": "sk_test_51Myfx5Fs6C8dHOiLePaJ3eeCfK4OoRCkLXIdylU7gvbc6KJCa8gJmSkVWKqNqfSJL8giPnljhah3kT3J1dkQcCxy00rTuPppNg",
-        "publishable_key": "pk_test_51Myfx5Fs6C8dHOiLU9lOp1Sm5QBs129Wr57ycT4wraPdELWgo3Vy2ILQgNnjKzrNoJdeNPuveOcRMsvnkjfhJNHk00TIFyrDyx",
+        "secret_key": "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",
+        "publishable_key": "pk_live_51M1u8MGHLABh0BMzehKJKPNo3juPVvlrn3W0rYpN2datXJfu687Ef39TzmwimbIniakVLDNS3Uwosakrvb3HNdq2009Ze3LJva",
         "endpoint_secret": "english_plans"
 }
 
