@@ -19,6 +19,7 @@ from routes.config import blueprintConfig as config_bp
 from routes.api import blueprint as api_bp
 
 import pyrebase
+import query_helper as query
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'english_plan'
@@ -201,11 +202,25 @@ def login():
 def logout():
     session["user_id"] = None
     session["role"] = None
-    return render_template('main.html')
+    return redirect("/")
 
 @app.route("/")
 def main_page():
-    return render_template('main.html')
+
+    connection = query.get_connection()
+    cursor = connection.cursor()
+
+    try :
+        sql_str = '''
+            SELECT * FROM review
+        '''
+        cursor.execute(sql_str)
+        review = cursor.fetchall()
+        
+    except Exception as e :
+        print(e)
+
+    return render_template('main.html' , review=review)
 
 @app.route("/exam")
 def practice_page():

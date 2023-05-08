@@ -505,6 +505,7 @@
                         <div class="col-12">
                             <div class="slider-box">
                                 <div class="slider slider-nav">
+                                    {% for item in review%}
                                   <div style="padding: 5px;">
                                     <div class="card-review">
                                         <div class="review-rating" style="color: yellow;">
@@ -516,94 +517,15 @@
                                         </div>
 
                                         <div class="review-text limit-text-4 pt-3"> 
-                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
+                                            {{ item.text }}
                                         </div>
 
                                         <div class="review-profile">
-                                            อุ้งอิ***
+                                            {{ item.by }}
                                         </div>
                                     </div>
                                   </div>
-                                  <div style="padding: 5px;">
-                                    <div class="card-review">
-                                        <div class="review-rating" style="color: yellow;">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-
-                                        <div class="review-text limit-text-4 pt-3"> 
-                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
-                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
-                                        </div>
-
-                                        <div class="review-profile">
-                                            easy***
-                                        </div>
-                                    </div>
-                                  </div>
-                                  <div style="padding: 5px;">
-                                    <div class="card-review">
-                                        <div class="review-rating" style="color: yellow;">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-
-                                        <div class="review-text limit-text-4 pt-3"> 
-                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
-                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                                        </div>
-
-                                        <div class="review-profile">
-                                            อุzz***
-                                        </div>
-                                    </div>
-                                  </div>
-                                  <div style="padding: 5px;">
-                                    <div class="card-review">
-                                        <div class="review-rating" style="color: yellow;">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-
-                                        <div class="review-text limit-text-4 pt-3"> 
-                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
-                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
-                                        </div>
-
-                                        <div class="review-profile">
-                                            อุ้งอิ***
-                                        </div>
-                                    </div>
-                                  </div>
-                                  <div style="padding: 5px;">
-                                    <div class="card-review">
-                                        <div class="review-rating" style="color: yellow;">
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                            <i class="fa fa-star" aria-hidden="true"></i>
-                                        </div>
-
-                                        <div class="review-text limit-text-4 pt-3"> 
-                                            ใช้ดีมากเลยซื้อสัก 100 ปีคุ้มแน่นอน 
-                                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Delectus doloremque veniam quasi ipsa vitae in dicta corporis, quo repellendus alias cupiditate nisi natus eum illo soluta tenetur magnam architecto ad?
-                                        </div>
-
-                                        <div class="review-profile">
-                                            อุ้งอิ***
-                                        </div>
-                                    </div>
-                                  </div>
+                                  {% endfor %}
                                 </div>
                             </div>
                         </div>
