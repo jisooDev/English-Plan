@@ -331,6 +331,30 @@
                     </div>
                 </div>
 
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-md-8 mx-auto">
+                            <div class="card-package">
+                                <div class="services-icon" >
+                                    <h1>{{promition_EN.price_text}}$</h1>
+                                </div>
+                                <div class="services-content">
+                                    <h4 class="services-title">
+                                        <a href="#">
+                                            <small>
+                                                {{promition_EN.description}} 
+                                            </small>
+                                        </a>
+                                    </h4>
+                                    <button class="more mt-5">
+                                        CHOOSE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+
                 <img style="width: 430px;margin-top: 50px;" src="{{ url_for('static', filename='image/payment.png') }}" alt="">
 
             </div>
@@ -414,20 +438,19 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-12">
-                    <div class="row" style="display: none;">
+                    <div class="row">
                         <div class="col-12 col-md-8 mx-auto">
                             <div class="card-package">
                                 <div class="services-icon" >
-                                    <h1>4990 THB</h1>
+                                    <h1>{{promition_TH.price_text}} THB</h1>
                                 </div>
                                 <div class="services-content">
                                     <h4 class="services-title">
                                         <a href="#">
-                                            เรียนเทคนิคสำหรับทำทุกโจทย์จากคนที่ได้คะแนน 155/160 
                                             <small>
-                                                เข้าใช้ application ฝึกได้ 6 เดือน <br>
-                                                แถมฟรี Flashcard ฝึกคำศัพท์ (รวมศัพท์ Duolingo 300 คนพร้อมการออกเสียง) 
+                                                {{promition_TH.description}} 
                                             </small>
                                         </a>
                                     </h4>
@@ -446,7 +469,13 @@
         </div>
     </section>
 
-    <section id="facts" style="padding-top: 70px;">
+    <section class="text-center text-danger" style="padding-top: 40px;cursor: pointer;">
+        <a href="https://courses.language-plan.com/courses/duolingo-fast-track" style="all: unset;">
+            <h2>!!! สนใจเรียนคอสอื่นๆ duolingo คลิกที่นี้ !!!</h2>
+        </a>
+    </section>
+
+    <section id="facts" style="padding-top: 40px;">
         <div class="container">
             <div class="row" style="margin-top: 50px;">
                 <div class="col-lg-6">
@@ -538,24 +567,32 @@
                         <img style="width: 150px;" class="img-fluid mb-2" src="{{ url_for('static', filename='image/logo-name-nobackground.png') }}" alt="">
 
                         <p class="text-white">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem eius, iste est fuga labore magni non saepe vel totam dolor maiores sunt harum soluta fugit!
+                            {{ footer.text }}
                         </p>
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-8">
                         <div class="d-flex justify-content-md-between list-group" style="margin-top: 50px;">
                             <div class="px-0 px-md-4">
-                                <div class="get-started">
-                                    Get Started
-                                </div>
-                                <div class="group-item">
-                                    Pricing
-                                </div>
-                                <div class="group-item">
-                                    Exam
-                                </div>
-                                <div class="group-item">
-                                    About
-                                </div>
+                                <a href="/exam" style="all: unset;">
+                                    <div class="get-started">
+                                        Get Started
+                                    </div>
+                                </a>
+                                <a href="/#pricing" style="all: unset;">
+                                    <div class="group-item">
+                                        Pricing
+                                    </div>
+                                </a>
+                                <a href="/exam" style="all: unset;">
+                                    <div class="group-item">
+                                        Exam
+                                    </div>
+                                </a>
+                                <a href="/#facts" style="all: unset;">
+                                    <div class="group-item">
+                                        About
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -564,17 +601,23 @@
                             Contact
                         </h3>
                         <div class="email" style="margin-top: 40px;">
-                            <a style="color: #fe7a7b;" href="#">English_plan@gmail.com</a>
+                            <a style="color: #fe7a7b;" href="#">{{ contact_email.text }}</a>
                         </div>
                         <ul style="margin-top: 40px;">
                             <li>
-                                <img src="{{ url_for('static', filename='image/facebook.svg') }}" alt="">
+                                <a href="{{ contact_facebook.text }}" style="all: unset;">
+                                    <img src="{{ url_for('static', filename='image/facebook.svg') }}" alt="">
+                                </a>
                             </li>
                             <li>
-                                <img src="{{ url_for('static', filename='image/line.svg') }}" alt="">
+                                <a href="{{ contact_line.text }}" style="all: unset;">
+                                    <img src="{{ url_for('static', filename='image/line.svg') }}" alt="">
+                                </a>
                             </li>
                             <li>
-                                <img src="{{ url_for('static', filename='image/instagram.svg') }}" alt="">
+                                <a href="{{ contact_instagram.text }}" style="all: unset;">
+                                    <img src="{{ url_for('static', filename='image/instagram.svg') }}" alt="">
+                                </a>
                             </li>
                         </ul>
                     </div>

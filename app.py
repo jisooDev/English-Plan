@@ -4,6 +4,7 @@ import pymysql ;
 import json
 import stripe
 from datetime import date,timedelta
+from flask_caching import Cache
 
 import os ;
 from dotenv import load_dotenv ;
@@ -22,6 +23,7 @@ import pyrebase
 import query_helper as query
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 app.config['SECRET_KEY'] = 'english_plan'
 
 pool_db = PooledDB(
@@ -205,22 +207,68 @@ def logout():
     return redirect("/")
 
 @app.route("/")
+@cache.cached(timeout=1600)
 def main_page():
 
     connection = query.get_connection()
     cursor = connection.cursor()
 
     try :
-        sql_str = '''
+        sql_str_review = '''
             SELECT * FROM review
         '''
-        cursor.execute(sql_str)
+        cursor.execute(sql_str_review)
         review = cursor.fetchall()
-        
+
+        sql_str_promotion = '''
+           SELECT * FROM promotion_config
+        '''
+
+        cursor.execute(sql_str_promotion)
+        promotions = cursor.fetchall()
+
+        promition_EN = ''
+        promition_TH = ''
+
+        for item in promotions:
+            if item['lang'] == 'EN' :
+                promition_EN = item
+            if item['lang'] == 'TH' :
+                promition_TH = item
+
+        sql_str_temp = '''
+           SELECT * FROM temp_config
+        '''
+
+        cursor.execute(sql_str_temp)
+        temp = cursor.fetchall()
+
+        for i in temp :
+            if i['type'] == 'footer' :
+                footer = i
+            if i['type'] == 'contact_facebook' :
+                contact_facebook = i
+            if i['type'] == 'contact_line' :
+                contact_line = i
+            if i['type'] == 'contact_email' :
+                contact_email = i
+            if i['type'] == 'contact_instagram' :
+                contact_instagram = i
+
     except Exception as e :
         print(e)
 
-    return render_template('main.html' , review=review)
+    return render_template('main.html' , 
+    review=review , 
+    promition_EN=promition_EN , 
+    promition_TH=promition_TH ,
+    footer=footer ,
+    contact_facebook=contact_facebook,
+    contact_line=contact_line,
+    contact_email=contact_email,
+    contact_instagram=contact_instagram
+
+    )
 
 @app.route("/exam")
 def practice_page():
