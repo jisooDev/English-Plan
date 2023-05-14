@@ -147,7 +147,6 @@ def handle_checkout_session(user_id , package_id):
                 "start_date" : start_date,
                 "end_date" : new_end_date
             }
-            print(data)
             update_user_package(data)
         else :
             start_date = date.today()
@@ -158,5 +157,21 @@ def handle_checkout_session(user_id , package_id):
                 "start_date" : start_date,
                 "end_date" : end_date
             }
-            print(data)
             insert_user_package(data)
+
+def insert_package_log(data):
+    connection = get_connection()
+    cursor = connection.cursor()
+    sql_str = '''INSERT IGNORE INTO packages_log (user_id,package_id) VALUES (
+            %(user_id)s, 
+            %(package_id)s
+        )'''
+
+    sql_data = {
+        'user_id': data["user_id"],
+        'package_id': data["package_id"]
+    }
+
+    cursor.execute(sql_str, sql_data)
+    connection.commit()
+    return True

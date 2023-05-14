@@ -85,6 +85,11 @@ def start_payment_session():
     session["package_id"] = data["package_id"]
     print(session["user_id"])
     print(session["package_id"])
+    data_log = {
+        "user_id": session["user_id"],
+        "package_id": session["package_id"]
+    }
+    query.insert_package_log(data_log)
     stripe.api_key = stripe_keys["secret_key"]
     sessions = stripe.checkout.Session.create(
         payment_method_types=['card'],
