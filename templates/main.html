@@ -334,7 +334,10 @@
                 <div class="col-12">
                     <div class="row">
                         <div class="col-12 col-md-8 mx-auto">
-                            <div class="card-package">
+                            <div id="promotion-en">
+
+                            </div>
+                            <!-- <div class="card-package">
                                 <div class="services-icon" >
                                     <h1>{{promition_EN.price_text}}$</h1>
                                 </div>
@@ -350,7 +353,7 @@
                                         CHOOSE
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>  
                     </div>
                 </div>
@@ -442,7 +445,10 @@
                 <div class="col-12">
                     <div class="row">
                         <div class="col-12 col-md-8 mx-auto">
-                            <div class="card-package">
+                            <div id="promotion-th">
+
+                            </div>
+                            <!-- <div class="card-package">
                                 <div class="services-icon" >
                                     <h1>{{promition_TH.price_text}} THB</h1>
                                 </div>
@@ -458,7 +464,7 @@
                                         CHOOSE
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>  
                     </div>
                 </div>
@@ -673,6 +679,7 @@
     
     <script>
     $(document).ready(function() {
+
         var lang = localStorage.getItem('lang'); 
         
         if(lang == null || lang == '') {
@@ -684,35 +691,23 @@
             $('#toggle-lang').text(lang.toUpperCase())
             $('.lang-en').show();
             $('.lang-th').hide();
+            getPromotion();
         } else {
             $('#toggle-lang').text(lang.toUpperCase())
             $('.lang-en').hide();
             $('.lang-th').show();
+            getPromotion();
         }
     })
 
-    function toggleLang(){
-        localStorage.setItem('lang' , localStorage.getItem('lang') == 'en' ? 'th' : 'en')
-
-        if(localStorage.getItem('lang') == 'en') {
-            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
-            $('.lang-en').show();
-            $('.lang-th').hide();
-        } else {
-            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
-            $('.lang-en').hide();
-            $('.lang-th').show();
-        }
-    }
-    </script>
-
-    <script>
         let packageData = false;
+
+        var stripe;
 
         $(async ($) => {
 
         let package = await checkPackage();
-        console.log(package)
+
         if (package.success) {
             packageData = package;
         } 
@@ -722,8 +717,9 @@
         fetch("/config")
         .then((result) => { return result.json(); })
         .then((data) => {
+
+        stripe = Stripe(data.publicKey);
         // Initialize Stripe.js
-        const stripe = Stripe(data.publicKey);
 
         $('#checkout').click(function() {
             if (packageData && packageData.is_login) {
@@ -812,6 +808,7 @@
             }
         });
 
+
         });
 
         function checkPackage() {
@@ -832,6 +829,119 @@
             });
         }
 
+    function toggleLang(){
+
+        localStorage.setItem('lang' , localStorage.getItem('lang') == 'en' ? 'th' : 'en')
+
+        if(localStorage.getItem('lang') == 'en') {
+            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
+            $('.lang-en').show();
+            $('.lang-th').hide();
+            getPromotion();
+        } else {
+            $('#toggle-lang').text(localStorage.getItem('lang').toUpperCase())
+            $('.lang-en').hide();
+            $('.lang-th').show();
+            getPromotion();
+        }
+    }
+
+    function getPromotion(){
+
+        let body = {
+            "lang" : localStorage.getItem('lang').toUpperCase()
+        }
+
+        $.ajax({
+                url: '/get_promotion',
+                type: 'POST',
+                data: JSON.stringify(body),
+                contentType: "application/json",
+                dataType: "json",
+                success: function(data) {
+                    console.log(data); 
+                    let _html = "";
+                    if(data.lang == "TH"){
+                        _html += ` <div class="card-package">
+                                <div class="services-icon" >
+                                    <h1>${data.price_text} THB</h1>
+                                </div>
+                                <div class="services-content">
+                                    <h4 class="services-title">
+                                        <a href="#">
+                                            <small>
+                                                ${data.description}
+                                            </small>
+                                        </a>
+                                    </h4>
+                                    <button class="more mt-5" id="checkout-4"  data-price="${data.price_checkout}">
+                                        CHOOSE
+                                    </button>
+                                </div>
+                            </div>`; 
+
+                        $("#promotion-th").html(_html)
+                              
+                    } 
+                    else{
+                        _html += ` <div class="card-package">
+                                <div class="services-icon" >
+                                    <h1>${data.price_text} $</h1>
+                                </div>
+                                <div class="services-content">
+                                    <h4 class="services-title">
+                                        <a href="#">
+                                            <small>
+                                                ${data.description}
+                                            </small>
+                                        </a>
+                                    </h4>
+                                    <button class="more mt-5" id="checkout-4"  data-price="${data.price_checkout}">
+                                        CHOOSE
+                                    </button>
+                                </div>
+                            </div>`; 
+
+                        $("#promotion-en").html(_html)
+                    }
+
+                    $('#checkout-4').click(function() {
+                        if (packageData && packageData.is_login) {
+
+                            const elem = document.getElementById('checkout-4');
+
+                            const price_checkout = elem.getAttribute('data-price');
+                            
+                        let body = {
+                            "name": "Promotion",
+                            "unit_amount": price_checkout,
+                            "package_id": 4
+                        }
+
+                        $.ajax({
+                                url: '/start_payment_session',
+                                type: 'POST',
+                                data: JSON.stringify(body),
+                                contentType: "application/json",
+                                dataType: "json",
+                                success: function(data) {
+                                    payment_session_id = data['session_id'];
+                                    stripe.redirectToCheckout({
+                                        sessionId: payment_session_id
+                                    }).then(function (result) {
+                                        console.log(result.error.message);
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            alert('Please login!');
+                        }
+                    });
+                }
+            });
+    }
     </script>
+
 </body>
 </html>

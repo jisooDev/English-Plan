@@ -175,3 +175,12 @@ def insert_package_log(data):
     cursor.execute(sql_str, sql_data)
     connection.commit()
     return True
+
+def get_promotion(lang):
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM promotion_config WHERE lang = "%s" LIMIT 1''' % (lang))
+    result = cursor.fetchall()
+    if len(result) == 0:
+        return False
+    return result[0]

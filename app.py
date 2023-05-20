@@ -79,6 +79,12 @@ def set_session_package():
     session["package_id"] = data["package_id"]
     return "Success"
 
+@app.route('/get_promotion' , methods=['POST'])
+def api_get_promotion():
+    data = request.json
+    lang = data["lang"]
+    return query.get_promotion(lang)
+
 @app.route('/start_payment_session' , methods=['POST'])
 def start_payment_session():
     data = request.json
@@ -278,12 +284,6 @@ def main_page():
 @app.route("/exam")
 def practice_page():
     return render_template('practice.html')
-
-@app.route("/test")
-def test_page():
-    print(session["user_id"])
-    print(session["package_id"])
-    return "Hello"
 
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(reading_bp, url_prefix='/admin')
