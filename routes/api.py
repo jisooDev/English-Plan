@@ -98,6 +98,7 @@ def api_get_practice_list():
             
             cursor.execute(sql_str)
             response = cursor.fetchall()
+
             if len(response) > 0:
                 if res['tasks'] == 'all':
                     random.shuffle(response)
@@ -188,6 +189,8 @@ def api_get_practice_detail():
             'timer': practice['timer'],
             'difficulty': practice['difficulty'],
         }
+
+
         if practice['practice_type'] == "reading":
             result['data'], _ = get_practice_reading(cursor, True, practice['difficulty'], examId, 1, is_demo)
             
