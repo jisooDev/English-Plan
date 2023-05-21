@@ -121,8 +121,8 @@ def api_get_practice_list():
             if res['tasks'] == 'reading':
                 response, practice_total = get_practice_reading(cursor, False, difficulty, False, limit, is_demo)
 
-            if res['tasks'] == 'matching':
-                response, practice_total = get_practice_matching(cursor, False, difficulty, False, limit, is_demo)
+            # if res['tasks'] == 'matching':
+            #     response, practice_total = get_practice_matching(cursor, False, difficulty, False, limit, is_demo)
 
             if res['tasks'] == 'reading_select_real_eng_word':
                 response, practice_total = get_practice_reading_select_real_eng_word(cursor, False, difficulty, False, limit, is_demo)
@@ -191,10 +191,10 @@ def api_get_practice_detail():
         if practice['practice_type'] == "reading":
             result['data'], _ = get_practice_reading(cursor, True, practice['difficulty'], examId, 1, is_demo)
             
-        if practice['practice_type'] == "matching":
-            data, _ = get_practice_matching(cursor, True, practice['difficulty'], examId, 1, is_demo)
-            result['data'] = data['data']
-            result['options'] = data['option']
+        # if practice['practice_type'] == "matching":
+        #     data, _ = get_practice_matching(cursor, True, practice['difficulty'], examId, 1, is_demo)
+        #     result['data'] = data['data']
+        #     result['options'] = data['option']
 
         if practice['practice_type'] == "reading_select_real_eng_word":
             result['data'], _ = get_practice_reading_select_real_eng_word(cursor, True, False, examId, 12, is_demo)
