@@ -1421,25 +1421,42 @@
             let col = $('<div>').addClass('col-auto');
             let timer = $('<p>').html('00:00')
             let speakStart = $('<div>').addClass('btn-media').html('<i class="fa fa-solid fa-microphone"></i>').unbind('click').bind('click', async () => {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.start();
-                startTime = Date.now();
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    startTime = Date.now();
 
-                mediaRecorder.addEventListener("dataavailable", (event) => {
-                    chunks.push(event.data);
-                });
+                    mediaRecorder.addEventListener("dataavailable", (event) => {
+                        chunks.push(event.data);
+                    });
 
-                const timerInterval = setInterval(() => {
-                    const elapsedTime = Date.now() - startTime;
-                    const minutes = Math.floor(elapsedTime / 60000);
-                    const seconds = Math.floor((elapsedTime % 60000) / 1000);
-                    timer.html(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
-                }, 1000);
+                    const timerInterval = setInterval(() => {
+                        const elapsedTime = Date.now() - startTime;
+                        const minutes = Math.floor(elapsedTime / 60000);
+                        const seconds = Math.floor((elapsedTime % 60000) / 1000);
+                        timer.html(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
+                    }, 1000);
 
-                // Stop the time counter when the recording is stopped
-                mediaRecorder.addEventListener("stop", async () => {
-                    clearInterval(timerInterval);
+                    // Stop the time counter when the recording is stopped
+                    mediaRecorder.addEventListener("stop", async () => {
+                        clearInterval(timerInterval);
+                        timer.hide()
+                        let audioPlayback = $('<audio controls>').attr('id', 'audio-playback');
+                        col.append(audioPlayback);
+                        const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+                        audioPlayback.attr('src', URL.createObjectURL(blob));
+                        await renderButton();
+                        submitPractice();
+                    });
+                    speakStart.hide();
+                    speakStop.show();
+                } catch (exceptionVar) {
+
+                    console.log(exceptionVar)
+
+                    speakStart.hide();
+                    speakStop.hide();
                     timer.hide()
                     let audioPlayback = $('<audio controls>').attr('id', 'audio-playback');
                     col.append(audioPlayback);
@@ -1447,9 +1464,8 @@
                     audioPlayback.attr('src', URL.createObjectURL(blob));
                     await renderButton();
                     submitPractice();
-                });
-                speakStart.hide();
-                speakStop.show();
+                }
+
             });
 
 
