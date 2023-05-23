@@ -1419,9 +1419,10 @@
             container.append(question);
             let row = $('<div>').addClass('row justify-content-center mt-5 mb-5');
             let col = $('<div>').addClass('col-auto');
-            let timer = $('<p>').html('00:00')
+            let timer = $('<p>').html('You need to allow this website to use your microphone to use this function').addClass('text-danger')
             let speakStart = $('<div>').addClass('btn-media').html('<i class="fa fa-solid fa-microphone"></i>').unbind('click').bind('click', async () => {
                 try {
+                    timer.html('00:00').removeClass('text-danger')
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     mediaRecorder.start();

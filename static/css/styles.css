@@ -608,6 +608,7 @@
     border-radius: 50%;
     color: #fff;
     cursor: pointer;
+    display: inline-table;
 }
 
 .btn-media:hover {
