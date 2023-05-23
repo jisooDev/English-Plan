@@ -8,7 +8,11 @@ from datetime import datetime, date, timedelta
 
 import os ;
 from dotenv import load_dotenv ;
-load_dotenv() 
+load_dotenv()
+
+import base64
+
+atob = lambda x:base64.b64encode(bytes(x, 'utf-8')).decode('utf-8')
 
 class fakefloat(float):
     def __init__(self, value):
@@ -184,3 +188,26 @@ def get_promotion(lang):
     if len(result) == 0:
         return False
     return result[0]
+
+def get_short_answer():
+    connection = get_connection()
+    cursor = connection.cursor()
+    cursor.execute('''SELECT * FROM readandwrite_short_answer WHERE answer_atob is null''')
+    result = cursor.fetchall()
+    if len(result) == 0:
+        return False
+    return result
+
+def update_short_answer(answer_atob , id):
+    connection = get_connection()
+    cursor = connection.cursor()
+    sql_str = '''UPDATE readandwrite_short_answer SET answer_atob = %(answer_atob)s WHERE id = %(id)s'''
+
+    sql_data = {
+        'answer_atob': atob(answer_atob),
+        'id': id,
+    }
+
+    cursor.execute(sql_str, sql_data)
+    connection.commit()
+    return True

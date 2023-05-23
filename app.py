@@ -175,6 +175,19 @@ def success():
     return render_template("success.html")
 
 
+@app.route('/run-atob', methods=['GET'])
+def run_atob():
+    try:
+        res = query.get_short_answer()
+        print(res)
+        for x in res:
+            query.update_short_answer(x["answer"],x["id"])
+        return json.dumps({"status" : 200})
+    except Exception as e:
+        print(e)
+        return json.dumps({"status" : 400})
+
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
