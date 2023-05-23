@@ -307,6 +307,6 @@ app.register_blueprint(config_bp, url_prefix='/admin')
 app.register_blueprint(api_bp, url_prefix='/api')
 
 if __name__ == '__main__':
-    app.debug = True
+    app.debug = False
 
     app.run(host='0.0.0.0', port=3300)
