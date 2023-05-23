@@ -34,12 +34,12 @@ def render_shortanswer_create():
             _uuid = uuid.uuid4().hex
 
 
-            sql_data = (_uuid , difficulty , data , answer)
+            sql_data = (_uuid , difficulty , data , answer , atob(answer))
             sql_str = '''
                 INSERT INTO readandwrite_short_answer
-                (id , difficulty, data , answer)
+                (id , difficulty, data , answer , answer_atob)
                 VALUES
-                (%s , %s, %s ,%s)
+                (%s , %s, %s ,%s , %s)
             '''
             cursor.execute(sql_str, sql_data)
             connection.commit()

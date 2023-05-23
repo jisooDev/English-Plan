@@ -394,7 +394,7 @@
                                     15 Days
                                 </a>
                             </h4>
-                            <button class="more mt-5" id="checkout">
+                            <button class="more mt-5" id="checkout-th">
                                 CHOOSE
                             </button>
                         </div>
@@ -413,7 +413,7 @@
                                     30 Days
                                 </a>
                             </h4>
-                            <button class="more mt-5" id="checkout-2">
+                            <button class="more mt-5" id="checkout-2-th">
                                 CHOOSE
                             </button>
                         </div>
@@ -435,7 +435,7 @@
                                     </small>
                                 </a>
                             </h4>
-                            <button class="more mt-5" id="checkout-3">
+                            <button class="more mt-5" id="checkout-3-th">
                                 CHOOSE
                             </button>
                         </div>
@@ -808,6 +808,92 @@
             }
         });
 
+        $('#checkout-th').click(function() {
+            if (packageData && packageData.is_login) {
+                let body = {
+                "name": "ฝึกได้ Unlimited 15 Days",
+                "unit_amount": 1990,
+                "package_id": 1
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+            }
+            else{
+                alert('Please login!');
+            }
+        });
+
+        $('#checkout-2-th').click(function() {
+            if (packageData && packageData.is_login) {
+            let body = {
+                "name": "ฝึกได้ Unlimited 30 Days",
+                "unit_amount": 2910,
+                "package_id": 2
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+            }
+            else{
+                alert('Please login!');
+            }
+        });
+
+        $('#checkout-3-th').click(function() {
+            if (packageData && packageData.is_login) {
+            let body = {
+                "name": "ฝึกได้ Unlimited 90 Days",
+                "unit_amount": 3990,
+                "package_id": 3
+            }
+
+            $.ajax({
+                    url: '/start_payment_session',
+                    type: 'POST',
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function(data) {
+                        payment_session_id = data['session_id'];
+                        stripe.redirectToCheckout({
+                            sessionId: payment_session_id
+                        }).then(function (result) {
+                            console.log(result.error.message);
+                        });
+                    }
+                });
+            }
+            else{
+                alert('Please login!');
+            }
+        });
 
         });
 
